@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { DashboardPage } from "./pages/Dashboard/DashboardPage";
-import { LoginPage } from "./pages/Login/LoginPage";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
-import { NoMatch } from "./guards/NoMatch";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PrivateRoute } from "./guards/PrivateRoute";
+import { NoMatch } from "./guards/NoMatch";
+import { LoginPage } from "./pages/Login/LoginPage";
+import { HomePage } from "./pages/Home/HomePage";
+import { DashboardPage } from "./pages/Dashboard/DashboardPage";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard" element={<PrivateRoute><DashboardPage/></PrivateRoute>} />
+          <Route path="/" element={<PrivateRoute><HomePage/></PrivateRoute>}>
+            <Route path="dashboard" element={<PrivateRoute><DashboardPage/></PrivateRoute>}/>
+          </Route>
           <Route path="*" element={<NoMatch/>}/>
         </Routes>
       </AuthProvider>

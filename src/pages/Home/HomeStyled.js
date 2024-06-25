@@ -24,7 +24,7 @@ export const Navbar = styled.nav`
   background-color: green;
 `;
 
-export const Content = styled.section`
+export const Main = styled.main`
   grid-area: 2 / 2 / 2 / 3;
   background-color: yellow;
 `;
