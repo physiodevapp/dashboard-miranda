@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-
 export const Wrapper = styled.div`
   background-color: yellow;
   padding: 2em;
@@ -21,13 +20,4 @@ export const Input = styled.input`
   display: block;
   margin-bottom: 1em;
   padding: 0.6em;
-`
-
-export const Button = styled.button`
-  width: 100%;
-  font-size: 1rem;
-  padding: 1em 0.6em;
-  border-radius: 0.4em;
-  border: none;
-  text-transform: uppercase;
 `
