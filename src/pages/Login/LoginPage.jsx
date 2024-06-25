@@ -3,6 +3,7 @@
 import React, { useContext, useState } from 'react'
 import { Form, Input, Wrapper } from './LoginStyled';
 import { AuthContext } from '../../context/AuthProvider';
+import { Button } from '../../components/Button';
 
 export const LoginPage = () => {
   const [user, setUser] = useState({email: '', password: ''})
@@ -18,7 +19,7 @@ export const LoginPage = () => {
     ))
   }
 
-  const handleClickSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     login(user);
   }
@@ -26,10 +27,10 @@ export const LoginPage = () => {
   return (
     <>
       <Wrapper>
-        <Form action="">
+        <Form action="" onSubmit={handleSubmit}>
           <Input onChange={handleChangeInput} value={user.email} key={'email'} placeholder='email@example.com' type="email" name="email" id="email" />
           <Input onChange={handleChangeInput} value={user.password} key={'password'} placeholder='password' type="password" name="password" id="password" />
-          <button onClick={handleClickSubmit} type='submit'>Log in</button>
+          <Button type='submit'>Log in</Button>
         </Form>
       </Wrapper>
     </>

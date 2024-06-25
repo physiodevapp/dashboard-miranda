@@ -5,28 +5,69 @@ export const Grid = styled.div`
   grid-template-rows: 120px 1fr;
   grid-template-columns: 345px 1fr;
   height: 100vh;
+  transform: translateX(0px);
   width: 100%;
   transition: ease-in-out 0.2s;
+  transition-delay: 0.2s;
   
   ${props => props.show === "false" && css`
     transform: translateX(-345px);
     width: calc(100% + 345px);
-  `}
+    `
+  }
 `;
 
 export const Menu = styled.aside`
   grid-area: 1 / 1 / 3 / 1;
   padding: 1em 0em 0em;
+  box-shadow: 13px 3px 40px #00000005;
 `;
 
 export const Navbar = styled.nav`
   grid-area: 1 / 2 / 1 / 3;
-  background-color: green;
+  padding: 0em 1em 0em 0em;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
+
+export const MenuButton = styled.button`
+  font-size: 2.5em;
+  border: none;
+  background-color: white;
+  line-height: 0px;
+  cursor: pointer;
+  transition: ease-in-out 0.4s;
+  transition-delay: 0.2s;
+
+  ${props => props.show === 'false' && css`
+    transform: rotateZ(180deg);
+    `
+  }
+`
+
+export const NavbarList = styled.ul`
+  list-style: none;
+  font-size: 1.6em;
+  display: flex;
+  gap: 1em;
+
+  svg {
+    cursor: pointer;
+  }
+`
+
+export const PageTitle = styled.h3`
+  font-size: 1.8em;
+  color: #262626;
+  flex: 1;
+  padding-left: 1em;
+`
 
 export const Main = styled.main`
   grid-area: 2 / 2 / 2 / 3;
-  background-color: yellow;
+  background-color: #f8f8f8;
 `;
 
 export const Logo = styled.img`
@@ -34,7 +75,7 @@ export const Logo = styled.img`
   padding: 0em 3.4em
 `
 
-export const List = styled.ul`
+export const MenuList = styled.ul`
   list-style: none;
   margin-top: 1em;
 
