@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ButtonStyled } from "../../components/Button";
 
 export const Wrapper = styled.div`
   background-color: white;
@@ -21,4 +22,8 @@ export const Input = styled.input`
   display: block;
   margin-bottom: 1em;
   padding: 0.6em;
+`
+
+export const SubmitButton = styled(ButtonStyled)`
+  margin-top: 1em;
 `

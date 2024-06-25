@@ -1,7 +1,7 @@
 
 
 import React, { useContext, useState } from 'react'
-import { Form, Input, Wrapper } from './LoginStyled';
+import { Form, Input, SubmitButton, Wrapper } from './LoginStyled';
 import { AuthContext } from '../../context/AuthProvider';
 import { Button } from '../../components/Button';
 
@@ -30,7 +30,7 @@ export const LoginPage = () => {
         <Form action="" onSubmit={handleSubmit}>
           <Input onChange={handleChangeInput} value={user.email} key={'email'} placeholder='email@example.com' type="email" name="email" id="email" />
           <Input onChange={handleChangeInput} value={user.password} key={'password'} placeholder='password' type="password" name="password" id="password" />
-          <Button type='submit'>Log in</Button>
+          <SubmitButton type='submit'>Log in</SubmitButton>
         </Form>
       </Wrapper>
     </>

@@ -2,7 +2,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components';
 
-const ButtonTemplate = styled.button`
+export const ButtonStyled = styled.button`
   width: 100%;
   font-size: 1rem;
   padding: 1em 0.6em;
@@ -26,6 +26,6 @@ const ButtonTemplate = styled.button`
 
 export const Button = ({type, children}) => {
   return (
-    <ButtonTemplate type={type}>{children}</ButtonTemplate>
+    <ButtonStyled type={type}>{children}</ButtonStyled>
   )
 }
