@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
-
 export const Wrapper = styled.div`
-  background-color: yellow;
+  background-color: white;
   padding: 2em;
   display: flex;
   justify-content: center;
@@ -11,9 +10,10 @@ export const Wrapper = styled.div`
 `
 
 export const Form = styled.form`
-  background-color: red;
-  padding: 8em 4em;
-  border-radius: 0.6em;
+  background-color: #135846;
+  padding: 6em 4em;
+  box-shadow: 0px 20px 30px #00000014;
+  border-radius: 18px;
 `
 
 export const Input = styled.input`
@@ -21,13 +21,4 @@ export const Input = styled.input`
   display: block;
   margin-bottom: 1em;
   padding: 0.6em;
-`
-
-export const Button = styled.button`
-  width: 100%;
-  font-size: 1rem;
-  padding: 1em 0.6em;
-  border-radius: 0.4em;
-  border: none;
-  text-transform: uppercase;
 `
