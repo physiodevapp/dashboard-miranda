@@ -76,7 +76,7 @@ export const RecentContactsComponent = () => {
           slidesPerView={3}
           spaceBetween={32}>
           {
-            recentContacts.map((contact, index) => (
+            recentContacts.map((contact) => (
               <SwiperSlide key={contact.id}>{contact.message}</SwiperSlide>
             ))
           }

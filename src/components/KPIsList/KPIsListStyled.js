@@ -3,16 +3,19 @@ import styled from "styled-components";
 export const KPIsList = styled.ul`
   list-style: none;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 1em 2em;
+  justify-content: flex-start;
   gap: 2em;
-  max-width: 1300px;
-  margin: 0 auto;
+  padding: 1em 0em;
+  margin: 0 auto 1em;
+  width: calc(100% - 4em);
+  max-width: 1240px;
+  overflow-x: auto;
 `
 
 export const KPIsItem = styled.li`
   background-color: white;
+  min-height: 113.6px;
   padding: 1.4em 1em 1.4em 6.5em;
   box-shadow: 0px 4px 4px #00000005;
   border-radius: 0.8em;
