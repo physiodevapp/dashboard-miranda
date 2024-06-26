@@ -69,6 +69,8 @@ export const PageTitle = styled.h3`
 export const Main = styled.main`
   grid-area: 2 / 2 / 2 / 3;
   background-color: #f8f8f8;
+  max-width: 100vw;
+  min-width: calc(100vw - 345px);
 `;
 
 export const Logo = styled.img`

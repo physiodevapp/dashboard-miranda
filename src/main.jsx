@@ -17,7 +17,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<PrivateRoute><HomePage/></PrivateRoute>}>
             <Route path="dashboard" element={<PrivateRoute><DashboardPage/></PrivateRoute>}/>
+            <Route exact path="" element={<NoMatch/>}/>
+            <Route path="*" element={<NoMatch/>}/>
           </Route>
+          <Route exact path="" element={<NoMatch/>}/>
           <Route path="*" element={<NoMatch/>}/>
         </Routes>
       </AuthProvider>
