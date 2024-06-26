@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Grid = styled.div`
   display: grid;
-  grid-template-rows: 120px 1fr;
+  grid-template-rows: 120px calc(100vh - 120px);
   grid-template-columns: 345px 1fr;
   height: 100vh;
   transform: translateX(0px);
@@ -19,7 +19,7 @@ export const Grid = styled.div`
 
 export const Menu = styled.aside`
   grid-area: 1 / 1 / 3 / 1;
-  padding: 1em 0em 0em;
+  padding: 1.6em 0em 0em;
   box-shadow: 13px 3px 40px #00000005;
 `;
 
@@ -63,11 +63,14 @@ export const PageTitle = styled.h3`
   color: #262626;
   flex: 1;
   padding-left: 1em;
+  text-transform: uppercase;
 `
 
 export const Main = styled.main`
   grid-area: 2 / 2 / 2 / 3;
   background-color: #f8f8f8;
+  max-width: 100vw;
+  min-width: calc(100vw - 345px);
 `;
 
 export const Logo = styled.img`

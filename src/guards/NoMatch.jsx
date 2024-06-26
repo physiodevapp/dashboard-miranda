@@ -7,7 +7,7 @@ import { Navigate } from 'react-router-dom';
 export const NoMatch = () => {
 
   const { user } = useContext(AuthContext);
-
+  console.log(user);
   if (user)
     return <Navigate to={'/dashboard'} replace={true}/>
   else 

@@ -2,7 +2,7 @@
 
 import React, { useContext, useState } from 'react'
 import { Menu, MenuList, Navbar, Main, Grid, User, Name, Email, Brand, Copyright, Logo, Author, PageTitle, NavbarList, MenuButton } from './HomeStyled';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { LuLayoutDashboard, LuCalendarCheck, LuChevronLeft } from "react-icons/lu";
 import { RiKey2Line } from "react-icons/ri";
@@ -17,7 +17,8 @@ import { AuthContext } from '../../context/AuthProvider';
 export const HomePage = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const { logout } = useContext(AuthContext);
-
+  const { pathname } = useLocation();
+  
   const handleClickMenu = () => setIsMenuVisible(!isMenuVisible)
 
   return (
@@ -27,7 +28,7 @@ export const HomePage = () => {
           <MenuButton show={isMenuVisible.toString()}>
             <LuChevronLeft onClick={handleClickMenu}/>
           </MenuButton>
-          <PageTitle>Dashboard</PageTitle>
+          <PageTitle>{pathname.split("/")[1]}</PageTitle>
           <NavbarList>
             <li><FaRegEnvelope/></li>
             <li><BiBell/></li>
