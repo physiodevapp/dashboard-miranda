@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PrivateRoute } from "./guards/PrivateRoute";
 import { NoMatch } from "./guards/NoMatch";
 import { LoginPage } from "./pages/Login/LoginPage";
-import { HomePage } from "./pages/Home/HomePage";
+import { Layout } from "./pages/Layout/Layout";
 import { DashboardPage } from "./pages/Dashboard/DashboardPage";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<PrivateRoute><HomePage/></PrivateRoute>}>
+          <Route path="/" element={<PrivateRoute><Layout/></PrivateRoute>}>
             <Route path="dashboard" element={<PrivateRoute><DashboardPage/></PrivateRoute>}/>
             <Route exact path="" element={<NoMatch/>}/>
             <Route path="*" element={<NoMatch/>}/>

@@ -1,7 +1,7 @@
 
 
 import React, { useContext, useState } from 'react'
-import { Menu, MenuList, Navbar, Main, Grid, User, Name, Email, Brand, Copyright, Logo, Author, PageTitle, NavbarList, MenuButton } from './HomeStyled';
+import { Menu, MenuList, Navbar, Main, Grid, User, Name, Email, Brand, Copyright, Logo, Author, PageTitle, NavbarList, MenuButton } from './Layout';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { LuLayoutDashboard, LuCalendarCheck, LuChevronLeft } from "react-icons/lu";
