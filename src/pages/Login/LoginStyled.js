@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ButtonStyled } from "../../components/Button";
+import { ButtonStyled } from "../../components/ButtonStyled";
 
 export const Wrapper = styled.div`
   background-color: white;

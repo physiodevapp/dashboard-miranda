@@ -18,7 +18,7 @@ const AuthProvider = ({children}) => {
   const [refreshUser, setRefreshUser] = useState(false);
   const navigate = useNavigate();
 
-  const updateUserToLocalStorage = (user = null) => {
+  const updateUserToLocalStorage = (user = undefined) => {
     if (user) 
       localStorage.setItem('current-user', JSON.stringify(user))
     else

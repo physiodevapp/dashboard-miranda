@@ -1,9 +1,8 @@
 
 
 import React, { useContext, useState } from 'react'
-import { Menu, MenuList, Navbar, Main, Grid, User, Name, Email, Brand, Copyright, Logo, Author, PageTitle, NavbarList, MenuButton } from './Layout';
+import { Menu, MenuList, Navbar, Main, Grid, User, Name, Email, Brand, Copyright, Logo, Author, PageTitle, NavbarList, MenuButton } from './LayoutStyled';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Button } from '../../components/Button';
 import { LuLayoutDashboard, LuCalendarCheck, LuChevronLeft } from "react-icons/lu";
 import { RiKey2Line } from "react-icons/ri";
 import { MdOutlineReviews, MdLogout } from "react-icons/md";
@@ -13,8 +12,9 @@ import { BiBell } from "react-icons/bi";
 import userImage from '../../assets/Imagen de perfil.png';
 import logoImage from '../../assets/dashboard-logo.png';
 import { AuthContext } from '../../context/AuthProvider';
+import { ButtonStyled } from '../../components/ButtonStyled';
 
-export const HomePage = () => {
+export const Layout = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const { logout } = useContext(AuthContext);
   const { pathname } = useLocation();
@@ -68,7 +68,7 @@ export const HomePage = () => {
             <img src={userImage} alt="" />
             <Name>Edu Gamboa</Name>
             <Email>edu.gamboa.rodriguez@gmail.com</Email>
-            <Button type={'secondary'}>Edit</Button>
+            <ButtonStyled styled="secondary">Edit</ButtonStyled>
           </User>
           <Brand>Travl Hotel Admin Dashboard</Brand>
           <Copyright>© 2020 All Rights Reserved</Copyright>
