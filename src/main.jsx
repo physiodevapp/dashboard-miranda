@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { AuthProvider } from "./context/AuthProvider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { PrivateRoute } from "./guards/PrivateRoute";
 import { NoMatch } from "./guards/NoMatch";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { Layout } from "./pages/Layout/Layout";
@@ -15,8 +14,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<PrivateRoute><Layout/></PrivateRoute>}>
-            <Route path="dashboard" element={<PrivateRoute><DashboardPage/></PrivateRoute>}/>
+          <Route path="/" element={<Layout/>}>
+            <Route path="dashboard" element={<DashboardPage/>}/>
             <Route exact path="" element={<NoMatch/>}/>
             <Route path="*" element={<NoMatch/>}/>
           </Route>

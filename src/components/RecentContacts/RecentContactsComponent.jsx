@@ -30,6 +30,10 @@ export const RecentContactsComponent = () => {
   }
 
   useEffect(() => {
+    handleSlideChange()
+  }, [])
+
+  useEffect(() => {
     const sortByField = 'submission_datetime';
 
     const  compareFunction = (contact, nextContact) => {
@@ -53,8 +57,6 @@ export const RecentContactsComponent = () => {
       
       return recents
     })
-
-    handleSlideChange()
   }, [contacts])
   
   

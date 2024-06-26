@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const List = styled.ul`
+export const KPIsList = styled.ul`
   list-style: none;
   display: flex;
   justify-content: center;
@@ -11,7 +11,7 @@ export const List = styled.ul`
   margin: 0 auto;
 `
 
-export const Item = styled.li`
+export const KPIsItem = styled.li`
   background-color: white;
   padding: 1.4em 1em 1.4em 6.5em;
   box-shadow: 0px 4px 4px #00000005;
@@ -20,7 +20,7 @@ export const Item = styled.li`
   flex: 1;
 `
 
-export const Icon = styled.span`
+export const KPIsIcon = styled.span`
   position: absolute;
   left: 0.8em;
   top: 50%;
