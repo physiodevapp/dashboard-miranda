@@ -33,6 +33,32 @@ export const RoomGallery = styled.img`
   width: 50%;
 `
 
+export const RoomFormFieldContainer = styled.div`
+  height: 100%;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    cursor: grab;
+  }
+  &::-webkit-scrollbar-thumb:horizontal {
+    border-radius: 10px;
+  }
+`
+
 export const RoomFormField = styled.div`
   width: ${props => props.width || "100%"};
   margin-bottom: 1.4em;

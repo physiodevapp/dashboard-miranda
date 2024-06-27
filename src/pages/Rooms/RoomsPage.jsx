@@ -13,7 +13,9 @@ import { useNavigate } from 'react-router-dom';
 export const RoomsPage = () => {
   const [displayRooms, setDisplayRooms] = useState([])
   const [tablePageIndex, setTablePageIndex] = useState(0);
-  const navigate = useNavigate()
+  const [key, setKey] = useState('number');
+  const [sortCriteria, setSortCriteria] = useState(-1);
+  const navigate = useNavigate();
 
   const prevButton = useRef();
   const nextButton = useRef();
@@ -27,21 +29,21 @@ export const RoomsPage = () => {
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
 
-  const sortByKey = (rooms, key) => {
+  const sortByKey = (rooms, key, criteria = -1) => {
     return rooms.sort((current, next) => {
       if (current[key] < next[key])
-        return -1
+        return criteria
 
       if (current[key] > next[key])
-        return 1
+        return -1 * criteria
       
       return 0;
     })
   }
-
+  
   useEffect(() => {
-    setDisplayRooms(sortByKey(rooms, 'number').slice(0,10))
-  }, [])
+    setDisplayRooms(sortByKey(rooms, key, sortCriteria).slice(0,10))
+  }, [key, sortCriteria])
 
   useEffect(() => {
     const updatePagination = () => {      
@@ -119,12 +121,38 @@ export const RoomsPage = () => {
         <DataTable>
           <DataTableHeader>
             <DataTableHeaderRow>
-              <DataTableHeaderRowCell scope="col" colSpan={2}>Room name</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell 
+                scope="col" 
+                colSpan={2} 
+                style={{cursor: "pointer", textDecoration: `${key === 'number' ? "underline" : "unset"}`}} 
+                onClick={() => {
+                  setSortCriteria(-1);
+                  setKey('number');
+                }}>
+                  Room name
+                </DataTableHeaderRowCell>
               <DataTableHeaderRowCell scope="col">Bed Type</DataTableHeaderRowCell>
               <DataTableHeaderRowCell scope="col">Facilities</DataTableHeaderRowCell>
-              <DataTableHeaderRowCell scope="col">Price</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell 
+                scope="col" 
+                style={{cursor: "pointer", textDecoration: `${key === 'price_night' ? "underline" : "unset"}`}} 
+                onClick={() => {
+                  setSortCriteria( -1 * sortCriteria);
+                  setKey('price_night');
+                }}>
+                  Price
+                </DataTableHeaderRowCell>
               <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
-              <DataTableHeaderRowCell scope="col">Status</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell 
+                scope="col" 
+                style={{cursor: "pointer", textDecoration: `${key === 'status' ? "underline" : "unset"}`}} 
+                onClick={() => {
+                  setSortCriteria(-1);
+                  setKey('status');
+                }}
+                >
+                  Status
+                </DataTableHeaderRowCell>
             </DataTableHeaderRow>
           </DataTableHeader>
           <DataTableBody>
