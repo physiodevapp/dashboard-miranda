@@ -25,6 +25,7 @@ export const NavbarList = styled.ul`
 
 export const NavbarPageTitle = styled.h3`
   font-size: 1.8em;
+  font-family: "Poppins";
   color: #262626;
   flex: 1;
   padding-left: 1em;

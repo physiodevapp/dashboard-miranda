@@ -15,6 +15,8 @@ export const MenuListItem = styled.li`
   color: #799283;
   display: flex;
   align-items: center;
+  font-family: "Poppins";
+  font-weight: 500;
   font-size: 1rem;
   position: relative;
   cursor: pointer;
@@ -61,6 +63,7 @@ export const Name = styled.h6`
   font-size: 1rem;
   color: #393939;
   margin-bottom: 0.4em;
+  font-family: "Poppins";
 `
 
 export const Email = styled.h6`
@@ -69,6 +72,8 @@ export const Email = styled.h6`
   margin-bottom: 1.4em;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: "Poppins";
+  font-weight: 300;
 `
 
 export const Brand = styled.h5`
@@ -77,6 +82,7 @@ export const Brand = styled.h5`
   position: absolute;
   bottom: 5rem;
   padding: 0em 3.4rem;
+  font-family: "Poppins";
 `
 
 export const Copyright = styled.h6`
@@ -85,6 +91,8 @@ export const Copyright = styled.h6`
   position: absolute;
   bottom: 3.5rem;
   padding: 0em 3.4rem;
+  font-family: "Poppins";
+  font-weight: 300;
 `
 
 export const Author = styled.h6`
@@ -93,4 +101,6 @@ export const Author = styled.h6`
   bottom: 1.5em;
   color: #799283;
   padding: 0em 3.4rem;
+  font-family: "Poppins";
+  font-weight: 400;
 `

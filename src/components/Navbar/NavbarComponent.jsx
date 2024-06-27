@@ -1,22 +1,36 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NavbarMenuButton, NavbarPageTitle, NavbarList } from './NavbarStyled';
 import { BiBell } from 'react-icons/bi';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { LuChevronLeft } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthProvider';
 
 export const NavbarComponent = ({handleClickMenu, show}) => {
   const { logout } = useContext(AuthContext);
   const { pathname } = useLocation();
+  const { roomId } = useParams();
+  const [title, setTitle] = useState('')
+
+  useEffect(() => {
+    let title;
+    if (roomId)
+      title = "Room details"
+    else if (pathname.split("/")[2] === 'new')
+      title = "New room"
+    else
+      title = pathname.split("/")[1];
+
+    setTitle(title)
+  }, [pathname])
 
   return (
     <>
       <NavbarMenuButton show={show}>
         <LuChevronLeft onClick={handleClickMenu}/>
       </NavbarMenuButton>
-      <NavbarPageTitle>{pathname.split("/")[1]}</NavbarPageTitle>
+      <NavbarPageTitle>{title}</NavbarPageTitle>
       <NavbarList>
         <li><FaRegEnvelope/></li>
         <li><BiBell/></li>

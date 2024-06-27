@@ -9,6 +9,7 @@ export const Section = styled.div`
   padding: 1.6em 0em 1em;
   max-width: 1240px;
   position: relative;
+  font-family: "Poppins";
 
   .swiper {
     width: 100%;
@@ -137,6 +138,7 @@ export const SwiperSlideAuthorInfoName = styled.h6`
 export const SwiperSlideAuthorInfoDatetime = styled.h6`
   color: #799283;
   font-size: 0.8rem;
+  font-weight: 400;
 `
 
 export const SwiperSliderButtons = styled.div`
