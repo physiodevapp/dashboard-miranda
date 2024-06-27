@@ -37,4 +37,6 @@ export const MainLayout = styled.main`
   background-color: #f8f8f8;
   max-width: 100vw;
   min-width: calc(100vw - 345px);
+  overflow: hidden;
+  position: relative;
 `;

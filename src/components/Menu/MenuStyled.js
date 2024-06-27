@@ -8,38 +8,38 @@ export const Logo = styled.img`
 export const MenuList = styled.ul`
   list-style: none;
   margin-top: 1em;
+`
 
-  li {
-    padding: 0.8em 1em 0.8em 3.4em;
-    color: #799283;
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    position: relative;
-    cursor: pointer;
-    &:hover {
-      color: #E23428;
-      svg {
-        color: #E23428;
-      }
-      span {
-        background-color: #E23428;
-      }
-    }
-
+export const MenuListItem = styled.li`
+  padding: 0.8em 1em 0.8em 3.4em;
+  color: #799283;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  position: relative;
+  cursor: pointer;
+  &:hover {
+    color: #E23428;
     svg {
-      margin-right: 0.6em;
-      color: #799283;
-      font-size: 1.2rem;
+      color: #E23428;
     }
-
     span {
-      height: 2.2em;
-      width: 0.25em;
-      border-radius: 0em 0.6em 0.6em 0em;
-      position: absolute;
-      left: 0em;
+      background-color: #E23428;
     }
+  }
+
+  svg {
+    margin-right: 0.6em;
+    color: #799283;
+    font-size: 1.2rem;
+  }
+
+  span {
+    height: 2.2em;
+    width: 0.25em;
+    border-radius: 0em 0.6em 0.6em 0em;
+    position: absolute;
+    left: 0em;
   }
 `
 
