@@ -6,10 +6,14 @@ import { NavigationButton, PaginationInfo, RoomIdentification, RoomIdentificatio
 
 import { ButtonStyled } from '../../components/ButtonStyled';
 import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
+import { NewRoomButton } from './RoomsStyled';
+import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
+import { useNavigate } from 'react-router-dom';
 
 export const RoomsPage = () => {
-  const [displayRooms, setDisplayRooms] = useState(rooms.slice(0,10))
+  const [displayRooms, setDisplayRooms] = useState([])
   const [tablePageIndex, setTablePageIndex] = useState(0);
+  const navigate = useNavigate()
 
   const prevButton = useRef();
   const nextButton = useRef();
@@ -17,12 +21,27 @@ export const RoomsPage = () => {
   const middleButton = useRef();
   const afterMiddleButton = useRef();
 
-  const bulletsMax = 5;
-
+  const paginationButtonsMax = 5;
   const roomsPerTablePage = 10;
   const tableTotalPages = Math.floor(rooms.length / roomsPerTablePage)
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
+
+  const sortByKey = (rooms, key) => {
+    return rooms.sort((current, next) => {
+      if (current[key] < next[key])
+        return -1
+
+      if (current[key] > next[key])
+        return 1
+      
+      return 0;
+    })
+  }
+
+  useEffect(() => {
+    setDisplayRooms(sortByKey(rooms, 'number').slice(0,10))
+  }, [])
 
   useEffect(() => {
     const updatePagination = () => {      
@@ -31,7 +50,7 @@ export const RoomsPage = () => {
       document.querySelectorAll(".pagination-button").forEach(element => {
         element?.classList.remove('active')
       }); 
-      if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > bulletsMax)
+      if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax)
         middleButton.current.classList.add("active");
       else
         document.querySelector(`[data-index='${tablePageIndex}']`)?.classList.add("active")
@@ -43,12 +62,12 @@ export const RoomsPage = () => {
       } else if (current <= 3 ) {
         middleButton.current.innerHTML = 3;
         middleButton.current.dataset.index = 2;
-      } else if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > bulletsMax) {
+      } else if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax) {
         middleButton.current.innerHTML = current;
         middleButton.current.dataset.index = current - 1;
       }
 
-      if (current > 3 && tableTotalPages > bulletsMax) {
+      if (current > 3 && tableTotalPages > paginationButtonsMax) {
         beforeMiddleButton.current.classList.add("dots");
         beforeMiddleButton.current.removeAttribute("data-index");
         beforeMiddleButton.current.innerHTML = `...`;
@@ -62,7 +81,7 @@ export const RoomsPage = () => {
         afterMiddleButton.current.classList.remove("dots");
         afterMiddleButton.current.dataset.index = `${tableTotalPages - 2}`;
         afterMiddleButton.current.innerHTML = `${tableTotalPages - 1}`;
-      } else if (tableTotalPages > bulletsMax) {
+      } else if (tableTotalPages > paginationButtonsMax) {
         afterMiddleButton.current.classList.add("dots");
         afterMiddleButton.current.removeAttribute("data-index");
         afterMiddleButton.current.innerHTML = `...`;
@@ -93,6 +112,9 @@ export const RoomsPage = () => {
 
   return (
     <>
+      <PageElementContainerStyled>
+        <NewRoomButton onClick={() => navigate("/rooms/new")} styled="primary">+ New room</NewRoomButton>
+      </PageElementContainerStyled>
       <RoomsTableContainer>
         <DataTable>
           <DataTableHeader>
@@ -109,7 +131,7 @@ export const RoomsPage = () => {
             {
               displayRooms.map((room) => (
                 <>
-                <DataTableBodyRow key={room.number}>
+                <DataTableBodyRow key={room.number} onClick={() => navigate(`/rooms/${room.id}`)}>
                   <RoomsTableBodyRowCell key={`${room.number}-photo`} className='room-photo'>
                     <figure key={`${room.number}-identification-photo-container`}>
                       <img key={`${room.number}-identification-photo-image`} src={room.photos} alt="" />
@@ -143,7 +165,7 @@ export const RoomsPage = () => {
               const middle = Math.floor(tableTotalPages / 2);
               const current = index + 1;
               
-              if (current === 1 || current === total || total <= bulletsMax)
+              if (current === 1 || current === total || total <= paginationButtonsMax)
                 return <ButtonStyled key={index} data-index={current - 1} styled="primary" className={`pagination-button ${current === 1 && "active"}`} onClick={(event) => event.target.dataset.index && setTablePageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
               else if (current === 2)
                 return <ButtonStyled ref={beforeMiddleButton} key={index} data-index={current - 1} styled="primary" className="pagination-button" onClick={(event) => event.target.dataset.index && setTablePageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>

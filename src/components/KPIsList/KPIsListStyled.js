@@ -11,6 +11,7 @@ export const KPIsList = styled.ul`
   width: calc(100% - 4em);
   max-width: 1240px;
   overflow-x: auto;
+  font-family: "Poppins";
 `
 
 export const KPIsItem = styled.li`
@@ -21,6 +22,7 @@ export const KPIsItem = styled.li`
   border-radius: 0.8em;
   position: relative;
   flex: 1;
+  font-family: inherit;
 `
 
 export const KPIsIcon = styled.span`
@@ -34,14 +36,18 @@ export const KPIsIcon = styled.span`
   font-size: 2rem;
   padding: 0.4em 0.4em;
   color: #E23428;
+  font-family: inherit;
 `
 
 export const Title = styled.h4`
+  font-family: inherit;
   color: #393939;
   font-size: 1.9rem;
 `
 
 export const Subtitle = styled.h6`
+  font-family: inherit;
   color: #787878;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 300;
 `

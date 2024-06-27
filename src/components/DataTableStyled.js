@@ -1,11 +1,10 @@
 import styled from "styled-components";
+import { PageElementContainerStyled } from "./PageElementContainerStyled";
 
-export const DataTableContainer = styled.article`
-  margin: 2em auto;
-  width: calc(100% - 4em);
+export const DataTableContainer = styled(PageElementContainerStyled)`
   overflow: auto;
-  max-width: 1240px;
   border-radius: 1.4em;
+  font-family: "Poppins";
 
   &::-webkit-scrollbar {
     width: 12px;

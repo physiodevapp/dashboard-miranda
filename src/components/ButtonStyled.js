@@ -4,11 +4,12 @@ import styled, { css } from 'styled-components';
 export const ButtonStyled = styled.button`
   width: 100%;
   font-size: 1rem;
-  padding: 1em 0.6em;
+  padding: 0.6em 0.6em;
   border-radius: 0.4em;
   border: none;
   text-transform: uppercase;
   cursor: pointer;
+  font-family: "Poppins";
 
   ${props => {
     switch(props.styled) {

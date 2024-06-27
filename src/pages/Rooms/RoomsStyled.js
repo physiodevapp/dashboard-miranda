@@ -2,8 +2,15 @@ import styled from "styled-components";
 import { ButtonStyled } from "../../components/ButtonStyled";
 import { DataTableBodyRowCell, DataTableContainer } from "../../components/DataTableStyled";
 
+export const NewRoomButton = styled(ButtonStyled)`
+  width: 213px;
+  position: relative;
+  left: calc(100%);
+  transform: translateX(-100%);
+`
+
 export const RoomsTableContainer = styled(DataTableContainer)`
-  height: calc(100% - 8em);
+  height: calc(100% - 9.5em);
 `
 
 export const RoomsTableBodyRowCell = styled(DataTableBodyRowCell)`
@@ -35,7 +42,7 @@ export const RoomsTableBodyRowCell = styled(DataTableBodyRowCell)`
     span {
       color: #799283;
       font-size: 0.9rem;
-      font-weight: 100;
+      font-weight: 300;
     }
   }
 
@@ -49,6 +56,7 @@ export const RoomIdentification = styled.div`
 export const RoomIdentificationId = styled.h6`
   color: #799283;
   font-size: 0.8rem;
+  font-weight: 400;
 `
 
 export const RoomIdentificationName = styled.h6`
