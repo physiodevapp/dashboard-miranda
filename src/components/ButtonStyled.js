@@ -16,8 +16,32 @@ export const ButtonStyled = styled.button`
         return css`
           background-color: #135846;
           color: #EBF1EF;
+
+          &.disabled {
+            background-color: #EBF1EF;
+            color: white;
+            cursor: default;
+          }
         `
       case "secondary":
+        return css`
+          border: 2px solid #135846;
+          background-color: white;
+          color: #135846;
+
+          &:hover {
+            background-color: #135846;
+            color: #EBF1EF;
+          }
+
+          &.disabled {
+            background-color: #EBF1EF;
+            color: white;
+            border-color: #EBF1EF;
+            cursor: default;
+          }
+        `
+      case "tertiary":
         return css`
           background-color: #EBF1EF;
           color: #135846;
@@ -25,6 +49,16 @@ export const ButtonStyled = styled.button`
             background-color: #135846;
             color: #EBF1EF;
           }
+        `
+      case "available":
+        return css`
+          background-color: #5AD07A;
+          color: white;
+        `
+      case "booked":
+        return css`
+          background-color: #E23428;
+          color: white;
         `
     }
   }}
