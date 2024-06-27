@@ -124,7 +124,8 @@ export const RoomsPage = () => {
               <DataTableHeaderRowCell 
                 scope="col" 
                 colSpan={2} 
-                style={{cursor: "pointer", textDecoration: `${key === 'number' ? "underline" : "unset"}`}} 
+                className={`${key === 'number' && "active"}`}
+                style={{cursor: "pointer"}} 
                 onClick={() => {
                   setSortCriteria(-1);
                   setKey('number');
@@ -135,7 +136,8 @@ export const RoomsPage = () => {
               <DataTableHeaderRowCell scope="col">Facilities</DataTableHeaderRowCell>
               <DataTableHeaderRowCell 
                 scope="col" 
-                style={{cursor: "pointer", textDecoration: `${key === 'price_night' ? "underline" : "unset"}`}} 
+                className={`${key === 'price_night' && "active"}`}
+                style={{cursor: "pointer"}} 
                 onClick={() => {
                   setSortCriteria( -1 * sortCriteria);
                   setKey('price_night');
@@ -145,7 +147,8 @@ export const RoomsPage = () => {
               <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
               <DataTableHeaderRowCell 
                 scope="col" 
-                style={{cursor: "pointer", textDecoration: `${key === 'status' ? "underline" : "unset"}`}} 
+                className={`${key === 'status' && "active"}`}
+                style={{cursor: "pointer"}}  
                 onClick={() => {
                   setSortCriteria(-1);
                   setKey('status');
