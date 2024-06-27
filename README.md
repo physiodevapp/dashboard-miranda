@@ -9,7 +9,7 @@
 ### Users
 - /users
 - /users/new
-- users/:userId
+- /users/:userId
 
 ### Contacts
 - /contacts
