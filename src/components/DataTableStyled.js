@@ -48,11 +48,13 @@ export const DataTableHeaderRow = styled.tr`
 export const DataTableHeaderRowCell = styled.th`
   padding: 0em 0em;
   font-size: 1.1rem;
-  color: #393939;
   line-height: 27px;
   text-align: left;
   min-width: 100px;
   padding: 1rem 0rem 1rem 1rem;
+  cursor: default;
+  color: #393939;
+
 `
 
 export const DataTableBody = styled.tbody`
