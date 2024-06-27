@@ -1,75 +1,12 @@
 import styled from "styled-components";
 import { ButtonStyled } from "../../components/ButtonStyled";
+import { DataTableBodyRowCell, DataTableContainer } from "../../components/DataTableStyled";
 
-export const RoomsTableContainer = styled.article`
+export const RoomsTableContainer = styled(DataTableContainer)`
   height: calc(100% - 8em);
-  margin: 2em auto;
-  width: calc(100% - 4em);
-  overflow: auto;
-  max-width: 1240px;
-  border-radius: 1.4em;
-
-  &::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-    border: 2px solid #f1f1f1;
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-    cursor: grab;
-  }
-  &::-webkit-scrollbar-thumb:horizontal {
-    border-radius: 10px;
-  }
 `
 
-export const RoomsTable = styled.table`
-  background-color: white;
-  width: 100%;
-  border-collapse: collapse;
-`
-
-export const RoomsTableHeader = styled.thead`
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 1;
-`
-
-export const RoomsTableHeaderRow = styled.tr`
-`
-
-export const RoomsTableHeaderRowCell = styled.th`
-  padding: 0em 0em;
-  font-size: 1.1rem;
-  color: #393939;
-  line-height: 27px;
-  text-align: left;
-  min-width: 100px;
-  padding: 1rem 0rem 1rem 1rem;
-`
-
-export const RoomsTableBody = styled.tbody`
-
-`
-
-export const RoomsTableBodyRow = styled.tr`
-  border-top: 1px solid #eae7e7;
-  cursor: pointer;
-`
-
-export const RoomsTableBodyRowCell = styled.td`
-  text-align: left;
-  min-width: 100px;
-  padding: 1rem 0rem 1rem 1rem;
+export const RoomsTableBodyRowCell = styled(DataTableBodyRowCell)`
 
   &.room-photo {
     width: 150px;

@@ -2,8 +2,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './RoomsStyled'
 import rooms from '../../data/mock_rooms.json'
-import { NavigationButton, PaginationInfo, RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTable, RoomsTableBody, RoomsTableBodyRow, RoomsTableBodyRowCell, RoomsTableContainer, RoomsTableHeader, RoomsTableHeaderRow, RoomsTableHeaderRowCell, RoomsTablePagination, StatusButton } from './RoomsStyled';
+import { NavigationButton, PaginationInfo, RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, RoomsTablePagination, StatusButton } from './RoomsStyled';
+
 import { ButtonStyled } from '../../components/ButtonStyled';
+import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
 
 export const RoomsPage = () => {
   const [displayRooms, setDisplayRooms] = useState(rooms.slice(0,10))
@@ -92,22 +94,22 @@ export const RoomsPage = () => {
   return (
     <>
       <RoomsTableContainer>
-        <RoomsTable>
-          <RoomsTableHeader>
-            <RoomsTableHeaderRow>
-              <RoomsTableHeaderRowCell scope="col" colSpan={2}>Room name</RoomsTableHeaderRowCell>
-              <RoomsTableHeaderRowCell scope="col">Bed Type</RoomsTableHeaderRowCell>
-              <RoomsTableHeaderRowCell scope="col">Facilities</RoomsTableHeaderRowCell>
-              <RoomsTableHeaderRowCell scope="col">Price</RoomsTableHeaderRowCell>
-              <RoomsTableHeaderRowCell scope="col">Offer price</RoomsTableHeaderRowCell>
-              <RoomsTableHeaderRowCell scope="col">Status</RoomsTableHeaderRowCell>
-            </RoomsTableHeaderRow>
-          </RoomsTableHeader>
-          <RoomsTableBody>
+        <DataTable>
+          <DataTableHeader>
+            <DataTableHeaderRow>
+              <DataTableHeaderRowCell scope="col" colSpan={2}>Room name</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col">Bed Type</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col">Facilities</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col">Price</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col">Status</DataTableHeaderRowCell>
+            </DataTableHeaderRow>
+          </DataTableHeader>
+          <DataTableBody>
             {
               displayRooms.map((room) => (
                 <>
-                <RoomsTableBodyRow key={room.number}>
+                <DataTableBodyRow key={room.number}>
                   <RoomsTableBodyRowCell key={`${room.number}-photo`} className='room-photo'>
                     <figure key={`${room.number}-identification-photo-container`}>
                       <img key={`${room.number}-identification-photo-image`} src={room.photos} alt="" />
@@ -126,12 +128,12 @@ export const RoomsPage = () => {
                   <RoomsTableBodyRowCell key={`${room.number}-status`}>
                     <StatusButton key={`${room.number}-status-button`} styled={room.status}>{room.status}</StatusButton>
                   </RoomsTableBodyRowCell>
-                </RoomsTableBodyRow>
+                </DataTableBodyRow>
                 </>
               ))
             }
-          </RoomsTableBody>
-        </RoomsTable>
+          </DataTableBody>
+        </DataTable>
         <RoomsTablePagination>
           <PaginationInfo>{`Showed ${(tablePageIndex + 1) * roomsPerTablePage} of ${rooms.length} rooms`}</PaginationInfo>
           <NavigationButton ref={prevButton} styled="secondary" onClick={() => tablePageIndex && setTablePageIndex(tablePageIndex - 1)}>Prev</NavigationButton>
