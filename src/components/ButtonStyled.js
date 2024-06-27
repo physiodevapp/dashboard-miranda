@@ -16,6 +16,11 @@ export const ButtonStyled = styled.button`
         return css`
           background-color: #135846;
           color: #EBF1EF;
+          border: 2px solid #135846;
+          &:hover {
+            background-color: white;
+            color: #135846;
+          }
 
           &.disabled {
             background-color: #EBF1EF;

@@ -136,6 +136,32 @@ export const RoomsTablePagination = styled.nav`
   width: calc(100% - 4em);
   max-width: 1240px;
   margin: 0 auto;
+
+  .pagination-button {
+    width: 3em;
+    margin: 0em 0.2em;
+
+    &.active {
+      background-color: #1d9d7b;
+      border-color: #1d9d7b;
+
+      &:hover {
+        color: white;
+        font-weight: 700;
+      }
+    }
+
+    &.dots {
+      cursor: default;
+      background-color: transparent;
+      border-color: transparent;
+      color: #135846;
+    }
+
+    &.hide {
+      display: none;
+    }
+  }
 `
 
 export const PaginationInfo = styled.p`
@@ -146,5 +172,4 @@ export const PaginationInfo = styled.p`
 
 export const NavigationButton = styled(ButtonStyled)`
   width: 90px;
-  margin-left: 1em;
 `
