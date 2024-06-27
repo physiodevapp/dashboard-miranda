@@ -55,6 +55,10 @@ export const DataTableHeaderRowCell = styled.th`
   cursor: default;
   color: #393939;
 
+  &.active {
+    text-decoration: underline;
+  }
+
 `
 
 export const DataTableBody = styled.tbody`
