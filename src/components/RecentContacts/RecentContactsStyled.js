@@ -4,10 +4,7 @@ export const Section = styled.div`
   background-color: white;
   box-shadow: 0px 4px 4px #00000005;
   border-radius: 0.8em;
-  width: calc(100% - 4em);
-  margin: 0 auto;
   padding: 1.6em 0em 1em;
-  max-width: 1240px;
   position: relative;
   font-family: "Poppins";
 

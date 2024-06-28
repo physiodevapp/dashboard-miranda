@@ -6,10 +6,8 @@ export const KPIsList = styled.ul`
   align-items: center;
   justify-content: flex-start;
   gap: 2em;
-  padding: 1em 0em;
-  margin: 0 auto 1em;
-  width: calc(100% - 4em);
-  max-width: 1240px;
+  padding: 0em 0em 1em 0em;
+  margin-bottom: 1em;
   overflow-x: auto;
   font-family: "Poppins";
 `
