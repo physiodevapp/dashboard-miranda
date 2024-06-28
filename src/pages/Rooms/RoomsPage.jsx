@@ -40,13 +40,13 @@ export const RoomsPage = () => {
                 className={`${sortByHeaderKey === 'number' && "active"}`}
                 style={{cursor: "pointer"}}
                 rows={rooms}
-                headerKey={'number'}
-                headerName='Room name'
+                headerKey={'datetime'}
+                initialSort={true}
                 onSort={(displayRows, key) => {
                   setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
                   setSortByHeaderKey(key);
                 }}
-              />
+              >Room name</DataTableHeaderRowCellSortComponent>
               <DataTableHeaderRowCell scope="col">Bed Type</DataTableHeaderRowCell>
               <DataTableHeaderRowCell scope="col">Facilities</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
@@ -56,33 +56,30 @@ export const RoomsPage = () => {
                 style={{cursor: "pointer"}}
                 rows={rooms}
                 headerKey={'price_night'}
-                headerName='Price'
                 toggleSortCriteria={true}
                 onSort={(displayRows, key) => {
                   setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
                   setSortByHeaderKey(key);
                 }}
-              />
+              >Price</DataTableHeaderRowCellSortComponent>
               <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
                 scope='col'
                 colSpan={1}
-                activeHeaderClassName='active'
+                className={`${sortByHeaderKey === 'status' && "active"}`}
                 style={{cursor: "pointer"}}
                 rows={rooms}
                 headerKey={'status'}
-                headerName='Status'
                 onSort={(displayRows, key) => {
                   setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
                   setSortByHeaderKey(key);
                 }}
-              />
+              >Status</DataTableHeaderRowCellSortComponent>
             </DataTableHeaderRow>
           </DataTableHeader>
           <DataTableBody>
             {
               displayRooms.map((room) => (
-                <>
                 <DataTableBodyRow key={room.number} onClick={() => navigate(`/rooms/${room.id}`)}>
                   <RoomsTableBodyRowCell key={`${room.number}-photo`} className='room-photo'>
                     <figure key={`${room.number}-identification-photo-container`}>
@@ -98,23 +95,24 @@ export const RoomsPage = () => {
                   <RoomsTableBodyRowCell key={`${room.number}-type`}>{room.type}</RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}-identification-facilities`}>{room.facilities}</RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}-price`} className='room-price'>{`$${room.price_night}`}<span> /night</span></RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}-discount`}>{getOfferPrice(room.price_night, room.discount)}</RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell key={`${room.number}-discount`}>{ getOfferPrice(room.price_night, room.discount) }</RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}-status`}>
                     <StatusButton key={`${room.number}-status-button`} styled={room.status}>{room.status}</StatusButton>
                   </RoomsTableBodyRowCell>
                 </DataTableBodyRow>
-                </>
               ))
             }
           </DataTableBody>
         </DataTable>
+      </RoomsTableContainer>
+      <PageElementContainerStyled>
         <DataTablePaginationComponent
           rowsLength={rooms.length}
           rowsPerTablePage={roomsPerTablePage}
           paginationButtonsMax={5}
           onTablePageChange={(tablePageIndex) => setTablePageIndex(tablePageIndex)}
         />
-      </RoomsTableContainer>
+      </PageElementContainerStyled>
     </>
   )
 }

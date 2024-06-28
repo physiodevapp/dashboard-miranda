@@ -10,7 +10,7 @@ export const NewRoomButton = styled(ButtonStyled)`
 `
 
 export const RoomsTableContainer = styled(DataTableContainer)`
-  height: calc(100% - 9.5em);
+  height: calc(100% - 8em);
 `
 
 export const RoomsTableBodyRowCell = styled(DataTableBodyRowCell)`

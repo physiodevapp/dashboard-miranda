@@ -39,6 +39,17 @@ export const DataTableHeader = styled.thead`
   top: 0em;
   background-color: white;
   z-index: 1;
+
+  ::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0em;
+    left: 0em;
+    width: 100%;
+    height: 0.1em;
+    background-color: #eae7e7;
+  }
 `
 
 export const DataTableHeaderRow = styled.tr`
@@ -74,5 +85,16 @@ export const DataTableBodyRowCell = styled.td`
   text-align: left;
   min-width: 100px;
   padding: 1rem 0rem 1rem 1rem;
+`
+
+export const DataTableRowCellContentMultipleEllipsis = styled.p`
+  margin: 0em;
+  padding: 0em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: ${props => props.lineclamp || 3};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: ${props => props.width || "20rem"};
 `
 

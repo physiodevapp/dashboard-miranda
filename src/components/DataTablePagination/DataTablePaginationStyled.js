@@ -4,11 +4,8 @@ import { ButtonStyled } from "../ButtonStyled";
 export const DataTablePagination = styled.nav`
   display: flex;
   align-items: center;
-  position: absolute;
-  bottom: 1em;
-  width: calc(100% - 4em);
-  max-width: 1240px;
-  margin: 0 auto;
+  padding: 0.6em 0em;
+  background-color: transparent;
 
   .pagination-button {
     width: 3em;
