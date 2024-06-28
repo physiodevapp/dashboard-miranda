@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { NoMatch } from "./guards/NoMatch";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { Layout } from "./pages/Layout/Layout";
-import { DashboardPage } from "./pages/Dashboard/DashboardPage";
+import { DashboardPage } from "./pages/DashboardPage";
 import { RoomsPage } from "./pages/Rooms/RoomsPage";
 import { RoomPage } from "./pages/Room/RoomPage";
 import { ContactsPage } from "./pages/Contacts/ContactsPage";

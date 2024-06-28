@@ -39,4 +39,26 @@ export const MainLayout = styled.main`
   min-width: calc(100vw - 345px);
   overflow: hidden;
   position: relative;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    cursor: grab;
+  }
+  &::-webkit-scrollbar-thumb:horizontal {
+    border-radius: 10px;
+  }
 `;

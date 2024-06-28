@@ -10,6 +10,7 @@ export const ButtonStyled = styled.button`
   text-transform: uppercase;
   cursor: pointer;
   font-family: "Poppins";
+  border: 2px solid transparent;
 
   ${props => {
     switch(props.styled) {
@@ -17,7 +18,7 @@ export const ButtonStyled = styled.button`
         return css`
           background-color: #135846;
           color: #EBF1EF;
-          border: 2px solid #135846;
+          border-color: #135846;
           &:hover {
             background-color: white;
             color: #135846;
@@ -31,7 +32,7 @@ export const ButtonStyled = styled.button`
         `
       case "secondary":
         return css`
-          border: 2px solid #135846;
+          border-color: #135846;
           background-color: white;
           color: #135846;
 
@@ -65,6 +66,24 @@ export const ButtonStyled = styled.button`
         return css`
           background-color: #E23428;
           color: white;
+        `
+      case "publish":
+        return css`
+          background-color: white;
+          color: #5AD07A;
+          text-transform: capitalize;
+          &:hover {
+            border-color: #5AD07A;
+          }
+        `
+      case "archive":
+        return css`
+          background-color: white;
+          color: #E23428;
+          text-transform: capitalize;
+          &:hover {
+            border-color: #E23428;
+          }
         `
     }
   }}

@@ -26,37 +26,42 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerTablePage = 10,
       else
         document.querySelector(`[data-index='${tablePageIndex}']`)?.classList.add("active")
 
-
-      if (current > tableTotalPages - 2) {
-        middleButton.current.innerHTML = tableTotalPages - 2;
-        middleButton.current.dataset.index = tableTotalPages - 3;
-      } else if (current <= 3 ) {
-        middleButton.current.innerHTML = 3;
-        middleButton.current.dataset.index = 2;
-      } else if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax) {
-        middleButton.current.innerHTML = current;
-        middleButton.current.dataset.index = current - 1;
+      if (middleButton.current) {
+        if (current > tableTotalPages - 2) {
+          middleButton.current.innerHTML = tableTotalPages - 2;
+          middleButton.current.dataset.index = tableTotalPages - 3;
+        } else if (current <= 3 ) {
+          middleButton.current.innerHTML = 3;
+          middleButton.current.dataset.index = 2;
+        } else if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax) {
+          middleButton.current.innerHTML = current;
+          middleButton.current.dataset.index = current - 1;
+        }
       }
 
-      if (current > 3 && tableTotalPages > paginationButtonsMax) {
-        beforeMiddleButton.current.classList.add("dots");
-        beforeMiddleButton.current.removeAttribute("data-index");
-        beforeMiddleButton.current.innerHTML = `...`;
-      } else {
-        beforeMiddleButton.current.classList.remove("dots");
-        beforeMiddleButton.current.dataset.index = 1;
-        beforeMiddleButton.current.innerHTML = `${2}`;       
-      } 
+      if (beforeMiddleButton.current) {
+        if (current > 3 && tableTotalPages > paginationButtonsMax) {
+          beforeMiddleButton.current.classList.add("dots");
+          beforeMiddleButton.current.removeAttribute("data-index");
+          beforeMiddleButton.current.innerHTML = `...`;
+        } else {
+          beforeMiddleButton.current.classList.remove("dots");
+          beforeMiddleButton.current.dataset.index = 1;
+          beforeMiddleButton.current.innerHTML = `${2}`;       
+        } 
+      }
 
-      if (current >= tableTotalPages - 2) {
-        afterMiddleButton.current.classList.remove("dots");
-        afterMiddleButton.current.dataset.index = `${tableTotalPages - 2}`;
-        afterMiddleButton.current.innerHTML = `${tableTotalPages - 1}`;
-      } else if (tableTotalPages > paginationButtonsMax) {
-        afterMiddleButton.current.classList.add("dots");
-        afterMiddleButton.current.removeAttribute("data-index");
-        afterMiddleButton.current.innerHTML = `...`;
-      } 
+      if (afterMiddleButton.current) {
+        if (current >= tableTotalPages - 2) {
+          afterMiddleButton.current.classList.remove("dots");
+          afterMiddleButton.current.dataset.index = `${tableTotalPages - 2}`;
+          afterMiddleButton.current.innerHTML = `${tableTotalPages - 1}`;
+        } else if (tableTotalPages > paginationButtonsMax) {
+          afterMiddleButton.current.classList.add("dots");
+          afterMiddleButton.current.removeAttribute("data-index");
+          afterMiddleButton.current.innerHTML = `...`;
+        } 
+      }
     } 
 
     const updateNavigation = () => {
@@ -82,7 +87,7 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerTablePage = 10,
   return (
     <>
       <DataTablePagination>
-        <PaginationInfo>{`Showed ${(tablePageIndex + 1) * rowsPerTablePage} of ${rowsLength}`}</PaginationInfo>
+        <PaginationInfo>{`Showing from ${(tablePageIndex + 1) * rowsPerTablePage} to ${(tablePageIndex + 1) * rowsPerTablePage + rowsPerTablePage} (of ${rowsLength})`}</PaginationInfo>
         <NavigationButton ref={prevButton} styled="secondary" onClick={() => tablePageIndex && setTablePageIndex(tablePageIndex - 1)}>Prev</NavigationButton>
           {
             Array(tableTotalPages).fill().map((page, index) => {
