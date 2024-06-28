@@ -69,20 +69,22 @@ export const ButtonStyled = styled.button`
         `
       case "publish":
         return css`
+          padding-top: 0em;
           background-color: white;
           color: #5AD07A;
           text-transform: capitalize;
           &:hover {
-            border-color: #5AD07A;
+            text-decoration: underline;
           }
         `
       case "archive":
         return css`
+          padding-top: 0em;
           background-color: white;
           color: #E23428;
           text-transform: capitalize;
           &:hover {
-            border-color: #E23428;
+            text-decoration: underline;
           }
         `
     }
