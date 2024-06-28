@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { RecentContactsComponent } from "../../components/RecentContacts/RecentContactsComponent";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
 import contacts from "../../data/mock_contacts.json"
-import { ContactsTableBodyRowCell, ContactsTableContainer } from "./ContactsStyled";
+import { ContactTab, ContactsTableBodyRowCell, ContactsTableContainer, ContactsTabs } from "./ContactsStyled";
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from "../../components/DataTableStyled";
 import { DataTablePaginationComponent } from "../../components/DataTablePagination/DataTablePaginationComponent";
 import { DataTableHeaderRowCellSortComponent } from "../../components/DataTableHeaderRowCellSortComponent";
@@ -12,6 +12,8 @@ export const ContactsPage = () => {
   const [displayContacts, setDisplayContacts] = useState([])
   const [tablePageIndex, setTablePageIndex] = useState(0);
   const [sortByHeaderKey, setSortByHeaderKey] = useState('datetime');
+
+  const [activeTab, setActiveTab] = useState('')
 
   const contactsPerTablePage = 10;
 
@@ -27,14 +29,24 @@ export const ContactsPage = () => {
   }
 
   useEffect(() => {
-    setDisplayContacts([...contacts].slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage));    
+    const pageContacts = [...contacts].slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage);
 
-  }, [tablePageIndex]) 
+    const tabContacts = [...pageContacts].filter((contact) => activeTab.length ? contact.status === activeTab : true);
+
+    setDisplayContacts(tabContacts)
+  },[activeTab, tablePageIndex])
 
   return (
     <>
       <PageElementContainerStyled>
         <RecentContactsComponent />
+      </PageElementContainerStyled>
+      <PageElementContainerStyled>
+        <ContactsTabs>
+          <ContactTab className={activeTab === '' && 'active'} onClick={() => setActiveTab('')}>All contacts</ContactTab>
+          <ContactTab className={activeTab === 'published' && 'active'} onClick={() => setActiveTab('published')}>Published</ContactTab>
+          <ContactTab className={activeTab === 'archived' && 'active'} onClick={() => setActiveTab('archived')}>Archived</ContactTab>
+        </ContactsTabs>
       </PageElementContainerStyled>
       <ContactsTableContainer>
         <DataTable>
