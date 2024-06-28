@@ -1,116 +1,29 @@
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './RoomsStyled'
 import rooms from '../../data/mock_rooms.json'
-import { NavigationButton, PaginationInfo, RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, RoomsTablePagination, StatusButton } from './RoomsStyled';
+import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomsStyled';
 
-import { ButtonStyled } from '../../components/ButtonStyled';
 import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
 import { NewRoomButton } from './RoomsStyled';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { useNavigate } from 'react-router-dom';
+import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
+import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 
 export const RoomsPage = () => {
   const [displayRooms, setDisplayRooms] = useState([])
   const [tablePageIndex, setTablePageIndex] = useState(0);
-  const [key, setKey] = useState('number');
-  const [sortCriteria, setSortCriteria] = useState(-1);
-  const navigate = useNavigate();
-
-  const prevButton = useRef();
-  const nextButton = useRef();
-  const beforeMiddleButton = useRef();
-  const middleButton = useRef();
-  const afterMiddleButton = useRef();
-
-  const paginationButtonsMax = 5;
   const roomsPerTablePage = 10;
-  const tableTotalPages = Math.floor(rooms.length / roomsPerTablePage)
+  const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
+  const navigate = useNavigate();
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
 
-  const sortByKey = (rooms, key, criteria = -1) => {
-    return rooms.sort((current, next) => {
-      if (current[key] < next[key])
-        return criteria
-
-      if (current[key] > next[key])
-        return -1 * criteria
-      
-      return 0;
-    })
-  }
-  
   useEffect(() => {
-    setDisplayRooms(sortByKey(rooms, key, sortCriteria).slice(0,10))
-  }, [key, sortCriteria])
+    setDisplayRooms([...rooms].slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage));    
 
-  useEffect(() => {
-    const updatePagination = () => {      
-      const current = tablePageIndex + 1;
-
-      document.querySelectorAll(".pagination-button").forEach(element => {
-        element?.classList.remove('active')
-      }); 
-      if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax)
-        middleButton.current.classList.add("active");
-      else
-        document.querySelector(`[data-index='${tablePageIndex}']`)?.classList.add("active")
-
-
-      if (current > tableTotalPages - 2) {
-        middleButton.current.innerHTML = tableTotalPages - 2;
-        middleButton.current.dataset.index = tableTotalPages - 3;
-      } else if (current <= 3 ) {
-        middleButton.current.innerHTML = 3;
-        middleButton.current.dataset.index = 2;
-      } else if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax) {
-        middleButton.current.innerHTML = current;
-        middleButton.current.dataset.index = current - 1;
-      }
-
-      if (current > 3 && tableTotalPages > paginationButtonsMax) {
-        beforeMiddleButton.current.classList.add("dots");
-        beforeMiddleButton.current.removeAttribute("data-index");
-        beforeMiddleButton.current.innerHTML = `...`;
-      } else {
-        beforeMiddleButton.current.classList.remove("dots");
-        beforeMiddleButton.current.dataset.index = 1;
-        beforeMiddleButton.current.innerHTML = `${2}`;       
-      } 
-
-      if (current >= tableTotalPages - 2) {
-        afterMiddleButton.current.classList.remove("dots");
-        afterMiddleButton.current.dataset.index = `${tableTotalPages - 2}`;
-        afterMiddleButton.current.innerHTML = `${tableTotalPages - 1}`;
-      } else if (tableTotalPages > paginationButtonsMax) {
-        afterMiddleButton.current.classList.add("dots");
-        afterMiddleButton.current.removeAttribute("data-index");
-        afterMiddleButton.current.innerHTML = `...`;
-      } 
-    } 
-
-    const updateNavigation = () => {
-      if (tablePageIndex === tableTotalPages - 1)
-        nextButton.current.classList.add('disabled');
-      else 
-        nextButton.current.classList.remove('disabled');
-  
-      if (tablePageIndex === 0)
-        prevButton.current.classList.add('disabled');
-      else 
-        prevButton.current.classList.remove('disabled');
-    }
-
-    updatePagination();
-
-    updateNavigation();
-
-    setDisplayRooms([...rooms].slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage));
-    
-
-  }, [tablePageIndex])
-  
+  }, [tablePageIndex])  
 
   return (
     <>
@@ -121,41 +34,49 @@ export const RoomsPage = () => {
         <DataTable>
           <DataTableHeader>
             <DataTableHeaderRow>
-              <DataTableHeaderRowCell 
-                scope="col" 
-                colSpan={2} 
-                className={`${key === 'number' && "active"}`}
-                style={{cursor: "pointer"}} 
-                onClick={() => {
-                  setSortCriteria(-1);
-                  setKey('number');
-                }}>
-                  Room name
-                </DataTableHeaderRowCell>
+              <DataTableHeaderRowCellSortComponent
+                scope='col'
+                colSpan={2}
+                className={`${sortByHeaderKey === 'number' && "active"}`}
+                style={{cursor: "pointer"}}
+                rows={rooms}
+                headerKey={'number'}
+                headerName='Room name'
+                onSort={(displayRows, key) => {
+                  setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
+                  setSortByHeaderKey(key);
+                }}
+              />
               <DataTableHeaderRowCell scope="col">Bed Type</DataTableHeaderRowCell>
               <DataTableHeaderRowCell scope="col">Facilities</DataTableHeaderRowCell>
-              <DataTableHeaderRowCell 
-                scope="col" 
-                className={`${key === 'price_night' && "active"}`}
-                style={{cursor: "pointer"}} 
-                onClick={() => {
-                  setSortCriteria( -1 * sortCriteria);
-                  setKey('price_night');
-                }}>
-                  Price
-                </DataTableHeaderRowCell>
-              <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
-              <DataTableHeaderRowCell 
-                scope="col" 
-                className={`${key === 'status' && "active"}`}
-                style={{cursor: "pointer"}}  
-                onClick={() => {
-                  setSortCriteria(-1);
-                  setKey('status');
+              <DataTableHeaderRowCellSortComponent
+                scope='col'
+                colSpan={1}
+                className={`${sortByHeaderKey === 'price_night' && "active"}`}
+                style={{cursor: "pointer"}}
+                rows={rooms}
+                headerKey={'price_night'}
+                headerName='Price'
+                toggleSortCriteria={true}
+                onSort={(displayRows, key) => {
+                  setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
+                  setSortByHeaderKey(key);
                 }}
-                >
-                  Status
-                </DataTableHeaderRowCell>
+              />
+              <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
+              <DataTableHeaderRowCellSortComponent
+                scope='col'
+                colSpan={1}
+                activeHeaderClassName='active'
+                style={{cursor: "pointer"}}
+                rows={rooms}
+                headerKey={'status'}
+                headerName='Status'
+                onSort={(displayRows, key) => {
+                  setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
+                  setSortByHeaderKey(key);
+                }}
+              />
             </DataTableHeaderRow>
           </DataTableHeader>
           <DataTableBody>
@@ -187,29 +108,12 @@ export const RoomsPage = () => {
             }
           </DataTableBody>
         </DataTable>
-        <RoomsTablePagination>
-          <PaginationInfo>{`Showed ${(tablePageIndex + 1) * roomsPerTablePage} of ${rooms.length} rooms`}</PaginationInfo>
-          <NavigationButton ref={prevButton} styled="secondary" onClick={() => tablePageIndex && setTablePageIndex(tablePageIndex - 1)}>Prev</NavigationButton>
-          {
-            Array(tableTotalPages).fill().map((page, index) => {
-              const total = tableTotalPages
-              const middle = Math.floor(tableTotalPages / 2);
-              const current = index + 1;
-              
-              if (current === 1 || current === total || total <= paginationButtonsMax)
-                return <ButtonStyled key={index} data-index={current - 1} styled="primary" className={`pagination-button ${current === 1 && "active"}`} onClick={(event) => event.target.dataset.index && setTablePageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
-              else if (current === 2)
-                return <ButtonStyled ref={beforeMiddleButton} key={index} data-index={current - 1} styled="primary" className="pagination-button" onClick={(event) => event.target.dataset.index && setTablePageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
-              else if (current === total - 1)
-                return <ButtonStyled ref={afterMiddleButton} key={index} styled="primary" className="pagination-button dots" onClick={(event) => event.target.dataset.index && setTablePageIndex(Number(event.target.dataset.index))}>...</ButtonStyled>
-              else if (current === middle)
-                return <ButtonStyled ref={middleButton} key={index} data-index={2} styled="primary" className="pagination-button middle" onClick={(event) => event.target.dataset.index && setTablePageIndex(Number(event.target.dataset.index))}>{3}</ButtonStyled>
-              else
-                return <ButtonStyled key={index} className="pagination-button hide"></ButtonStyled>
-            })
-          }
-          <NavigationButton ref={nextButton} styled="secondary" onClick={() => tablePageIndex < tableTotalPages - 1 && setTablePageIndex(tablePageIndex + 1)}>Next</NavigationButton>
-        </RoomsTablePagination>
+        <DataTablePaginationComponent
+          rowsLength={rooms.length}
+          rowsPerTablePage={roomsPerTablePage}
+          paginationButtonsMax={5}
+          onTablePageChange={(tablePageIndex) => setTablePageIndex(tablePageIndex)}
+        />
       </RoomsTableContainer>
     </>
   )

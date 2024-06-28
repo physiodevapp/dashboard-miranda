@@ -33,10 +33,10 @@ export const MenuComponent = () => {
           <RiKey2Line style={{transform: "rotateZ(130deg)"}}/>
           Rooms
         </MenuListItem>
-        <MenuListItem>
+        <MenuListItem onClick={() => navigate('/contacts')}>
           <span></span>
           <MdOutlineReviews/>
-          Contact
+          Contacts
         </MenuListItem>
         <MenuListItem>
           <span></span>

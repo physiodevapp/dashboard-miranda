@@ -9,6 +9,7 @@ import { Layout } from "./pages/Layout/Layout";
 import { DashboardPage } from "./pages/Dashboard/DashboardPage";
 import { RoomsPage } from "./pages/Rooms/RoomsPage";
 import { RoomPage } from "./pages/Room/RoomPage";
+import { ContactsPage } from "./pages/Contacts/ContactsPage";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="rooms" element={<RoomsPage/>}></Route>
             <Route path="rooms/new" element={<RoomPage></RoomPage>}></Route>
             <Route path="rooms/:roomId" element={<RoomPage></RoomPage>}></Route>
+            <Route path="contacts" element={<ContactsPage></ContactsPage>}></Route>
             <Route exact path="" element={<NoMatch/>}/>
             <Route path="*" element={<NoMatch/>}/>
           </Route>
