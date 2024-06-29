@@ -31,6 +31,7 @@ export const DataTablePagination = styled.nav`
     &.hide {
       display: none;
     }
+    
   }
 `
 
@@ -42,4 +43,10 @@ export const PaginationInfo = styled.p`
 
 export const NavigationButton = styled(ButtonStyled)`
   width: 90px;
+  
+  &.hide {
+      width: 0em;
+      border: unset;
+      font-size: 0em;
+    }
 `

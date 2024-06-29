@@ -20,10 +20,10 @@ export const RoomsPage = () => {
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
 
-  useEffect(() => {
-    setDisplayRooms([...rooms].slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage));    
+  // useEffect(() => {
+  //   setDisplayRooms([...rooms].slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage));    
 
-  }, [tablePageIndex])  
+  // }, [tablePageIndex])  
 
   return (
     <>
@@ -40,7 +40,7 @@ export const RoomsPage = () => {
                 className={`${sortByHeaderKey === 'number' && "active"}`}
                 style={{cursor: "pointer"}}
                 rows={rooms}
-                headerKey={'datetime'}
+                headerKey={'number'}
                 initialSort={true}
                 onSort={(displayRows, key) => {
                   setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
@@ -107,10 +107,10 @@ export const RoomsPage = () => {
       </RoomsTableContainer>
       <PageElementContainerStyled>
         <DataTablePaginationComponent
-          rowsLength={rooms.length}
+          rows={rooms}
           rowsPerTablePage={roomsPerTablePage}
           paginationButtonsMax={5}
-          onTablePageChange={(tablePageIndex) => setTablePageIndex(tablePageIndex)}
+          onTablePageChange={(tablePageRows) => setDisplayRooms(tablePageRows)}
         />
       </PageElementContainerStyled>
     </>

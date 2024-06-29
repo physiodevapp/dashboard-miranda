@@ -5,6 +5,7 @@ export const DataTableContainer = styled(PageElementContainerStyled)`
   overflow: auto;
   border-radius: 1.4em;
   font-family: "Poppins";
+  background-color: white;
 
   &::-webkit-scrollbar {
     width: 12px;

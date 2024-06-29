@@ -7,10 +7,10 @@ import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataT
 import { DataTablePaginationComponent } from "../../components/DataTablePagination/DataTablePaginationComponent";
 import { DataTableHeaderRowCellSortComponent } from "../../components/DataTableHeaderRowCellSortComponent";
 import { ButtonStyled } from "../../components/ButtonStyled";
+import { DataTableTabListComponent } from "../../components/DataTableTabs/DataTableTabListComponent";
 
 export const ContactsPage = () => {
   const [displayContacts, setDisplayContacts] = useState([])
-  const [tablePageIndex, setTablePageIndex] = useState(0);
   const [sortByHeaderKey, setSortByHeaderKey] = useState('datetime');
 
   const [activeTab, setActiveTab] = useState('')
@@ -28,25 +28,25 @@ export const ContactsPage = () => {
     });
   }
 
-  useEffect(() => {
-    const pageContacts = [...contacts].slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage);
-
-    const tabContacts = [...pageContacts].filter((contact) => activeTab.length ? contact.status === activeTab : true);
-
-    setDisplayContacts(tabContacts)
-  },[activeTab, tablePageIndex])
-
   return (
     <>
       <PageElementContainerStyled>
         <RecentContactsComponent />
       </PageElementContainerStyled>
       <PageElementContainerStyled>
-        <ContactsTabs>
-          <ContactTab className={activeTab === '' && 'active'} onClick={() => setActiveTab('')}>All contacts</ContactTab>
-          <ContactTab className={activeTab === 'published' && 'active'} onClick={() => setActiveTab('published')}>Published</ContactTab>
-          <ContactTab className={activeTab === 'archived' && 'active'} onClick={() => setActiveTab('archived')}>Archived</ContactTab>
-        </ContactsTabs>
+        <DataTableTabListComponent 
+          tabItems={[
+            {key: '', htmlContent: 'All contacts'},
+            {key: 'published', htmlContent: 'Published'},
+            {key: 'archived', htmlContent: 'Archived'}
+          ]}
+          rows={contacts}
+          rowsPerPage={10}
+          onTabChange={(tablePageRows, currentTab) => {
+            setDisplayContacts(tablePageRows);
+            setActiveTab(currentTab);
+          }}
+        />
       </PageElementContainerStyled>
       <ContactsTableContainer>
         <DataTable>
@@ -107,10 +107,12 @@ export const ContactsPage = () => {
       </ContactsTableContainer>
       <PageElementContainerStyled>
         <DataTablePaginationComponent
-          rowsLength={contacts.length}
-          rowsPerTablePage={contactsPerTablePage}
+          rows={[...contacts].filter((contact) => activeTab.length ? contact.status === activeTab : true)}
+          rowsPerPage={contactsPerTablePage}
           paginationButtonsMax={5}
-          onTablePageChange={(tablePageIndex) => setTablePageIndex(tablePageIndex)}
+          onTablePageChange={(tablePageRows) => {
+            setDisplayContacts(tablePageRows);
+          }}
         />
       </PageElementContainerStyled>
     </>
