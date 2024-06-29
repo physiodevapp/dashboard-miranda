@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { RecentContactsComponent } from "../../components/RecentContacts/RecentContactsComponent";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
-import contacts from "../../data/mock_contacts.json"
-import { ContactTab, ContactsTableBodyRowCell, ContactsTableContainer, ContactsTabs } from "./ContactsStyled";
+import dataContacts from "../../data/mock_contacts.json"
+import { ContactsTableBodyRowCell, ContactsTableContainer } from "./ContactsStyled";
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from "../../components/DataTableStyled";
 import { DataTablePaginationComponent } from "../../components/DataTablePagination/DataTablePaginationComponent";
 import { DataTableHeaderRowCellSortComponent } from "../../components/DataTableHeaderRowCellSortComponent";
@@ -10,10 +10,11 @@ import { ButtonStyled } from "../../components/ButtonStyled";
 import { DataTableTabListComponent } from "../../components/DataTableTabs/DataTableTabListComponent";
 
 export const ContactsPage = () => {
+  const [contacts, setContacts] = useState(dataContacts)
   const [displayContacts, setDisplayContacts] = useState([])
   const [sortByHeaderKey, setSortByHeaderKey] = useState('datetime');
-
-  const [activeTab, setActiveTab] = useState('')
+  const [activeTab, setActiveTab] = useState('');
+  const [tablePageIndex, setTablePageIndex] = useState(0);
 
   const contactsPerTablePage = 10;
 
@@ -28,6 +29,10 @@ export const ContactsPage = () => {
     });
   }
 
+  useEffect(() => {
+    setDisplayContacts(contacts.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage));
+  }, [contacts])
+
   return (
     <>
       <PageElementContainerStyled>
@@ -40,10 +45,12 @@ export const ContactsPage = () => {
             {key: 'published', htmlContent: 'Published'},
             {key: 'archived', htmlContent: 'Archived'}
           ]}
-          rows={contacts}
+          rows={dataContacts}
+          tablePageIndex={tablePageIndex}
           rowsPerPage={10}
-          onTabChange={(tablePageRows, currentTab) => {
-            setDisplayContacts(tablePageRows);
+          onTabChange={(pageRows, currentTab, tabRows) => {
+            setTablePageIndex(0);
+            setContacts(tabRows);
             setActiveTab(currentTab);
           }}
         />
@@ -63,8 +70,8 @@ export const ContactsPage = () => {
                 toggleSortCriteria={true}
                 initialSortCriteria={1}
                 initialSort={true}
-                onSort={(displayRows, key) => {
-                  setDisplayContacts(displayRows.slice(0, contactsPerTablePage));
+                onSort={(sortedRows, key) => {
+                  setContacts(sortedRows);
                   setSortByHeaderKey(key);
                 }}
               >Date</DataTableHeaderRowCellSortComponent>
@@ -101,8 +108,33 @@ export const ContactsPage = () => {
                     activeTab === ''
                     ? <ContactsTableBodyRowCell key={`${contact.id}-buttons`}>
                         <>
-                          <ButtonStyled styled="publish">Publish</ButtonStyled>
-                          <ButtonStyled styled="archive" style={{marginLeft: "1em"}}>Archive</ButtonStyled>
+                          <ButtonStyled 
+                            styled="publish" 
+                            onClick={() => {
+                              const updateContacts = [...contacts].map((item) => {
+                                return {
+                                  ...item,
+                                  "status": item.id === contact.id ? item.status = "published" : item.status
+                                }
+                              })
+                              setContacts(updateContacts);
+                            }}>
+                              Publish
+                          </ButtonStyled>
+                          <ButtonStyled 
+                            styled="archive" 
+                            style={{marginLeft: "1em"}}
+                            onClick={() => {
+                              const updateContacts = [...contacts].map((item) => {
+                                return {
+                                  ...item,
+                                  "status": item.id === contact.id ? item.status = "archived" : item.status
+                                }
+                              })
+                              setContacts(updateContacts);
+                            }}>
+                              Archive
+                            </ButtonStyled>
                         </>                    
                       </ContactsTableBodyRowCell>
                     : <></>
@@ -118,8 +150,9 @@ export const ContactsPage = () => {
           rows={[...contacts].filter((contact) => activeTab.length ? contact.status === activeTab : true)}
           rowsPerPage={contactsPerTablePage}
           paginationButtonsMax={5}
-          onTablePageChange={(tablePageRows) => {
-            setDisplayContacts(tablePageRows);
+          onTablePageChange={(pageRows, pageIndex) => {
+            setDisplayContacts(pageRows);
+            setTablePageIndex(pageIndex);
           }}
         />
       </PageElementContainerStyled>

@@ -19,7 +19,7 @@ export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1,
   }
 
   useEffect(() => {
-    if (initialSort)
+    if (initialSort) 
       headerRowCell.current.click()
   }, [])
 
@@ -38,7 +38,8 @@ export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1,
             setSortCriteria(initialSortCriteria);
 
           const criteria = toggleSortCriteria ? sortCriteria : initialSortCriteria;
-          onSort(sortByKey(rows, headerKey, criteria), headerKey)
+          const sortedRows = sortByKey(rows, headerKey, criteria);
+          onSort(sortedRows, headerKey)
         }}>
         { children }
       </DataTableHeaderRowCell>

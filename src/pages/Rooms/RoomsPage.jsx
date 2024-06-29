@@ -1,9 +1,8 @@
 
 import React, { useEffect, useState } from 'react'
 import './RoomsStyled'
-import rooms from '../../data/mock_rooms.json'
+import dataRooms from '../../data/mock_rooms.json'
 import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomsStyled';
-
 import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
 import { NewRoomButton } from './RoomsStyled';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
@@ -12,18 +11,19 @@ import { DataTablePaginationComponent } from '../../components/DataTablePaginati
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 
 export const RoomsPage = () => {
+  const [rooms, setRooms] = useState(dataRooms)
   const [displayRooms, setDisplayRooms] = useState([])
-  const [tablePageIndex, setTablePageIndex] = useState(0);
-  const roomsPerTablePage = 10;
   const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
   const navigate = useNavigate();
+  const [tablePageIndex, setTablePageIndex] = useState(0);
+  
+  const roomsPerTablePage = 10;
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
 
-  // useEffect(() => {
-  //   setDisplayRooms([...rooms].slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage));    
-
-  // }, [tablePageIndex])  
+  useEffect(() => {
+    setDisplayRooms(rooms.slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage));
+  }, [rooms])
 
   return (
     <>
@@ -39,11 +39,11 @@ export const RoomsPage = () => {
                 colSpan={2}
                 className={`${sortByHeaderKey === 'number' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={rooms}
+                rows={[...rooms]}
                 headerKey={'number'}
                 initialSort={true}
-                onSort={(displayRows, key) => {
-                  setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
+                onSort={(sortedRows, key) => {
+                  setRooms(sortedRows);
                   setSortByHeaderKey(key);
                 }}
               >Room name</DataTableHeaderRowCellSortComponent>
@@ -54,11 +54,11 @@ export const RoomsPage = () => {
                 colSpan={1}
                 className={`${sortByHeaderKey === 'price_night' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={rooms}
+                rows={[...rooms]}
                 headerKey={'price_night'}
                 toggleSortCriteria={true}
-                onSort={(displayRows, key) => {
-                  setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
+                onSort={(sortedRows, key) => {
+                  setRooms(sortedRows);
                   setSortByHeaderKey(key);
                 }}
               >Price</DataTableHeaderRowCellSortComponent>
@@ -68,10 +68,10 @@ export const RoomsPage = () => {
                 colSpan={1}
                 className={`${sortByHeaderKey === 'status' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={rooms}
+                rows={[...rooms]}
                 headerKey={'status'}
-                onSort={(displayRows, key) => {
-                  setDisplayRooms(displayRows.slice(0, roomsPerTablePage));
+                onSort={(sortedRows, key) => {
+                  setRooms(sortedRows);
                   setSortByHeaderKey(key);
                 }}
               >Status</DataTableHeaderRowCellSortComponent>
@@ -108,9 +108,12 @@ export const RoomsPage = () => {
       <PageElementContainerStyled>
         <DataTablePaginationComponent
           rows={rooms}
-          rowsPerTablePage={roomsPerTablePage}
+          rowsPerPage={roomsPerTablePage}
           paginationButtonsMax={5}
-          onTablePageChange={(tablePageRows) => setDisplayRooms(tablePageRows)}
+          onTablePageChange={(pageRows, pageIndex) => {
+            setDisplayRooms(pageRows);
+            setTablePageIndex(pageIndex);
+          }}
         />
       </PageElementContainerStyled>
     </>

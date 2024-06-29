@@ -6,11 +6,11 @@ export const DataTableTabListComponent = ({tabItems, tablePageIndex = 0, rows, r
   const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {  
-    const tabContacts = [...rows].filter((row) => activeTab.length ? row.status === activeTab : true);
+    const tabRows = [...rows].filter((row) => activeTab.length ? row.status === activeTab : true);
     
-    const pageRows = [...tabContacts].slice((tablePageIndex * rowsPerPage), (tablePageIndex * rowsPerPage) + rowsPerPage);
+    const pageRows = [...tabRows].slice((tablePageIndex * rowsPerPage), (tablePageIndex * rowsPerPage) + rowsPerPage);
 
-    onTabChange(pageRows, activeTab);
+    onTabChange(pageRows, activeTab, tabRows);
   },[activeTab])
 
   return (
