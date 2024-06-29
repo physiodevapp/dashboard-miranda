@@ -6,6 +6,7 @@ export const DataTablePagination = styled.nav`
   align-items: center;
   padding: 0.6em 0em;
   background-color: transparent;
+  min-height: 4.0999em;
 
   .pagination-button {
     width: 3em;

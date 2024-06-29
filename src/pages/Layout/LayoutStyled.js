@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const GridLayout = styled.div`
   display: grid;
-  grid-template-rows: 120px calc(100vh - 120px);
+  grid-template-rows: 90px calc(100vh - 90px);
   grid-template-columns: 345px 1fr;
   height: 100vh;
   transform: translateX(0px);
@@ -19,7 +19,7 @@ export const GridLayout = styled.div`
 
 export const MenuLayout = styled.aside`
   grid-area: 1 / 1 / 3 / 1;
-  padding: 1.6em 0em 0em;
+  padding: 1em 0em 0em;
   box-shadow: 13px 3px 40px #00000005;
 `;
 

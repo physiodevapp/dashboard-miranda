@@ -53,6 +53,7 @@ export const SwiperPaginationPrev = styled.div`
 
   &.disabled {
     background-color: #EBF1EF;
+    cursor: default;
   }
 `
 
@@ -71,6 +72,7 @@ export const SwiperPaginationNext = styled.div`
 
   &.disabled {
     background-color: #EBF1EF;
+    cursor: default;
   }
 
 `

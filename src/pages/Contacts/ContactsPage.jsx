@@ -58,7 +58,7 @@ export const ContactsPage = () => {
                 colSpan={1}
                 className={`${sortByHeaderKey === 'datetime' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={contacts}
+                rows={[...contacts].filter((contact) => activeTab.length ? contact.status === activeTab : true)}
                 headerKey={'datetime'}
                 toggleSortCriteria={true}
                 initialSortCriteria={1}
@@ -70,7 +70,11 @@ export const ContactsPage = () => {
               >Date</DataTableHeaderRowCellSortComponent>
               <DataTableHeaderRowCell scope="col">Customer</DataTableHeaderRowCell>  
               <DataTableHeaderRowCell scope="col">Comment</DataTableHeaderRowCell>  
-              <DataTableHeaderRowCell scope="col">Action</DataTableHeaderRowCell>        
+              {
+                activeTab === ''
+                ? <DataTableHeaderRowCell scope="col">Action</DataTableHeaderRowCell>  
+                : <></>
+              }
             </DataTableHeaderRow>
           </DataTableHeader>
           <DataTableBody>
@@ -93,12 +97,16 @@ export const ContactsPage = () => {
                       { contact.message }
                     </DataTableRowCellContentMultipleEllipsis>
                   </DataTableBodyRowCell>
-                  <ContactsTableBodyRowCell key={`${contact.id}-buttons`}>
-                    <>
-                      <ButtonStyled styled="publish">Publish</ButtonStyled>
-                      <ButtonStyled styled="archive" style={{marginLeft: "1em"}}>Archive</ButtonStyled>
-                    </>                    
-                  </ContactsTableBodyRowCell>
+                  { 
+                    activeTab === ''
+                    ? <ContactsTableBodyRowCell key={`${contact.id}-buttons`}>
+                        <>
+                          <ButtonStyled styled="publish">Publish</ButtonStyled>
+                          <ButtonStyled styled="archive" style={{marginLeft: "1em"}}>Archive</ButtonStyled>
+                        </>                    
+                      </ContactsTableBodyRowCell>
+                    : <></>
+                   }
                 </DataTableBodyRow>
               ))
             }
