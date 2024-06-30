@@ -10,7 +10,7 @@ export const DataTableTabListComponent = ({tabItems, tablePageIndex = 0, rows, r
     
     const pageRows = [...tabRows].slice((tablePageIndex * rowsPerPage), (tablePageIndex * rowsPerPage) + rowsPerPage);
 
-    onTabChange(pageRows, activeTab, tabRows);
+    onTabChange(activeTab, tabRows, pageRows);
   },[activeTab])
 
   return (

@@ -2,11 +2,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { DataTableHeaderRowCell } from './DataTableStyled';
 
-export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1, rows, headerKey, onSort, initialSortCriteria = -1, toggleSortCriteria = false, initialSort = false, className = {}, style = {}, children}) => {
-  const [sortCriteria, setSortCriteria] = useState(initialSortCriteria);
+export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1, rows, headerKey, onSort, initialSortDirection = -1, toggleSortCriteria = false, initialSort = false, activeTab, className = {}, style = {}, children}) => {
+  const [sortCriteria, setSortCriteria] = useState({header: headerKey, direction: initialSortDirection});
   const headerRowCell = useRef();
 
-  const sortByKey = (rows, key, criteria = -1) => {
+  const sortByKey = (rows, key, criteria = initialSortDirection) => {
     return rows.sort((current, next) => {
       if (current[key] < next[key])
         return criteria
@@ -19,8 +19,13 @@ export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1,
   }
 
   useEffect(() => {
-    if (initialSort) 
-      headerRowCell.current.click()
+    const sortedRows = sortByKey(rows, sortCriteria.header, sortCriteria.direction);
+    onSort(sortedRows, sortCriteria.header);
+  }, [sortCriteria, activeTab])
+
+  useEffect(() => {
+    if (initialSort)
+      headerRowCell.current.click();
   }, [])
 
   return (
@@ -29,17 +34,13 @@ export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1,
         ref={headerRowCell}
         scope={scope} 
         colSpan={colSpan} 
-        className={className}
+        className={`${className} ${sortCriteria.direction === -1 ? 'down' : 'up'}`}
         style={style} 
         onClick={() => {
           if (toggleSortCriteria)
-            setSortCriteria(-1 * sortCriteria)
+            setSortCriteria({...sortCriteria, direction: -1 * sortCriteria.direction})
           else
-            setSortCriteria(initialSortCriteria);
-
-          const criteria = toggleSortCriteria ? sortCriteria : initialSortCriteria;
-          const sortedRows = sortByKey(rows, headerKey, criteria);
-          onSort(sortedRows, headerKey)
+            setSortCriteria({header: headerKey, direction: initialSortDirection});
         }}>
         { children }
       </DataTableHeaderRowCell>

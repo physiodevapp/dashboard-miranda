@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ButtonStyled } from '../ButtonStyled';
 import { NavigationButton, PaginationInfo, DataTablePagination } from './DataTablePaginationStyled';
 
-export const DataTablePaginationComponent = ({rows, rowsPerPage = 10, paginationButtonsMax = 5, onTablePageChange, tablePageIndex = 0}) => {
+export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, paginationButtonsMax = 5, onTablePageChange, tablePageIndex = 0}) => {
   const [pageIndex, setPageIndex] = useState(tablePageIndex);
 
   const prevButton = useRef();
@@ -12,7 +12,7 @@ export const DataTablePaginationComponent = ({rows, rowsPerPage = 10, pagination
   const middleButton = useRef();
   const afterMiddleButton = useRef();
 
-  const tableTotalPages = Math.floor(rows.length / rowsPerPage);  
+  const tableTotalPages = Math.floor(rowsLength / rowsPerPage);  
 
   useEffect(() => {
     const updatePagination = () => {      
@@ -66,8 +66,7 @@ export const DataTablePaginationComponent = ({rows, rowsPerPage = 10, pagination
 
     updatePagination();
 
-    const pageRows = rows.slice((pageIndex * rowsPerPage), (pageIndex * rowsPerPage) + rowsPerPage);
-    onTablePageChange(pageRows, pageIndex);
+    onTablePageChange(pageIndex);
 
   }, [pageIndex])
 
@@ -75,9 +74,9 @@ export const DataTablePaginationComponent = ({rows, rowsPerPage = 10, pagination
     <DataTablePagination>
       <PaginationInfo>
         {
-          rows.length > rowsPerPage 
-          ? `Showing from ${(pageIndex + 1) * rowsPerPage} to ${(pageIndex + 1) * rowsPerPage + rowsPerPage} (of ${rows.length} results)`
-          : `Showing ${rows.length} results`
+          rowsLength > rowsPerPage 
+          ? `Showing from ${(pageIndex * rowsPerPage) + 1} to ${(pageIndex * rowsPerPage) + rowsPerPage} (of ${rowsLength} results)`
+          : `Showing ${rowsLength} results`
         }
       </PaginationInfo>
       <NavigationButton ref={prevButton} styled="secondary" className={`${tableTotalPages < 2 && "hide"} ${!pageIndex && "disabled"}`} onClick={() => pageIndex && setPageIndex(pageIndex - 1)}>Prev</NavigationButton>

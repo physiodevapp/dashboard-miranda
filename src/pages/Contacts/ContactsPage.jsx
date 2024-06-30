@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { RecentContactsComponent } from "../../components/RecentContacts/RecentContactsComponent";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
-import dataContacts from "../../data/mock_contacts.json"
+import dataContacts from "../../data/mock_contacts.json";
 import { ContactsTableBodyRowCell, ContactsTableContainer } from "./ContactsStyled";
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from "../../components/DataTableStyled";
 import { DataTablePaginationComponent } from "../../components/DataTablePagination/DataTablePaginationComponent";
 import { DataTableHeaderRowCellSortComponent } from "../../components/DataTableHeaderRowCellSortComponent";
 import { ButtonStyled } from "../../components/ButtonStyled";
 import { DataTableTabListComponent } from "../../components/DataTableTabs/DataTableTabListComponent";
+import { FaArrowUp } from "react-icons/fa6";
 
 export const ContactsPage = () => {
-  const [contacts, setContacts] = useState(dataContacts)
-  const [displayContacts, setDisplayContacts] = useState([])
+  const [contacts, setContacts] = useState(dataContacts);
+  const [displayContacts, setDisplayContacts] = useState(dataContacts);
   const [sortByHeaderKey, setSortByHeaderKey] = useState('datetime');
   const [activeTab, setActiveTab] = useState('');
   const [tablePageIndex, setTablePageIndex] = useState(0);
@@ -27,11 +28,7 @@ export const ContactsPage = () => {
       hour:"2-digit",
       minute: "2-digit"
     });
-  }
-
-  useEffect(() => {
-    setDisplayContacts(contacts.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage));
-  }, [contacts])
+  } 
 
   return (
     <>
@@ -45,13 +42,13 @@ export const ContactsPage = () => {
             {key: 'published', htmlContent: 'Published'},
             {key: 'archived', htmlContent: 'Archived'}
           ]}
-          rows={dataContacts}
+          rows={contacts}
           tablePageIndex={tablePageIndex}
           rowsPerPage={10}
-          onTabChange={(pageRows, currentTab, tabRows) => {
+          onTabChange={(currentTab, tabRows) => {
             setTablePageIndex(0);
-            setContacts(tabRows);
-            setActiveTab(currentTab);
+            setDisplayContacts(tabRows)
+            setActiveTab(currentTab);            
           }}
         />
       </PageElementContainerStyled>
@@ -65,16 +62,21 @@ export const ContactsPage = () => {
                 colSpan={1}
                 className={`${sortByHeaderKey === 'datetime' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={[...contacts].filter((contact) => activeTab.length ? contact.status === activeTab : true)}
+                rows={JSON.parse(JSON.stringify(contacts)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
+                activeTab={activeTab}
                 headerKey={'datetime'}
                 toggleSortCriteria={true}
-                initialSortCriteria={1}
                 initialSort={true}
                 onSort={(sortedRows, key) => {
-                  setContacts(sortedRows);
+                  setDisplayContacts(sortedRows);
                   setSortByHeaderKey(key);
                 }}
-              >Date</DataTableHeaderRowCellSortComponent>
+              >
+                <>
+                  Date
+                  <FaArrowUp/>
+                </>
+              </DataTableHeaderRowCellSortComponent>
               <DataTableHeaderRowCell scope="col">Customer</DataTableHeaderRowCell>  
               <DataTableHeaderRowCell scope="col">Comment</DataTableHeaderRowCell>  
               {
@@ -86,7 +88,8 @@ export const ContactsPage = () => {
           </DataTableHeader>
           <DataTableBody>
             {
-              displayContacts.map((contact) => (
+              displayContacts.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage)
+              .map((contact) => (
                 <DataTableBodyRow key={contact.id}>
                   <DataTableBodyRowCell key={`${contact.id}-orderId`}>
                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"8rem"}>
@@ -111,7 +114,7 @@ export const ContactsPage = () => {
                           <ButtonStyled 
                             styled="publish" 
                             onClick={() => {
-                              const updateContacts = [...contacts].map((item) => {
+                              const updateContacts = JSON.parse(JSON.stringify(contacts)).map((item) => {
                                 return {
                                   ...item,
                                   "status": item.id === contact.id ? item.status = "published" : item.status
@@ -125,7 +128,7 @@ export const ContactsPage = () => {
                             styled="archive" 
                             style={{marginLeft: "1em"}}
                             onClick={() => {
-                              const updateContacts = [...contacts].map((item) => {
+                              const updateContacts = JSON.parse(JSON.stringify(contacts)).map((item) => {
                                 return {
                                   ...item,
                                   "status": item.id === contact.id ? item.status = "archived" : item.status
@@ -147,11 +150,10 @@ export const ContactsPage = () => {
       </ContactsTableContainer>
       <PageElementContainerStyled>
         <DataTablePaginationComponent
-          rows={[...contacts].filter((contact) => activeTab.length ? contact.status === activeTab : true)}
+          rowsLength={displayContacts.length}
           rowsPerPage={contactsPerTablePage}
           paginationButtonsMax={5}
-          onTablePageChange={(pageRows, pageIndex) => {
-            setDisplayContacts(pageRows);
+          onTablePageChange={(pageIndex) => {
             setTablePageIndex(pageIndex);
           }}
         />

@@ -67,8 +67,19 @@ export const DataTableHeaderRowCell = styled.th`
   cursor: default;
   color: #393939;
 
+  svg {
+    margin: 0em 0.2em 0.1em;
+    vertical-align: middle;
+  }
+
   &.active {
     text-decoration: underline;
+  }
+
+  &.up {
+    svg {
+      transform: rotateZ(180deg);
+    }
   }
 
 `

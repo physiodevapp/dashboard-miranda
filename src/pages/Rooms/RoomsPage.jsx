@@ -9,10 +9,11 @@ import { PageElementContainerStyled } from '../../components/PageElementContaine
 import { useNavigate } from 'react-router-dom';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
+import { FaArrowUp } from 'react-icons/fa6';
 
 export const RoomsPage = () => {
-  const [rooms, setRooms] = useState(dataRooms)
-  const [displayRooms, setDisplayRooms] = useState([])
+  const [rooms, setRooms] = useState(dataRooms);
+  const [displayRooms, setDisplayRooms] = useState(dataRooms);
   const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
   const navigate = useNavigate();
   const [tablePageIndex, setTablePageIndex] = useState(0);
@@ -20,10 +21,6 @@ export const RoomsPage = () => {
   const roomsPerTablePage = 10;
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
-
-  useEffect(() => {
-    setDisplayRooms(rooms.slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage));
-  }, [rooms])
 
   return (
     <>
@@ -39,14 +36,19 @@ export const RoomsPage = () => {
                 colSpan={2}
                 className={`${sortByHeaderKey === 'number' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={[...rooms]}
+                rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'number'}
                 initialSort={true}
                 onSort={(sortedRows, key) => {
-                  setRooms(sortedRows);
+                  setDisplayRooms(sortedRows);
                   setSortByHeaderKey(key);
                 }}
-              >Room name</DataTableHeaderRowCellSortComponent>
+              >
+                <>
+                  Room name
+                  <FaArrowUp/>
+                </>
+              </DataTableHeaderRowCellSortComponent>
               <DataTableHeaderRowCell scope="col">Bed Type</DataTableHeaderRowCell>
               <DataTableHeaderRowCell scope="col">Facilities</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
@@ -54,32 +56,43 @@ export const RoomsPage = () => {
                 colSpan={1}
                 className={`${sortByHeaderKey === 'price_night' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={[...rooms]}
+                rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'price_night'}
                 toggleSortCriteria={true}
                 onSort={(sortedRows, key) => {
-                  setRooms(sortedRows);
+                  setDisplayRooms(sortedRows);
                   setSortByHeaderKey(key);
                 }}
-              >Price</DataTableHeaderRowCellSortComponent>
+              >
+                <>
+                  Price
+                  <FaArrowUp/>
+                </>
+              </DataTableHeaderRowCellSortComponent>
               <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
                 scope='col'
                 colSpan={1}
                 className={`${sortByHeaderKey === 'status' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={[...rooms]}
+                rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'status'}
                 onSort={(sortedRows, key) => {
-                  setRooms(sortedRows);
+                  setDisplayRooms(sortedRows);
                   setSortByHeaderKey(key);
                 }}
-              >Status</DataTableHeaderRowCellSortComponent>
+              >
+                <>
+                  Date
+                  <FaArrowUp/>
+                </>
+              </DataTableHeaderRowCellSortComponent>
             </DataTableHeaderRow>
           </DataTableHeader>
           <DataTableBody>
             {
-              displayRooms.map((room) => (
+              displayRooms.slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage)
+              .map((room) => (
                 <DataTableBodyRow key={room.number} onClick={() => navigate(`/rooms/${room.id}`)}>
                   <RoomsTableBodyRowCell key={`${room.number}-photo`} className='room-photo'>
                     <figure key={`${room.number}-identification-photo-container`}>
@@ -107,11 +120,10 @@ export const RoomsPage = () => {
       </RoomsTableContainer>
       <PageElementContainerStyled>
         <DataTablePaginationComponent
-          rows={rooms}
+          rowsLength={displayRooms.length}
           rowsPerPage={roomsPerTablePage}
           paginationButtonsMax={5}
-          onTablePageChange={(pageRows, pageIndex) => {
-            setDisplayRooms(pageRows);
+          onTablePageChange={(pageIndex) => {
             setTablePageIndex(pageIndex);
           }}
         />
