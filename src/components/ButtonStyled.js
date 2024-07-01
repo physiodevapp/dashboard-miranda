@@ -87,6 +87,21 @@ export const ButtonStyled = styled.button`
             text-decoration: underline;
           }
         `
+      case "check_in":
+        return css`
+          background-color: #E8FFEE;
+          color: #5AD07A;
+        `
+      case "check_out":
+        return css`
+          background-color: #FFEDEC;
+          color: #E23428;
+        `
+      case "in_progress":
+        return css`
+          background-color: #E2E2E2;
+          color: #6D6D6D;
+        `
     }
   }}
 ` 

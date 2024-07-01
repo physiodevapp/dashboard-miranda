@@ -99,7 +99,7 @@ export const DataTableBodyRowCell = styled.td`
   padding: 1rem 0rem 1rem 1rem;
 `
 
-export const DataTableRowCellContentMultipleEllipsis = styled.p`
+export const DataTableRowCellContentMultipleEllipsis = styled.div`
   margin: 0em;
   padding: 0em;
   display: -webkit-box;

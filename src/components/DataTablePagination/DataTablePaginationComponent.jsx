@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
 import { ButtonStyled } from '../ButtonStyled';
 import { NavigationButton, PaginationInfo, DataTablePagination } from './DataTablePaginationStyled';
 
@@ -12,7 +11,13 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, pagi
   const middleButton = useRef();
   const afterMiddleButton = useRef();
 
-  const tableTotalPages = Math.floor(rowsLength / rowsPerPage);  
+  const tableTotalPages = rowsLength%rowsPerPage === 0
+    ? Math.floor(rowsLength / rowsPerPage)
+    : Math.floor(rowsLength / rowsPerPage) + 1
+  
+  useEffect(() => {
+    setPageIndex(tablePageIndex)
+  }, [rowsLength])
 
   useEffect(() => {
     const updatePagination = () => {      
@@ -87,7 +92,7 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, pagi
             const current = index + 1;
             
             if (current === 1 || current === total || total <= paginationButtonsMax)
-              return <ButtonStyled key={index} data-index={current - 1} styled="primary" className={`pagination-button ${current === 1 && "active"} ${tableTotalPages < 2 && "hide"}`} onClick={(event) => event.target.dataset.index && setPageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
+              return <ButtonStyled key={index} data-index={current - 1} styled="primary" className={`pagination-button ${current === 1 ? "active" : ""} ${tableTotalPages < 2 ? "hide" : ""}`} onClick={(event) => event.target.dataset.index && setPageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
             else if (current === 2)
               return <ButtonStyled ref={beforeMiddleButton} key={index} data-index={current - 1} styled="primary" className="pagination-button" onClick={(event) => event.target.dataset.index && setPageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
             else if (current === total - 1)

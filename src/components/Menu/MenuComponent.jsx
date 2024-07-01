@@ -23,7 +23,7 @@ export const MenuComponent = () => {
           <LuLayoutDashboard />
           Dashboard
         </MenuListItem>
-        <MenuListItem>
+        <MenuListItem onClick={() => navigate('/bookings')}>
           <span></span>
           <LuCalendarCheck/>
           Bookings
