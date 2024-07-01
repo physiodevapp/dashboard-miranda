@@ -11,6 +11,7 @@ export const DataTablePagination = styled.nav`
   .pagination-button {
     width: 3em;
     margin: 0em 0.2em;
+    cursor: pointer;
 
     &.active {
       background-color: #1d9d7b;

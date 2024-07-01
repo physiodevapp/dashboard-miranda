@@ -96,7 +96,7 @@ export const RoomsPage = () => {
                 <DataTableBodyRow key={room.number} onClick={() => navigate(`/rooms/${room.id}`)}>
                   <RoomsTableBodyRowCell key={`${room.number}-photo`} className='room-photo'>
                     <figure key={`${room.number}-identification-photo-container`}>
-                      <img key={`${room.number}-identification-photo-image`} src={room.photos} alt="" />
+                      <img key={`${room.number}-identification-photo-image`} src={room.photos[0]} alt="" />
                     </figure>
                   </RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}-identification`}>
@@ -110,7 +110,7 @@ export const RoomsPage = () => {
                   <RoomsTableBodyRowCell key={`${room.number}-price`} className='room-price'>{`$${room.price_night}`}<span> /night</span></RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}-discount`}>{ getOfferPrice(room.price_night, room.discount) }</RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}-status`}>
-                    <StatusButton key={`${room.number}-status-button`} styled={room.status}>{room.status}</StatusButton>
+                    <StatusButton key={`${room.number}-status-button`} styled={room.status}>{ room.status }</StatusButton>
                   </RoomsTableBodyRowCell>
                 </DataTableBodyRow>
               ))

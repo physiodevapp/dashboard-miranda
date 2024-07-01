@@ -1,39 +1,7 @@
-import styled, { css } from "styled-components";
-import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
-import { ButtonStyled } from "../../components/ButtonStyled";
+import styled from "styled-components";
 
 
-export const RoomContainer = styled(PageElementContainerStyled)`
-  height: 100%;
-  max-height: 95%;
-  display: flex;
-  flex-direction: row;
-  position: relative;
-  left: unset;
-  bottom: unset;
-  border-radius: 1em;
-  box-shadow: 0px 20px 30px #00000014;
-`
-
-export const RoomForm = styled.form`
-  height: 100%;
-  flex: 1;
-  background-color: white;
-  border-radius: 1em 0em 0em 1em;
-  border: none;
-  width: 50%;
-  position: relative;
-  padding: 2em 2em 6em;
-`
-
-export const RoomGallery = styled.img`
-  flex:  1;
-  height: 100%;
-  border-radius: 0em 1em 1em 0em;
-  width: 50%;
-`
-
-export const RoomFormFieldListContainer = styled.div`
+export const FormFieldListContainer = styled.div`
   height: 100%;
   overflow-y: auto;
 
@@ -59,7 +27,7 @@ export const RoomFormFieldListContainer = styled.div`
   }
 `
 
-export const RoomFormField = styled.div`
+export const FormField = styled.div`
   width: ${props => props.width || "100%"};
   margin-bottom: 1.4em;
   display: inline-flex;
@@ -69,7 +37,7 @@ export const RoomFormField = styled.div`
   font-family: "Poppins";
 `
 
-export const RoomFormLabel = styled.label`
+export const FormFieldLabel = styled.label`
   width: 100%;
   margin-bottom: 0.2em;
   color: #6E6E6E;
@@ -77,7 +45,7 @@ export const RoomFormLabel = styled.label`
   font-family: inherit;
 `
 
-export const RoomInput = styled.input`
+export const FormInput = styled.input`
   padding: 0.6em;
   width: 100%;
   font-size: 1rem;
@@ -90,7 +58,7 @@ export const RoomInput = styled.input`
   }
 `
 
-export const RoomTextarea = styled.textarea`
+export const FormTextarea = styled.textarea`
   padding: 0.6em;
   width: 100%;
   font-family: inherit;
@@ -123,7 +91,7 @@ export const RoomTextarea = styled.textarea`
   }
 `
 
-export const ToogleButton = styled.div`
+export const FormToogleButton = styled.div`
   position: relative;
   width: 60px;
   height: 30px;
@@ -145,7 +113,7 @@ export const ToogleButton = styled.div`
     background-color: #888;
 }
 `
-export const ToogleLabel = styled.label`
+export const FormToogleLabel = styled.label`
   display: block;
   width: 100%;
   height: 100%;
@@ -168,43 +136,6 @@ export const ToogleLabel = styled.label`
     transition: transform 0.3s ease;
   }
 `
-export const ToggleButtonInput = styled.input`
+export const FormToggleButtonInput = styled.input`
   display: none;
-`
-
-export const FormButton = styled(ButtonStyled)`
-  margin: 1em 0em;
-  position: absolute;
-  bottom: 1em;
-  &:disabled {
-    display: none;
-  }
-
-  ${props => {
-    switch(props.text) {
-      case "edit":
-        return css`
-          max-width: 500px;
-          width: calc(100% - 4em);
-          left: 50%;
-          transform: translateX(-50%);
-        `
-      case "dismiss":
-        return css`
-          max-width: 500px;
-          width: calc(50% - 2.5em);
-          left: calc(0% + 2em);
-        `
-      case "save":
-        return css`
-          max-width: 500px;
-          width: calc(50% - 2.5em);
-          right: calc(0% + 2em);
-        `
-    }
-  }}
-` 
-
-export const RoomFacilities = styled.ul`
-
 `

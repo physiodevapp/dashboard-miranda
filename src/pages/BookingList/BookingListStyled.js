@@ -11,6 +11,7 @@ export const BookingTableBodyRowCellBooking = styled(DataTableBodyRowCell)`
 `
 
 export const BookingTableBodyRowCellBookingName = styled.h6`
+  font-size: 1rem;
   font-weight: 600;
 `
 
