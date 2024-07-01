@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { FormButton, RoomContainer, RoomFacilities, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel } from './RoomPageStyled';
-import rooms from '../../data/mock_rooms.json';
-import { RoomFormFieldContainer } from './RoomPageStyled';
+import dataRooms from '../../data/mock_rooms.json';
+import { RoomFormFieldListContainer } from './RoomPageStyled';
 
 export const RoomPage = () => {
   const [room, setRoom] = useState({});
@@ -14,15 +14,14 @@ export const RoomPage = () => {
 
   useEffect(() => {
     if (roomId)
-      setRoom([...rooms].find(room => room['id'] === roomId))
-
+      setRoom(JSON.parse(JSON.stringify(dataRooms)).find(room => room['id'] === roomId))
   }, [])
 
   return (
     <>
       <RoomContainer>
         <RoomForm>
-          <RoomFormFieldContainer>
+          <RoomFormFieldListContainer>
             <RoomFormField width="50%">
               <RoomFormLabel htmlFor="room-type">Room type</RoomFormLabel>
               <RoomInput disabled={!canEdit} name='room-type' value={room.type}></RoomInput>
@@ -52,10 +51,10 @@ export const RoomPage = () => {
             </RoomFormField>
             <RoomFormField>
               <RoomFormLabel htmlFor="room-policy">Cancellation policy</RoomFormLabel>
-              <RoomTextarea disabled={!canEdit} rows={3} text={room.cancellation_policy}></RoomTextarea>
+              <RoomTextarea disabled={!canEdit} rows={3} value={room.cancellation_policy}></RoomTextarea>
             </RoomFormField>
             <RoomFacilities></RoomFacilities>
-          </RoomFormFieldContainer>
+          </RoomFormFieldListContainer>
           <FormButton 
             onClick={() => setCanEdit(!canEdit)} 
             disabled={canEdit || !roomId } 

@@ -30,6 +30,15 @@ export const MenuListItem = styled.li`
     }
   }
 
+  &.active {
+    color: #E23428;
+    svg {
+      color: #E23428;
+    }
+  }
+
+   
+
   svg {
     margin-right: 0.6em;
     color: #799283;

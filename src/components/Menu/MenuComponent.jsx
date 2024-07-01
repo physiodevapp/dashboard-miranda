@@ -9,31 +9,32 @@ import { RiKey2Line } from 'react-icons/ri';
 import { MdOutlineReviews } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa6';
 import { ButtonStyled } from '../ButtonStyled';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const MenuComponent = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation()
 
   return (
     <>
       <Logo src={logoImage}/>
       <MenuList>
-        <MenuListItem onClick={() => navigate('/dashboard')}>
+        <MenuListItem onClick={() => navigate('/dashboard')} className={pathname === '/dashboard' && 'active'}>
           <span></span>
           <LuLayoutDashboard />
           Dashboard
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/bookings')}>
+        <MenuListItem onClick={() => navigate('/bookings')} className={pathname === '/bookings' && 'active'}>
           <span></span>
           <LuCalendarCheck/>
           Bookings
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/rooms')}>
+        <MenuListItem onClick={() => navigate('/rooms')} className={pathname === '/rooms' && 'active'}>
           <span></span>
           <RiKey2Line style={{transform: "rotateZ(130deg)"}}/>
           Rooms
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/contacts')}>
+        <MenuListItem onClick={() => navigate('/contacts')} className={pathname === '/contacts' && 'active'}>
           <span></span>
           <MdOutlineReviews/>
           Contacts

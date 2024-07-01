@@ -9,6 +9,7 @@ import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataT
 import { FaArrowUp } from 'react-icons/fa6';
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
+import { useNavigate } from 'react-router-dom';
 
 export const BookingListPage = () => {
   const [bookings, setBookings] = useState(dataBookings);
@@ -16,6 +17,7 @@ export const BookingListPage = () => {
   const [sortByHeaderKey, setSortByHeaderKey] = useState('order_date');
   const [activeTab, setActiveTab] = useState('');
   const [tablePageIndex, setTablePageIndex] = useState(0);
+  const navigate = useNavigate();
 
   const contactsPerTablePage = 10;
 
@@ -52,115 +54,115 @@ export const BookingListPage = () => {
       </PageElementContainerStyled>
       <BookingListTableContainer>
       <DataTable>
-          <DataTableHeader>
-            <DataTableHeaderRow>
-              <DataTableHeaderRowCell scope="col" >Booking</DataTableHeaderRowCell>
-              <DataTableHeaderRowCellSortComponent
-                scope='col'                
-                colSpan={1}
-                className={`${sortByHeaderKey === 'order_date' && "active"}`}
-                style={{cursor: "pointer"}}
-                rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
-                activeTab={activeTab}
-                headerKey={'order_date'}
-                initialSortDirection={1}
-                initialSort={true}
-                onSort={(sortedRows, key) => {
-                  setDisplayBookings(sortedRows);
-                  setSortByHeaderKey(key);
-                }}
-              >
-                <>
-                  Order date
-                  <FaArrowUp/>
-                </>
-              </DataTableHeaderRowCellSortComponent>
-              <DataTableHeaderRowCellSortComponent
-                scope='col'                
-                colSpan={1}
-                className={`${sortByHeaderKey === 'check_in' && "active"}`}
-                style={{cursor: "pointer"}}
-                rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
-                activeTab={activeTab}
-                headerKey={'check_in'}
-                initialSortDirection={1}
-                onSort={(sortedRows, key) => {
-                  setDisplayBookings(sortedRows);
-                  setSortByHeaderKey(key);
-                }}
-              >
-                <>
-                  Check In
-                  <FaArrowUp/>
-                </>
-              </DataTableHeaderRowCellSortComponent> 
-              <DataTableHeaderRowCellSortComponent
-                scope='col'                
-                colSpan={1}
-                className={`${sortByHeaderKey === 'check_out' && "active"}`}
-                style={{cursor: "pointer"}}
-                rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
-                activeTab={activeTab}
-                headerKey={'check_out'}
-                initialSortDirection={1}
-                onSort={(sortedRows, key) => {
-                  setDisplayBookings(sortedRows);
-                  setSortByHeaderKey(key);
-                }}
-              >
-                <>
-                  Check Out
-                  <FaArrowUp/>
-                </>
-              </DataTableHeaderRowCellSortComponent>
-              <DataTableHeaderRowCell scope="col" >Room type</DataTableHeaderRowCell>
-              <DataTableHeaderRowCell scope="col" >Request</DataTableHeaderRowCell>
-              <DataTableHeaderRowCell scope="col" >Status</DataTableHeaderRowCell>
-            </DataTableHeaderRow>
-          </DataTableHeader>
-          <DataTableBody>
-            {
-              displayBookings.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage)
-              .map((booking) => (
-                <DataTableBodyRow key={booking.id}>
-                  <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`}>
-                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
-                      <BookingTableBodyRowCellBookingName>
-                        { `${booking.last_name}, ${booking.first_name}` }
-                      </BookingTableBodyRowCellBookingName>
-                    </DataTableRowCellContentMultipleEllipsis>
-                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
-                      <BookingTableBodyRowCellBookingId>
-                        { booking.id }
-                      </BookingTableBodyRowCellBookingId>
-                    </DataTableRowCellContentMultipleEllipsis>
-                  </BookingTableBodyRowCellBooking>
-                  <DataTableBodyRowCell key={`${booking.id}-order_date`} style={{minWidth: "14rem"}}>
-                    { formatDatetime(booking.order_date) }
-                  </DataTableBodyRowCell>
-                  <DataTableBodyRowCell key={`${booking.id}-check_in`} style={{minWidth: "14rem"}}>
-                    { formatDatetime(booking.check_in) }
-                  </DataTableBodyRowCell>
-                  <DataTableBodyRowCell key={`${booking.id}-check_out`} style={{minWidth: "14rem"}}>
-                    { formatDatetime(booking.check_out) }
-                  </DataTableBodyRowCell>
-                  <DataTableBodyRowCell key={`${booking.id}-room_type`} style={{minWidth: "14rem"}}>
-                    { booking.room_type }
-                  </DataTableBodyRowCell>
-                  <DataTableBodyRowCell>
-                    <DataTableRowCellContentMultipleEllipsis lineclamp={4}>
-                      { booking.special_request }
-                    </DataTableRowCellContentMultipleEllipsis>
-                  </DataTableBodyRowCell>
-                  <DataTableBodyRowCell key={`${booking.id}-status`} style={{minWidth: "14rem"}}>
-                    <BookingStatusButton styled={booking.status}>
-                      { booking.status.replace("_", " ") }
-                    </BookingStatusButton>
-                  </DataTableBodyRowCell>                  
-                </DataTableBodyRow>
-              ))
-            }
-          </DataTableBody>
+        <DataTableHeader>
+          <DataTableHeaderRow>
+            <DataTableHeaderRowCell scope="col" >Booking</DataTableHeaderRowCell>
+            <DataTableHeaderRowCellSortComponent
+              scope='col'                
+              colSpan={1}
+              className={`${sortByHeaderKey === 'order_date' && "active"}`}
+              style={{cursor: "pointer"}}
+              rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
+              activeTab={activeTab}
+              headerKey={'order_date'}
+              initialSortDirection={1}
+              initialSort={true}
+              onSort={(sortedRows, key) => {
+                setDisplayBookings(sortedRows);
+                setSortByHeaderKey(key);
+              }}
+            >
+              <>
+                Order date
+                <FaArrowUp/>
+              </>
+            </DataTableHeaderRowCellSortComponent>
+            <DataTableHeaderRowCellSortComponent
+              scope='col'                
+              colSpan={1}
+              className={`${sortByHeaderKey === 'check_in' && "active"}`}
+              style={{cursor: "pointer"}}
+              rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
+              activeTab={activeTab}
+              headerKey={'check_in'}
+              initialSortDirection={1}
+              onSort={(sortedRows, key) => {
+                setDisplayBookings(sortedRows);
+                setSortByHeaderKey(key);
+              }}
+            >
+              <>
+                Check In
+                <FaArrowUp/>
+              </>
+            </DataTableHeaderRowCellSortComponent> 
+            <DataTableHeaderRowCellSortComponent
+              scope='col'                
+              colSpan={1}
+              className={`${sortByHeaderKey === 'check_out' && "active"}`}
+              style={{cursor: "pointer"}}
+              rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
+              activeTab={activeTab}
+              headerKey={'check_out'}
+              initialSortDirection={1}
+              onSort={(sortedRows, key) => {
+                setDisplayBookings(sortedRows);
+                setSortByHeaderKey(key);
+              }}
+            >
+              <>
+                Check Out
+                <FaArrowUp/>
+              </>
+            </DataTableHeaderRowCellSortComponent>
+            <DataTableHeaderRowCell scope="col" >Room type</DataTableHeaderRowCell>
+            <DataTableHeaderRowCell scope="col" >Request</DataTableHeaderRowCell>
+            <DataTableHeaderRowCell scope="col" >Status</DataTableHeaderRowCell>
+          </DataTableHeaderRow>
+        </DataTableHeader>
+        <DataTableBody>
+          {
+            displayBookings.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage)
+            .map((booking) => (
+              <DataTableBodyRow key={booking.id} onClick={() => navigate(`/bookings/${booking.id}`)}>
+                <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`}>
+                  <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
+                    <BookingTableBodyRowCellBookingName>
+                      { `${booking.last_name}, ${booking.first_name}` }
+                    </BookingTableBodyRowCellBookingName>
+                  </DataTableRowCellContentMultipleEllipsis>
+                  <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
+                    <BookingTableBodyRowCellBookingId>
+                      { booking.id }
+                    </BookingTableBodyRowCellBookingId>
+                  </DataTableRowCellContentMultipleEllipsis>
+                </BookingTableBodyRowCellBooking>
+                <DataTableBodyRowCell key={`${booking.id}-order_date`} style={{minWidth: "14rem"}}>
+                  { formatDatetime(booking.order_date) }
+                </DataTableBodyRowCell>
+                <DataTableBodyRowCell key={`${booking.id}-check_in`} style={{minWidth: "14rem"}}>
+                  { formatDatetime(booking.check_in) }
+                </DataTableBodyRowCell>
+                <DataTableBodyRowCell key={`${booking.id}-check_out`} style={{minWidth: "14rem"}}>
+                  { formatDatetime(booking.check_out) }
+                </DataTableBodyRowCell>
+                <DataTableBodyRowCell key={`${booking.id}-room_type`} style={{minWidth: "14rem"}}>
+                  { booking.room_type }
+                </DataTableBodyRowCell>
+                <DataTableBodyRowCell>
+                  <DataTableRowCellContentMultipleEllipsis lineclamp={4}>
+                    { booking.special_request }
+                  </DataTableRowCellContentMultipleEllipsis>
+                </DataTableBodyRowCell>
+                <DataTableBodyRowCell key={`${booking.id}-status`} style={{minWidth: "14rem"}}>
+                  <BookingStatusButton styled={booking.status}>
+                    { booking.status.replace("_", " ") }
+                  </BookingStatusButton>
+                </DataTableBodyRowCell>                  
+              </DataTableBodyRow>
+            ))
+          }
+        </DataTableBody>
         </DataTable>
       </BookingListTableContainer>
       <PageElementContainerStyled>

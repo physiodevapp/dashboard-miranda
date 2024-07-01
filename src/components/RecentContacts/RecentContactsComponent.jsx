@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
-import "./RecentContactsStyled";
 import { Navigation } from "swiper/modules";
 import {
   Section,
@@ -100,24 +99,24 @@ export const RecentContactsComponent = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-          <SwiperPaginationPrev
-            ref={prevRef}
-            className="swiper-button-prev disabled"
-            onClick={() =>
-              contactsSwiper.slideTo(contactsSwiper.activeIndex - 1)
-            }
-          >
-            <FaArrowLeft />
-          </SwiperPaginationPrev>
-          <SwiperPaginationNext
-            ref={nextRef}
-            className="swiper-button-next"
-            onClick={() =>
-              contactsSwiper.slideTo(contactsSwiper.activeIndex + 1)
-            }
-          >
-            <FaArrowRight />
-          </SwiperPaginationNext>
+        <SwiperPaginationPrev
+          ref={prevRef}
+          className="swiper-button-prev disabled"
+          onClick={() =>
+            contactsSwiper.slideTo(contactsSwiper.activeIndex - 1)
+          }
+        >
+          <FaArrowLeft />
+        </SwiperPaginationPrev>
+        <SwiperPaginationNext
+          ref={nextRef}
+          className="swiper-button-next"
+          onClick={() =>
+            contactsSwiper.slideTo(contactsSwiper.activeIndex + 1)
+          }
+        >
+          <FaArrowRight />
+        </SwiperPaginationNext>
       </Section>
     </>
   );
