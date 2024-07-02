@@ -14,7 +14,7 @@ import { Navigation } from "swiper/modules";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 export const RoomPage = () => {
-  const [room, setRoom] = useState(undefined);
+  const [room, setRoom] = useState(null);
   const { roomId } = useParams();
   const [canEdit, setCanEdit] = useState(false);
   const navigate = useNavigate();
@@ -35,10 +35,9 @@ export const RoomPage = () => {
     }
   }, [])
 
-  return (
-    <>
-      {
-        room ?
+  if (room)
+    return (
+      <>
         <RoomContainer>
           <RoomForm>
             <RoomFormFieldListContainer>
@@ -75,7 +74,7 @@ export const RoomPage = () => {
                   closeMenuOnSelect={false}
                   isMulti
                   defaultValue={
-                    room?.facilities?.map((facility) => {
+                    room.facilities.map((facility) => {
                       return {
                         value: facility,
                         label: facility
@@ -241,10 +240,9 @@ export const RoomPage = () => {
             <FaArrowRight />
           </RoomSwiperPaginationNext>
           </RoomGallery>
-        </RoomContainer>
-        : <></>
-      }
-      
-    </>
-  )
+        </RoomContainer>        
+      </>
+    )
+  else
+    return <></>
 }
