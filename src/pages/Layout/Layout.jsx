@@ -5,15 +5,15 @@ import { MenuLayout, NavbarLayout, MainLayout, GridLayout } from './LayoutStyled
 import { Navigate, Outlet } from 'react-router-dom';
 import { MenuComponent } from '../../components/Menu/MenuComponent';
 import { NavbarComponent } from '../../components/Navbar/NavbarComponent';
-import { AuthContext } from '../../context/AuthProvider';
+import { AuthContext } from '../../context/AuthContext';
 
 export const Layout = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(true);
-  const { user } = useContext(AuthContext);
+  const { userState } = useContext(AuthContext);
 
   const handleClickMenu = () => setIsMenuVisible(!isMenuVisible)
 
-  if (!user)
+  if (!userState)
     return <Navigate to={'/login'}/>
   else
     return (

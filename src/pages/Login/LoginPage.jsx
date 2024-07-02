@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import { Form, Input, SubmitButton, Wrapper } from "./LoginStyled";
-import { AuthContext } from "../../context/AuthProvider";
+import { AuthContext } from "../../context/AuthContext";
 
 export const LoginPage = () => {
   const [user, setUser] = useState({ email: "", password: "" });
 
-  const { login } = useContext(AuthContext);
+  const { userDispatch } = useContext(AuthContext);
 
   const handleChangeInput = ({ target }) => {
     setUser((prevUser) => ({
@@ -24,7 +24,7 @@ export const LoginPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    isValidForm() && login(user);
+    isValidForm() && userDispatch({type: 'login', payload: user});
   };
 
   return (
