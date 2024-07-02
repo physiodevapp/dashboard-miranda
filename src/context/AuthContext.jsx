@@ -1,6 +1,6 @@
 
 import React, { createContext, useEffect, useReducer, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
@@ -22,9 +22,6 @@ const userReducer = (state, {type, payload}) => {
       localStorage.removeItem('current-user');
       state = null;
       return state;
-    case 'isLogged':
-      state = getUserFromLocalStorage();
-      return state;
     default:
       return state;
   }
@@ -34,18 +31,19 @@ const AuthProvider = ({children}) => {
   const [userState, userDispatch] = useReducer(userReducer, getUserFromLocalStorage());
   const [refreshUser, setRefreshUser] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    if (userState)
-      navigate('/dashboard');
-    else
-      navigate('/login');
-  }, [userState])
+    if (userState && pathname === '/login')
+      navigate('/dashboard')
+  }, [pathname])
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setRefreshUser(!refreshUser);
-      userDispatch({type: 'isLogged'});
+
+      if (!getUserFromLocalStorage())
+        navigate('/login');
     }, 4000);
   
     return () => clearTimeout(timeoutId)
