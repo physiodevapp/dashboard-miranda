@@ -49,13 +49,13 @@ export const RoomsPage = () => {
                   <FaArrowUp/>
                 </>
               </DataTableHeaderRowCellSortComponent>
-              <DataTableHeaderRowCell scope="col">Bed Type</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col"style={{width: "8em"}} >Bed Type</DataTableHeaderRowCell>
               <DataTableHeaderRowCell scope="col">Facilities</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
                 scope='col'
                 colSpan={1}
                 className={`${sortByHeaderKey === 'price_night' && "active"}`}
-                style={{cursor: "pointer"}}
+                style={{width: "8em", cursor: "pointer"}}
                 rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'price_night'}
                 toggleSortCriteria={true}
@@ -69,12 +69,12 @@ export const RoomsPage = () => {
                   <FaArrowUp/>
                 </>
               </DataTableHeaderRowCellSortComponent>
-              <DataTableHeaderRowCell scope="col">Offer price</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col" style={{width: "8em"}}>Offer price</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
                 scope='col'
                 colSpan={1}
                 className={`${sortByHeaderKey === 'status' && "active"}`}
-                style={{cursor: "pointer"}}
+                style={{width: "10em", cursor: "pointer"}}
                 rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'status'}
                 onSort={(sortedRows, key) => {
@@ -94,23 +94,23 @@ export const RoomsPage = () => {
               displayRooms.slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage)
               .map((room) => (
                 <DataTableBodyRow key={room.number} onClick={() => navigate(`/rooms/${room.id}`)}>
-                  <RoomsTableBodyRowCell key={`${room.number}-photo`} className='room-photo'>
-                    <figure key={`${room.number}-identification-photo-container`}>
-                      <img key={`${room.number}-identification-photo-image`} src={room.photos[0]} alt="" />
+                  <RoomsTableBodyRowCell key={`${room.number}_photo`} className='room_photo'>
+                    <figure key={`${room.number}_identification_photo_container`}>
+                      <img key={`${room.number}_identification_photo_image`} src={room.photos[0]} alt="" />
                     </figure>
                   </RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}-identification`}>
-                    <RoomIdentification key={`${room.number}-identification-container`}>
-                      <RoomIdentificationId key={`${room.number}-identification-id`}>{`# ${room.number.toString().padStart(6, '0')}`}</RoomIdentificationId>
-                      <RoomIdentificationName key={`${room.number}-identification-name`}>{room.name}</RoomIdentificationName>
+                  <RoomsTableBodyRowCell key={`${room.number}_identification`}>
+                    <RoomIdentification key={`${room.number}_identification_container`}>
+                      <RoomIdentificationId key={`${room.number}_identification_id`}>{`# ${room.number.toString().padStart(6, '0')}`}</RoomIdentificationId>
+                      <RoomIdentificationName key={`${room.number}_identification_name`}>{room.name}</RoomIdentificationName>
                     </RoomIdentification>
                   </RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}-type`}>{room.type}</RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}-identification-facilities`}>{room.facilities}</RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}-price`} className='room-price'>{`$${room.price_night}`}<span> /night</span></RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}-discount`}>{ getOfferPrice(room.price_night, room.discount) }</RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}-status`}>
-                    <StatusButton key={`${room.number}-status-button`} styled={room.status}>{ room.status }</StatusButton>
+                  <RoomsTableBodyRowCell key={`${room.number}_type`}>{room.type}</RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell key={`${room.number}_identification_facilities`}>{room.facilities.join(", ")}</RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell key={`${room.number}_price`} className='room_price'>{`$${room.price_night}`}<span> /night</span></RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell key={`${room.number}_discount`}>{ getOfferPrice(room.price_night, room.discount) }</RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell key={`${room.number}_status`}>
+                    <StatusButton key={`${room.number}_status_button`} styled={room.status}>{ room.status }</StatusButton>
                   </RoomsTableBodyRowCell>
                 </DataTableBodyRow>
               ))

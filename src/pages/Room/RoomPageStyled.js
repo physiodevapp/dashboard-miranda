@@ -26,11 +26,74 @@ export const RoomForm = styled.form`
   padding: 2em 2em 6em;
 `
 
-export const RoomGallery = styled.img`
+export const RoomGallery = styled.section`
   flex:  1;
   height: 100%;
   border-radius: 0em 1em 1em 0em;
   width: 50%;
+  position: relative;
+
+  .swiper {
+    width: 100%;
+    height: 100%;
+    padding: 0em 0em;
+    border-radius: 0em 1.2em 1.2em 0em;
+    background-color: black;
+
+    .swiper-slide {
+      cursor: default;
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0em 0em;
+      width: 430px;
+      transition: 0.2s ease-in-out;  
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;  
+    }
+  }
+`
+
+export const RoomSwiperSlideRoomImage = styled.img`
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.0);
+  width: 100%;
+`
+
+export const RoomSwiperPagination = styled.div`
+  position: absolute;
+  border: 1px solid white;
+  background-color: #c2c2c2;
+  color: white;
+  padding: 1em;
+  border-radius: 0.6em;
+  width: unset;
+  height: unset;
+  &::after {
+    content: unset;
+  }
+
+  &.disabled {
+    background-color: #ebf1ef63;
+    border: 1px solid #ebf1ef63;
+    cursor: default;
+  }
+`
+
+export const RoomSwiperPaginationPrev = styled(RoomSwiperPagination)`
+  left: 2em;
+`
+
+export const RoomSwiperPaginationNext = styled(RoomSwiperPagination)`
+  right: 2em;
 `
 
 export const RoomFormFieldListContainer = styled.div`
@@ -78,6 +141,8 @@ export const RoomFormLabel = styled.label`
 `
 
 export const RoomInput = styled.input`
+  border-radius: 4px;
+  border: 1px solid rgb(204, 204, 204);
   padding: 0.6em;
   width: 100%;
   font-size: 1rem;
@@ -91,6 +156,8 @@ export const RoomInput = styled.input`
 `
 
 export const RoomTextarea = styled.textarea`
+  border-radius: 4px;
+  border: 1px solid rgb(204, 204, 204);
   padding: 0.6em;
   width: 100%;
   font-family: inherit;
@@ -153,8 +220,7 @@ export const ToogleLabel = styled.label`
   border-radius: 15px;
   cursor: pointer;
   position: absolute;
-  top: 50%;
-  transform: translateY(-41%);
+  margin: 0.4em 0em;
   transition: background-color 0.3s ease;
   &::after {
     content: '';
