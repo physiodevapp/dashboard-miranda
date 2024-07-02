@@ -238,6 +238,9 @@ export const ToggleButtonInput = styled.input`
   display: none;
 `
 
+export const Submit = styled.input`
+`
+
 export const FormButton = styled(ButtonStyled)`
   margin: 1em 0em;
   position: absolute;
@@ -270,7 +273,3 @@ export const FormButton = styled(ButtonStyled)`
     }
   }}
 ` 
-
-export const RoomFacilities = styled.ul`
-
-`

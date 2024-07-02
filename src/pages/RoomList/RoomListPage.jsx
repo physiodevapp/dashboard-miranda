@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import './RoomListStyled'
-import dataRooms from '../../data/mock_rooms.json'
+// import dataRooms from '../../data/mock_rooms.json'
 import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomListStyled';
 import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
 import { NewRoomButton } from './RoomListStyled';
@@ -10,10 +10,14 @@ import { useNavigate } from 'react-router-dom';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 import { FaArrowUp } from 'react-icons/fa6';
+import { useSelector } from 'react-redux';
+import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';
 
 export const RoomListPage = () => {
-  const [rooms, setRooms] = useState(dataRooms);
-  const [displayRooms, setDisplayRooms] = useState(dataRooms);
+  const roomListRoomList = useSelector(roomListRoomListSelect);
+
+  const [rooms, setRooms] = useState(roomListRoomList);
+  const [displayRooms, setDisplayRooms] = useState(roomListRoomList);
   const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
   const navigate = useNavigate();
   const [tablePageIndex, setTablePageIndex] = useState(0);
