@@ -15,7 +15,7 @@ export const RoomsTableContainer = styled(DataTableContainer)`
 
 export const RoomsTableBodyRowCell = styled(DataTableBodyRowCell)`
 
-  &.room-photo {
+  &.room_photo {
     width: 150px;
 
     figure {

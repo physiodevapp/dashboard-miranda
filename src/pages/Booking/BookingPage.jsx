@@ -4,6 +4,7 @@ import { FormField, FormFieldLabel, FormFieldListContainer, FormInput, FormTexta
 import { useNavigate, useParams } from 'react-router-dom';
 import dataBookings from "../../data/mock_bookings.json";
 import dataRooms from "../../data/mock_rooms.json";
+import Select from 'react-select';
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -44,14 +45,12 @@ export const BookingPage = () => {
   }
 
   useEffect(() => {
-    const room = dataRooms.find((room) => room.number === booking.room_number);
-    setRoom(room);
-  }, [booking])
-
-  useEffect(() => {
     if (bookingId) {
-      const booking = JSON.parse(JSON.stringify(dataBookings)).find(room => room['id'] === bookingId)
-      setBooking(booking)
+      const booking = JSON.parse(JSON.stringify(dataBookings)).find(room => room['id'] === bookingId);
+      setBooking(booking);
+
+      const room = dataRooms.find((room) => room.number === booking.room_number);
+      setRoom(room);
     }
   }, [bookingId])
 
@@ -88,13 +87,92 @@ export const BookingPage = () => {
               <FormFieldLabel htmlFor="booking_special_request">Special request</FormFieldLabel>
               <FormTextarea disabled={!canEdit} rows={10} value={booking.special_request}></FormTextarea>
             </FormField>
-            <BookingFacilities>
-              {
-                room?.facilities?.map((facility) => {
-                  return <li key={`${room.id}_${facility}`}>{ facility }</li>
-                })
-              }
-            </BookingFacilities>
+            <FormField width="100%">
+              <FormFieldLabel>Facilities</FormFieldLabel>
+              <Select
+                closeMenuOnSelect={false}
+                isMulti
+                defaultValue={
+                  room?.facilities?.map((facility) => {
+                    return {
+                      value: facility,
+                      label: facility
+                    }
+                  })
+                }
+                placeholder={"Select the facilities of the room"}
+                isDisabled={!canEdit}
+                styles={{
+                  container: (baseStyles, state) => ({
+                    ...baseStyles,
+                    width: "100%",
+                  }),
+                  valueContainer: (baseStyles, state) => ({
+                    ...baseStyles,
+                    gap: "0.2em",
+                    paddingTop: "0.4em",
+                    paddingBottom: "0.4em"
+                  }),
+                  indicatorsContainer: (baseStyles, state) => ({
+                    ...baseStyles,
+                    cursor: "pointer",
+                    display: state.isDisabled
+                      ? "none"
+                      : baseStyles.display
+                  }),
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    backgroundColor: "white",
+                    borderColor: state.isDisabled
+                      ? "white"
+                      : baseStyles.borderColor
+                  }),
+                  option: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontFamily: "Poppins",
+                    fontSize: "0.9rem",  
+                    backgroundColor: state.isFocused
+                      ? "#EEF9F2"
+                      : baseStyles.backgroundColor
+                    ,                  
+                    ':hover': {
+                      ...baseStyles,
+                      fontSize: "0.9rem", 
+                      color: "#135846",
+                      backgroundColor: "#EEF9F2",
+                    }
+                  }),
+                  multiValueLabel: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#135846",
+                    backgroundColor: "#EEF9F2",
+                    lineHeight: "4em",
+                    padding: state.isDisabled 
+                      ? "0em 1em !important"
+                      : baseStyles.padding
+                    ,
+                    textAlign: "center",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    fontFamily: "Poppins"
+                  }), 
+                  multiValueRemove: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#135846",
+                    backgroundColor: "#EEF9F2",
+                    display: state.isDisabled
+                      ? "none"
+                      : baseStyles.display
+                    ,
+                    ':hover': {
+                      backgroundColor: "#135846",
+                      color: 'white',
+                      cursor: "pointer"
+                    },
+                  }),                  
+                }}
+              />
+            </FormField>
           </FormFieldListContainer>
         </BookingForm>
         <BookingGallery>
