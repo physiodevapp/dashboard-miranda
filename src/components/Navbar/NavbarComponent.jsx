@@ -4,12 +4,13 @@ import { BiBell } from 'react-icons/bi';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { LuChevronLeft } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
 export const NavbarComponent = ({handleClickMenu, show}) => {
   const { userDispatch } = useContext(AuthContext);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { roomId } = useParams();
   const [title, setTitle] = useState('')
 
@@ -34,7 +35,12 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
       <NavbarList>
         <li><FaRegEnvelope/></li>
         <li><BiBell/></li>
-        <li><MdLogout onClick={ () => userDispatch({type: 'logout'}) }/></li>
+        <li>
+          <MdLogout onClick={ () => {
+            userDispatch({type: 'logout'});
+            navigate('/login');
+          }}/>
+        </li>
       </NavbarList>
     </>
   )

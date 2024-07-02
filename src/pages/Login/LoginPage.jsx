@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Form, Input, SubmitButton, Wrapper } from "./LoginStyled";
 import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
   const [user, setUser] = useState({ email: "", password: "" });
-
+  const navigate = useNavigate();
   const { userDispatch } = useContext(AuthContext);
 
   const handleChangeInput = ({ target }) => {
@@ -24,7 +25,10 @@ export const LoginPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    isValidForm() && userDispatch({type: 'login', payload: user});
+    if(isValidForm()) {
+      userDispatch({type: 'login', payload: user});
+      navigate('/dashboard');
+    }
   };
 
   return (
