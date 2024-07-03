@@ -20,14 +20,9 @@ export const roomListSlice = createSlice({
         state.status = "pending";
       })
       .addCase(roomListUpdateOneThunk.fulfilled, (state, action) => {
-        state.roomList = state.roomList.map((room) => {
-          if (room.id === action.payload.id)
-            return { ...action.payload }
+        state.roomList = action.payload
 
-          return room;
-        });
-
-        state.room = action.payload;
+        state.room = null;
 
         state.status = "fulfilled";
       })

@@ -43,7 +43,6 @@ export const RoomListPage = () => {
         break;
       case "fulfilled":
         setIsUpdating(false);
-        console.log('roomList updated');
         break;
       case "rejected":
         setIsUpdating(true);

@@ -50,10 +50,10 @@ export const RoomPage = () => {
 
   const onSubmit = (formData) => {
     Swal.fire({
-      title: "Do you want to update the room?",
+      title: `Do you want to ${roomId ? "update" : "create"} the room?`,
       showDenyButton: true,
-      confirmButtonText: "Update",
-      denyButtonText: `Don't update`
+      confirmButtonText: `${roomId ? "Update" : "Create"}`,
+      denyButtonText: ` ${roomId ? "Don't update" : "Don't create"}`
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -76,9 +76,7 @@ export const RoomPage = () => {
               cancellation_policy: formData.roomPolicy,
             }
             
-            roomListDispatch(roomListUpdateOneThunk({room: updateRoom}))
-        
-            navigate("/rooms");
+            roomListDispatch(roomListUpdateOneThunk({room: updateRoom, list: roomListRoomList}));
           }
         });
       } else if (result.isDenied) {
@@ -133,8 +131,7 @@ export const RoomPage = () => {
         break;
       case "fulfilled":
         setIsLoading(false);
-        console.log('room loaded/updated ', {roomListRoom});
-        console.log({roomId})
+
         if (roomListRoom) {
           setRoom(roomListRoom);
   
@@ -145,7 +142,6 @@ export const RoomPage = () => {
             }))
           })
         } else if (roomId && roomListRoom === null) {
-          console.log({roomListRoom});
           navigate("/rooms");
         }
         break;
@@ -159,9 +155,8 @@ export const RoomPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
-    if (roomId) {
+    if (roomId)
       roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
-    }
   }, [roomId])
 
   if (!isLoading)
