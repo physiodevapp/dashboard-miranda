@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RecentContactsComponent } from "../../components/RecentContacts/RecentContactsComponent";
+import { RecentContactListComponent } from "../../components/RecentContacts/RecentContactListComponent";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
 import dataContacts from "../../data/mock_contacts.json";
 import { ContactsTableBodyRowCell, ContactsTableContainer } from "./ContactsStyled";
@@ -33,13 +33,12 @@ export const ContactsPage = () => {
   return (
     <>
       <PageElementContainerStyled>
-        <RecentContactsComponent />
+        <RecentContactListComponent />
       </PageElementContainerStyled>
       <PageElementContainerStyled>
         <DataTableTabListComponent 
           tabItems={[
             {key: '', htmlContent: 'All contacts'},
-            {key: 'published', htmlContent: 'Published'},
             {key: 'archived', htmlContent: 'Archived'}
           ]}
           rows={contacts}

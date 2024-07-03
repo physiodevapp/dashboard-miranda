@@ -23,7 +23,6 @@ import { roomListCreateOneThunk } from '../../features/roomList/roomListCreateOn
 
 import Swal from 'sweetalert2';
 
-import ClipLoader from "react-spinners/ClipLoader";
 import { BounceLoader } from 'react-spinners';
 
 export const RoomPage = () => {
