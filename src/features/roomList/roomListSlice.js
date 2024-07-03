@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { roomListUpdateOneThunk } from "./roomListUpdateOneThunk";
 import dataRooms from "../../data/mock_rooms.json";
+import { roomListReadOneThunk } from "./roomListReadOneThunk";
+import { roomListReadListThunk } from "./roomListReadListThunk";
+import { roomListDeleteOneThunk } from "./roomListDeleteOneThunk";
 
 export const roomListSlice = createSlice({
   name: "roomList",
@@ -30,7 +33,45 @@ export const roomListSlice = createSlice({
       })
       .addCase(roomListUpdateOneThunk.rejected, (state, action) => {
         state.status = "rejected";
-      });
+      })
+
+      .addCase(roomListReadOneThunk.pending, (state, action) => {
+        state.status = "pending";
+      })
+      .addCase(roomListReadOneThunk.fulfilled, (state, action) => {
+        state.room = action.payload;
+
+        state.status = "fulfilled";
+      })
+      .addCase(roomListReadOneThunk.rejected, (state, action) => {
+        state.status = "rejected";
+      })
+
+      .addCase(roomListDeleteOneThunk.pending, (state, action) => {
+        state.status = "pending";
+      })
+      .addCase(roomListDeleteOneThunk.fulfilled, (state, action) => {
+        state.room = null;
+        state.roomList = action.payload;
+
+        state.status = "fulfilled";
+      })
+      .addCase(roomListDeleteOneThunk.rejected, (state, action) => {
+        state.status = "rejected";
+      })
+
+      .addCase(roomListReadListThunk.pending, (state, action) => {
+        state.status = "pending";
+      })
+      .addCase(roomListReadListThunk.fulfilled, (state, action) => {
+        state.roomList = action.payload;
+        state.room = undefined;
+
+        state.status = "fulfilled";
+      })
+      .addCase(roomListReadListThunk.rejected, (state, action) => {
+        state.status = "rejected";
+      })
   },
 });
 

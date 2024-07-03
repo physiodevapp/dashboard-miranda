@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomSwiperSlideRoomImage, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel } from './RoomPageStyled';
-import dataRooms from '../../data/mock_rooms.json';
+// import dataRooms from '../../data/mock_rooms.json';
 import { RoomFormFieldListContainer } from './RoomPageStyled';
 
 import Select from 'react-select';
@@ -18,11 +18,16 @@ import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListUpdateOneThunk } from '../../features/roomList/roomListUpdateOneThunk';
+import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThunk';
+import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
+import Swal from 'sweetalert2';
 
 export const RoomPage = () => {
   const [room, setRoom] = useState(null);
   const { roomId } = useParams();
+
   const [canEdit, setCanEdit] = useState(false);
+
   const navigate = useNavigate();
 
   const [roomPhotosSwiper, setRoomPhotosSwiper] = useState({});
@@ -31,11 +36,12 @@ export const RoomPage = () => {
 
   const { register, handleSubmit, control, reset } = useForm();
 
-  const roomDispatch = useDispatch();
+  const roomListDispatch = useDispatch();
   const roomListStatus = useSelector(roomListStatusSelect);
   const roomListRoom = useSelector(roomListRoomSelect);
+  const roomListRoomList = useSelector(roomListRoomListSelect)
   const roomListError = useSelector(roomListErrorSelect);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const facilityOptions = ["Air conditioner", "High speed WiFi", "Breakfast", "Kitchen", "Cleaning", "Shower", "Grocery", "Single bed", "Shop near", "Towels"].map((facility) => ({
     value: facility,
@@ -43,7 +49,7 @@ export const RoomPage = () => {
   }))
 
   const onSubmit = (formData) => {
-    setCanEdit(!canEdit);
+    setCanEdit(!canEdit && room);
 
     const updateRoom = {
       ...room, 
@@ -57,26 +63,64 @@ export const RoomPage = () => {
       cancellation_policy: formData.roomPolicy,
     }
     
-    roomDispatch(roomListUpdateOneThunk({room: updateRoom}))
+    roomListDispatch(roomListUpdateOneThunk({room: updateRoom}))
 
     if (!roomId)
       navigate("/rooms");
   }
 
+  const deleteRoom = () => {
+    setCanEdit(false)
+    Swal.fire({
+      title: "Do you want to delete the room?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      denyButtonText: `Don't delete`
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
+        Swal.fire({
+          title: "Room deleted successfully",
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "Accept" 
+        });
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
+    });
+  }
+
   useEffect(() => {
     switch (roomListStatus) {
       case "idle":
-        setIsUpdating(false);
+        setIsLoading(false);
         break;
       case "pending":
-        setIsUpdating(true);
+        setIsLoading(true);
         break;
       case "fulfilled":
-        setIsUpdating(false);
-        console.log('room updated ', {roomListRoom});
+        setIsLoading(false);
+        console.log('room loaded/updated ', {roomListRoom});
+        console.log({roomId})
+        if (roomListRoom) {
+          setRoom(roomListRoom);
+  
+          reset({
+            roomFacilities: roomListRoom.facilities.map((facility) => ({
+              value: facility, 
+              label: facility
+            }))
+          })
+        } else if (roomId && roomListRoom === null) {
+          console.log({roomListRoom});
+          navigate("/rooms");
+        }
         break;
       case "rejected":
-        setIsUpdating(true);
+        setIsLoading(true);
         console.log({roomListError});
         break;
       default:
@@ -86,19 +130,11 @@ export const RoomPage = () => {
 
   useEffect(() => {
     if (roomId) {
-      const roomDetails = JSON.parse(JSON.stringify(dataRooms)).find(room => room['id'] === roomId);
-      setRoom(roomDetails);
-
-      reset({
-        roomFacilities: roomDetails.facilities.map((facility) => ({
-          value: facility, 
-          label: facility
-        }))
-      })
+      roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
     }
   }, [roomId])
 
-  if (room)
+  if (!isLoading)
     return (
       <>
         <RoomContainer>
@@ -106,28 +142,28 @@ export const RoomPage = () => {
             <RoomFormFieldListContainer>
               <RoomFormField width="50%">
                 <RoomFormLabel htmlFor="roomType">Room type</RoomFormLabel>
-                <RoomInput disabled={!canEdit} {...register("roomType", { value: room.type })}/>
+                <RoomInput disabled={!canEdit && room} {...register("roomType", { value: room?.type })}/>
               </RoomFormField>
               <RoomFormField width="50%">
                 <RoomFormLabel htmlFor="roomNumber">Room number</RoomFormLabel>
-                <RoomInput disabled={!canEdit} {...register("roomNumber", { value: room.number })}/>
+                <RoomInput disabled={!canEdit && room} {...register("roomNumber", { value: room?.number })}/>
               </RoomFormField>
               <RoomFormField>
                 <RoomFormLabel htmlFor="roomDescription">Description</RoomFormLabel>
-                <RoomTextarea disabled={!canEdit} {...register("roomDescription", { value: room.description })} rows={10}></RoomTextarea>
+                <RoomTextarea disabled={!canEdit && room} {...register("roomDescription", { value: room?.description })} rows={10}></RoomTextarea>
               </RoomFormField>
               <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomPrice">Price</RoomFormLabel>
-                <RoomInput disabled={!canEdit} {...register("roomPrice", { value: room.price_night })}/>
+                <RoomInput disabled={!canEdit && room} {...register("roomPrice", { value: room?.price_night })}/>
               </RoomFormField>
               <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomDiscount">Discount</RoomFormLabel>
-                <RoomInput disabled={!canEdit} {...register("roomDiscount", { value: room.discount })}/>
+                <RoomInput disabled={!canEdit && room} {...register("roomDiscount", { value: room?.discount })}/>
               </RoomFormField>
               <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomHasOffer">Offer</RoomFormLabel>
                 <ToogleButton>
-                  <ToggleButtonInput id="roomHasOffer" {...register("roomHasOffer", { value: room.has_offer === "true" ? true : false })} disabled={!canEdit} type="checkbox"/>
+                  <ToggleButtonInput id="roomHasOffer" {...register("roomHasOffer", { value: room?.has_offer === "true" ? true : false })} disabled={!canEdit && room} type="checkbox"/>
                   <ToogleLabel htmlFor="roomHasOffer"></ToogleLabel>
                 </ToogleButton>
               </RoomFormField>
@@ -143,7 +179,7 @@ export const RoomPage = () => {
                       isMulti
                       options={facilityOptions}
                       placeholder={"Select the facilities of the room"}
-                      isDisabled={!canEdit}
+                      isDisabled={!canEdit && room}
                       styles={{
                         container: (baseStyles, state) => ({
                           ...baseStyles,
@@ -219,32 +255,42 @@ export const RoomPage = () => {
               </RoomFormField>
               <RoomFormField>
                 <RoomFormLabel htmlFor="roomPolicy">Cancellation policy</RoomFormLabel>
-                <RoomTextarea name='roomPolicy' disabled={!canEdit} rows={10} { ...register("roomPolicy", {value: room.cancellation_policy}) }></RoomTextarea>
+                <RoomTextarea name='roomPolicy' disabled={!canEdit && room} rows={10} { ...register("roomPolicy", {value: room?.cancellation_policy}) }></RoomTextarea>
               </RoomFormField>              
             </RoomFormFieldListContainer>
             <FormButton 
-              onClick={() => setCanEdit(!canEdit)} 
+              onClick={() => deleteRoom()}
+              disabled={canEdit || !roomId } 
+              styled="secondary" 
+              type='button'
+              position="left">
+                Delete 
+            </FormButton>
+            <FormButton 
+              onClick={() => setCanEdit(!canEdit && room)} 
               disabled={canEdit || !roomId } 
               styled="primary" 
-              text="edit">
+              type='button'
+              position="right">
                 Edit  
             </FormButton>
             <FormButton 
               onClick={() => {
-                setCanEdit(!canEdit);
+                setCanEdit(!canEdit && room);
                 if (!roomId)
                   navigate("/rooms");
               }} 
-              disabled={!canEdit && roomId} 
+              disabled={!canEdit && room && roomId} 
               styled="secondary" 
-              text="dismiss">
+              type='button'
+              position="left">
                 Dismiss
               </FormButton>
             <FormButton 
-              disabled={!canEdit && roomId} 
+              disabled={!canEdit && room && roomId} 
               styled="primary" 
               type='submit'
-              text="save">
+              position="right">
                 {roomId ? "Update" : "Create"}
               </FormButton>
           </RoomForm>
@@ -271,8 +317,8 @@ export const RoomPage = () => {
             >
               { 
                 room?.photos
-                ? room.photos.map((photo, index) => (
-                  <SwiperSlide key={`${room.id}_${index}`} style={{backgroundImage:`url(${photo})`}}>
+                ? room?.photos.map((photo, index) => (
+                  <SwiperSlide key={`${room?.id}_${index}`} style={{backgroundImage:`url(${photo})`}}>
                     <RoomSwiperSlideRoomImage src={photo}/>
                   </SwiperSlide>
                 ))
@@ -301,6 +347,6 @@ export const RoomPage = () => {
         </RoomContainer>        
       </>
     )
-  else
-    return <></>
+  else 
+    <></>
 }

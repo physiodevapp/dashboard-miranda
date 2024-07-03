@@ -250,21 +250,14 @@ export const FormButton = styled(ButtonStyled)`
   }
 
   ${props => {
-    switch(props.text) {
-      case "edit":
-        return css`
-          max-width: 500px;
-          width: calc(100% - 4em);
-          left: 50%;
-          transform: translateX(-50%);
-        `
-      case "dismiss":
+    switch(props.position) {
+      case "left":
         return css`
           max-width: 500px;
           width: calc(50% - 2.5em);
           left: calc(0% + 2em);
         `
-      case "save":
+      case "right":
         return css`
           max-width: 500px;
           width: calc(50% - 2.5em);
