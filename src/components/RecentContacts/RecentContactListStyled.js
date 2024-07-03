@@ -148,7 +148,7 @@ export const SwiperSliderButtons = styled.div`
     font-size: 1.5rem;
     color: #5AD07A;
     margin-right: 0.4em;
-    cursor: pointer;
+    cursor: default;
   }
 
   .archive {

@@ -62,11 +62,15 @@ export const RecentContactListComponent = () => {
       },
       html:`
         <article class="contact__container__article">
-          <img class="container__article__img" src="${userPhoto}"/>
-          <section class="container__article__section">
-            <h6 class="container__article__section__title">${contact.first_name} ${contact.last_name}</h6>
-            <h5 class="container__article__section__subtitle">(${getTimeDiffNow(contact.datetime, contact.id)})</h5>
-            <p class="container__article__section__message">${contact.message}</p>
+          <section class="container__article__profile">
+            <img class="container__article__img" src="${userPhoto}"/>
+            <h6 class="container__article__tel">${contact.phone}</h6>
+            <input disabled class="container__article__email" type="text" value="${contact.email}" class="container__article__email"/>
+          </section>
+          <section class="container__article__content">
+            <h6 class="container__article__content__title">${contact.first_name} ${contact.last_name}</h6>
+            <h5 class="container__article__content__subtitle">(${getTimeDiffNow(contact.datetime, contact.id)})</h5>
+            <p class="container__article__content__message">${contact.message}</p>
           </section> 
         </article>
       `,
