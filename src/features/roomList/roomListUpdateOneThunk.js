@@ -15,7 +15,7 @@ const updateRoom = (updateRoom, list) => {
   })
 }
 
-export const roomListUpdateOneThunk = createAsyncThunk("roomListUpdateOne", async ({room, list}) => {
+export const roomListUpdateOneThunk = createAsyncThunk("roomList/roomListUpdateOne", async ({room, list}) => {
   const roomList = await updateRoom(room, list);
 
   return roomList;

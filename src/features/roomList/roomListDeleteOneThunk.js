@@ -9,7 +9,7 @@ const deleteRoom = (roomId, roomList) => {
   })
 }
 
-export const roomListDeleteOneThunk = createAsyncThunk("roomListDeleteOne", async ({id, list}) => {
+export const roomListDeleteOneThunk = createAsyncThunk("roomList/roomListDeleteOne", async ({id, list}) => {
   const roomList =  await deleteRoom(id, list);
   
   return roomList;

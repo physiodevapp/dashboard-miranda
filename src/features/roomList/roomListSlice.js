@@ -4,6 +4,7 @@ import dataRooms from "../../data/mock_rooms.json";
 import { roomListReadOneThunk } from "./roomListReadOneThunk";
 import { roomListReadListThunk } from "./roomListReadListThunk";
 import { roomListDeleteOneThunk } from "./roomListDeleteOneThunk";
+import { roomListCreateOneThunk } from "./roomListCreateOneThunk";
 
 export const roomListSlice = createSlice({
   name: "roomList",
@@ -52,6 +53,20 @@ export const roomListSlice = createSlice({
         state.status = "fulfilled";
       })
       .addCase(roomListDeleteOneThunk.rejected, (state, action) => {
+        state.status = "rejected";
+      })
+
+      .addCase(roomListCreateOneThunk.pending, (state, action) => {
+        state.status = "pending";
+      })
+      .addCase(roomListCreateOneThunk.fulfilled, (state, action) => {
+        state.roomList = action.payload;
+
+        state.room = null;
+
+        state.status = "fulfilled";
+      })
+      .addCase(roomListCreateOneThunk.rejected, (state, action) => {
         state.status = "rejected";
       })
 

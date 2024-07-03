@@ -22,6 +22,10 @@ import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThu
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
 import Swal from 'sweetalert2';
 
+import { roomListCreateOneThunk } from '../../features/roomList/roomListCreateOneThunk';
+
+
+
 export const RoomPage = () => {
   const [room, setRoom] = useState(null);
   const { roomId } = useParams();
@@ -64,19 +68,38 @@ export const RoomPage = () => {
           didOpen: () => {
             setCanEdit(!canEdit && room);
         
-            const updateRoom = {
-              ...room, 
-              number: formData.roomNumber,
-              type: formData.roomType,
-              description: formData.roomDescription,
-              price_night: formData.roomPrice,
-              discount: formData.roomDiscount,
-              has_offer: formData.roomHasOffer,
-              facilities: formData.roomFacilities.map((facility) => facility.value),
-              cancellation_policy: formData.roomPolicy,
+            if (roomId) {
+              const updateRoom = {
+                ...room, 
+                number: formData.roomNumber,
+                type: formData.roomType,
+                description: formData.roomDescription,
+                price_night: formData.roomPrice,
+                discount: formData.roomDiscount,
+                has_offer: formData.roomHasOffer,
+                facilities: formData.roomFacilities.map((facility) => facility.value),
+                cancellation_policy: formData.roomPolicy,
+              }
+              
+              roomListDispatch(roomListUpdateOneThunk({room: updateRoom, list: roomListRoomList}));
+            } else {
+              const newRoom = {
+                id: self.crypto.randomUUID(),
+                name: formData.name,
+                photos: ["http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff"], 
+                status: "available",
+                number: formData.roomNumber,
+                type: formData.roomType,
+                description: formData.roomDescription,
+                price_night: formData.roomPrice,
+                discount: formData.roomDiscount,
+                has_offer: formData.roomHasOffer,
+                facilities: formData.roomFacilities.map((facility) => facility.value),
+                cancellation_policy: formData.roomPolicy
+              }
+              
+              roomListDispatch(roomListCreateOneThunk({room: newRoom, list: roomListRoomList}))
             }
-            
-            roomListDispatch(roomListUpdateOneThunk({room: updateRoom, list: roomListRoomList}));
           }
         });
       } else if (result.isDenied) {
