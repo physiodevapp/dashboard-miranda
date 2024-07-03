@@ -8,7 +8,7 @@ const getRoom = (roomId, roomList) => {
   })
 }
 
-export const roomListReadOneThunk = createAsyncThunk("roomListReadOne", async ({id, list}) => {
+export const roomListReadOneThunk = createAsyncThunk("roomList/roomListReadOne", async ({id, list}) => {
   const room = await getRoom(id, list);
 
   return room;
