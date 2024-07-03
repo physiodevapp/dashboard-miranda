@@ -73,9 +73,7 @@ export const ButtonStyled = styled.button`
           background-color: white;
           color: #5AD07A;
           text-transform: capitalize;
-          &:hover {
-            text-decoration: underline;
-          }
+          cursor: default;
         `
       case "archive":
         return css`
