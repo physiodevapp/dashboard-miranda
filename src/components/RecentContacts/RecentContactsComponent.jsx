@@ -73,7 +73,7 @@ export const RecentContactsComponent = () => {
             prevEl: "swiper-button-prev",
             nextEl: "swiper-button-next",
           }}
-          slidesPerView={2.4}
+          slidesPerView={"auto"}
           spaceBetween={32}
         >
           {recentContacts.map((contact) => (

@@ -1,19 +1,30 @@
 
 import React, { useEffect, useState } from 'react'
-import './RoomsStyled'
-import dataRooms from '../../data/mock_rooms.json'
-import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomsStyled';
+import './RoomListStyled'
+// import dataRooms from '../../data/mock_rooms.json'
+import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomListStyled';
 import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
-import { NewRoomButton } from './RoomsStyled';
+import { NewRoomButton } from './RoomListStyled';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { useNavigate } from 'react-router-dom';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 import { FaArrowUp } from 'react-icons/fa6';
+import { BsThreeDotsVertical } from "react-icons/bs";
 
-export const RoomsPage = () => {
-  const [rooms, setRooms] = useState(dataRooms);
-  const [displayRooms, setDisplayRooms] = useState(dataRooms);
+import { useDispatch, useSelector } from 'react-redux';
+import { roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
+import { roomListReadListThunk } from '../../features/roomList/roomListReadListThunk';
+
+export const RoomListPage = () => {
+  const roomListDispatch = useDispatch();
+  const roomListRoomList = useSelector(roomListRoomListSelect);
+  const roomListStatus = useSelector(roomListStatusSelect);
+  const roomListError = useSelector(roomListErrorSelect);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const [rooms, setRooms] = useState(roomListRoomList);
+  const [displayRooms, setDisplayRooms] = useState(roomListRoomList);
   const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
   const navigate = useNavigate();
   const [tablePageIndex, setTablePageIndex] = useState(0);
@@ -21,6 +32,32 @@ export const RoomsPage = () => {
   const roomsPerTablePage = 10;
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
+
+  useEffect(() => {
+    switch (roomListStatus) {
+      case "idle":
+        setIsUpdating(false);
+        break;
+      case "pending":
+        setIsUpdating(true);
+        break;
+      case "fulfilled":
+        setIsUpdating(false);
+        console.log('roomList updated');
+        break;
+      case "rejected":
+        setIsUpdating(true);
+        console.log({roomListError});
+        break;
+      default:
+        break;
+    }
+  }, [roomListStatus])
+
+  useEffect(() => {
+    roomListDispatch(roomListReadListThunk({list: roomListRoomList}))
+  }, [])
+  
 
   return (
     <>
@@ -72,7 +109,7 @@ export const RoomsPage = () => {
               <DataTableHeaderRowCell scope="col" style={{width: "8em"}}>Offer price</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
                 scope='col'
-                colSpan={1}
+                colSpan={2}
                 className={`${sortByHeaderKey === 'status' && "active"}`}
                 style={{width: "10em", cursor: "pointer"}}
                 rows={JSON.parse(JSON.stringify(rooms))}
@@ -111,6 +148,9 @@ export const RoomsPage = () => {
                   <RoomsTableBodyRowCell key={`${room.number}_discount`}>{ getOfferPrice(room.price_night, room.discount) }</RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}_status`}>
                     <StatusButton key={`${room.number}_status_button`} styled={room.status}>{ room.status }</StatusButton>
+                  </RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell style={{minWidth: "4em"}}>
+                    <BsThreeDotsVertical/>
                   </RoomsTableBodyRowCell>
                 </DataTableBodyRow>
               ))
