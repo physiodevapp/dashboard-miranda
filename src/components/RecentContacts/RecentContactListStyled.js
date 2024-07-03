@@ -95,6 +95,7 @@ export const SwiperSliderMessage = styled.p`
   width: 100%;
   text-align: left;
   line-height: 28px;
+  cursor: pointer;
 `
 
 export const SwiperSlideAuthor = styled.article`

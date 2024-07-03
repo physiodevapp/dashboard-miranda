@@ -17,7 +17,7 @@ import {
   SwiperSliderButtons,
   SwiperSliderMessage,
   SwiperTitle,
-} from "./RecentContactsStyled";
+} from "./RecentContactListStyled";
 
 import { FaArrowRight, FaArrowLeft, FaRegCheckCircle } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
@@ -25,7 +25,10 @@ import { RiCloseCircleLine } from "react-icons/ri";
 import contacts from "../../data/mock_contacts.json";
 import userPhoto from "../../assets/Imagen de perfil.png";
 
-export const RecentContactsComponent = () => {
+import Swal from "sweetalert2";
+import 'animate.css';
+
+export const RecentContactListComponent = () => {
   const [contactsSwiper, setContactsSwiper] = useState({});
   const [recentContacts, setRecentContacts] = useState([]);
   const prevRef = useRef();
@@ -39,6 +42,45 @@ export const RecentContactsComponent = () => {
 
     return `${diffDays} days ago`;
   };
+
+  const showContact = (contact) => {
+    Swal.fire({
+      title:`Contact details`,
+      showClass: {
+        popup:`
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup:`
+          animate__animated
+          animate__fadeOutUp
+          animate__faster
+        `
+      },
+      html:`
+        <article class="contact__container__article">
+          <img class="container__article__img" src="${userPhoto}"/>
+          <section class="container__article__section">
+            <h6 class="container__article__section__title">${contact.first_name} ${contact.last_name}</h6>
+            <h5 class="container__article__section__subtitle">(${getTimeDiffNow(contact.datetime, contact.id)})</h5>
+            <p class="container__article__section__message">${contact.message}</p>
+          </section> 
+        </article>
+      `,
+      showCloseButton: true,
+      showConfirmButton: false,
+      customClass: {
+        title: "contact__title",
+        htmlContainer: "contact__container"
+      }     
+    }).then((result) => {
+      // if (result.isConfirmed) {
+      // }
+    })
+  }
 
   useEffect(() => {
     const recentContacts = contacts
@@ -54,7 +96,7 @@ export const RecentContactsComponent = () => {
 
   return (
     <>
-      <Section>
+      <Section> 
         <SwiperTitle>Latest Review by Customers</SwiperTitle>
         <Swiper
           modules={[Navigation]}
@@ -78,7 +120,7 @@ export const RecentContactsComponent = () => {
         >
           {recentContacts.map((contact) => (
             <SwiperSlide key={contact.id}>
-              <SwiperSliderMessage>{contact.message}</SwiperSliderMessage>
+              <SwiperSliderMessage onClick={() => showContact(contact)}>{contact.message}</SwiperSliderMessage>
               <SwiperSlideAuthor>
                 <SwiperSlideAuthorPhotoContainer>
                   <SwiperSlideAuthorPhoto src={userPhoto} />

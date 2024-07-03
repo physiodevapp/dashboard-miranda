@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { KPIsListComponent } from '../components/KPIsList/KPIsListComponent';
-import { RecentContactsComponent } from '../components/RecentContacts/RecentContactsComponent';
+import { RecentContactListComponent } from '../components/RecentContacts/RecentContactListComponent';
 import { PageElementContainerStyled } from '../components/PageElementContainerStyled';
 
 export const DashboardPage = () => {
@@ -10,7 +10,7 @@ export const DashboardPage = () => {
     <>
       <PageElementContainerStyled>
         <KPIsListComponent/>
-        <RecentContactsComponent />
+        <RecentContactListComponent />
       </PageElementContainerStyled>
     </>
   )
