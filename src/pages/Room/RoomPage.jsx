@@ -105,16 +105,8 @@ export const RoomPage = () => {
           }
         });
       } else if (result.isDenied) {
-        Swal.fire({
-          title: "Room wasn't updated",
-          icon: "info",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          willOpen: () => {
-            reset();
-            setCanEdit(false)
-          }
-        });
+        reset();
+        setCanEdit(false);
       }
     })
   }
@@ -138,14 +130,7 @@ export const RoomPage = () => {
             roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
           }
         });
-      } else if (result.isConfirmed) {
-        Swal.fire({
-          title: "Room wasn't deleted",
-          icon: "info",
-          showConfirmButton: true,
-          confirmButtonText: "Accept" 
-        });
-      }
+      } 
     });
   }
 
@@ -160,7 +145,7 @@ export const RoomPage = () => {
       case "fulfilled":
         setTimeout(() => {
           setIsLoading(false);
-        }, 10000000);
+        }, 1000);
 
         if (roomListRoom) {
           setRoom(roomListRoom);
@@ -357,7 +342,7 @@ export const RoomPage = () => {
                 if (!roomId)
                   navigate("/rooms");
               }} 
-              disabled={!canEdit && room && roomId} 
+              disabled={!canEdit && room && room} 
               styled="deny" 
               type='button'
               position="left">
@@ -366,7 +351,7 @@ export const RoomPage = () => {
             
 
             <FormButton 
-              disabled={!canEdit && room && roomId} 
+              disabled={!canEdit && room && room} 
               styled="primary" 
               type='submit'
               position="right">
