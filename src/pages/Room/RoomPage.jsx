@@ -49,46 +49,76 @@ export const RoomPage = () => {
   }))
 
   const onSubmit = (formData) => {
-    setCanEdit(!canEdit && room);
-
-    const updateRoom = {
-      ...room, 
-      number: formData.roomNumber,
-      type: formData.roomType,
-      description: formData.roomDescription,
-      price_night: formData.roomPrice,
-      discount: formData.roomDiscount,
-      has_offer: formData.roomHasOffer,
-      facilities: formData.roomFacilities.map((facility) => facility.value),
-      cancellation_policy: formData.roomPolicy,
-    }
-    
-    roomListDispatch(roomListUpdateOneThunk({room: updateRoom}))
-
-    if (!roomId)
-      navigate("/rooms");
+    Swal.fire({
+      title: "Do you want to update the room?",
+      showDenyButton: true,
+      confirmButtonText: "Update",
+      denyButtonText: `Don't update`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Room updated successfully",
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "Accept", 
+          didOpen: () => {
+            setCanEdit(!canEdit && room);
+        
+            const updateRoom = {
+              ...room, 
+              number: formData.roomNumber,
+              type: formData.roomType,
+              description: formData.roomDescription,
+              price_night: formData.roomPrice,
+              discount: formData.roomDiscount,
+              has_offer: formData.roomHasOffer,
+              facilities: formData.roomFacilities.map((facility) => facility.value),
+              cancellation_policy: formData.roomPolicy,
+            }
+            
+            roomListDispatch(roomListUpdateOneThunk({room: updateRoom}))
+        
+            navigate("/rooms");
+          }
+        });
+      } else if (result.isDenied) {
+        Swal.fire({
+          title: "Room wasn't updated",
+          icon: "info",
+          showConfirmButton: true,
+          confirmButtonText: "Accept", 
+          willOpen: () => {
+            reset()
+          }
+        });
+      }
+    })
   }
 
   const deleteRoom = () => {
-    setCanEdit(false)
     Swal.fire({
       title: "Do you want to delete the room?",
       showDenyButton: true,
-      showCancelButton: true,
       confirmButtonText: "Delete",
       denyButtonText: `Don't delete`
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
+      if (result.isConfirmed) {        
         Swal.fire({
           title: "Room deleted successfully",
           icon: "success",
           showConfirmButton: true,
-          confirmButtonText: "Accept" 
+          confirmButtonText: "Accept", 
+          didOpen: () => {
+            roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
+          }
         });
       } else if (result.isDenied) {
-        Swal.fire("Changes are not saved", "", "info");
+        Swal.fire({
+          title: "Room wasn't deleted",
+          icon: "info",
+          showConfirmButton: true,
+          confirmButtonText: "Accept" 
+        });
       }
     });
   }
@@ -277,6 +307,9 @@ export const RoomPage = () => {
             <FormButton 
               onClick={() => {
                 setCanEdit(!canEdit && room);
+
+                reset();
+
                 if (!roomId)
                   navigate("/rooms");
               }} 
