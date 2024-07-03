@@ -266,9 +266,3 @@ export const FormButton = styled(ButtonStyled)`
     }
   }}
 ` 
-
-export const SweetAlertContainer = styled.div`
-  .swal2-title {
-    font-family: 'Poppins'
-  }
-`

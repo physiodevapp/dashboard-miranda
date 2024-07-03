@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
-import { RoomFormFieldListContainer, FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomSwiperSlideRoomImage, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel, SweetAlertContainer } from './RoomStyled';
+import { RoomFormFieldListContainer, FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomSwiperSlideRoomImage, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel } from './RoomStyled';
 
 import Select from 'react-select';
 
@@ -19,10 +19,12 @@ import { roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomLi
 import { roomListUpdateOneThunk } from '../../features/roomList/roomListUpdateOneThunk';
 import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThunk';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
+import { roomListCreateOneThunk } from '../../features/roomList/roomListCreateOneThunk';
 
 import Swal from 'sweetalert2';
 
-import { roomListCreateOneThunk } from '../../features/roomList/roomListCreateOneThunk';
+import ClipLoader from "react-spinners/ClipLoader";
+import { BounceLoader } from 'react-spinners';
 
 export const RoomPage = () => {
   const [room, setRoom] = useState(null);
@@ -43,7 +45,7 @@ export const RoomPage = () => {
   const roomListRoom = useSelector(roomListRoomSelect);
   const roomListRoomList = useSelector(roomListRoomListSelect)
   const roomListError = useSelector(roomListErrorSelect);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const facilityOptions = ["Air conditioner", "High speed WiFi", "Breakfast", "Kitchen", "Cleaning", "Shower", "Grocery", "Single bed", "Shop near", "Towels"].map((facility) => ({
     value: facility,
@@ -103,16 +105,8 @@ export const RoomPage = () => {
           }
         });
       } else if (result.isDenied) {
-        Swal.fire({
-          title: "Room wasn't updated",
-          icon: "info",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          willOpen: () => {
-            reset();
-            setCanEdit(false)
-          }
-        });
+        reset();
+        setCanEdit(false);
       }
     })
   }
@@ -136,14 +130,7 @@ export const RoomPage = () => {
             roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
           }
         });
-      } else if (result.isConfirmed) {
-        Swal.fire({
-          title: "Room wasn't deleted",
-          icon: "info",
-          showConfirmButton: true,
-          confirmButtonText: "Accept" 
-        });
-      }
+      } 
     });
   }
 
@@ -156,7 +143,9 @@ export const RoomPage = () => {
         setIsLoading(true);
         break;
       case "fulfilled":
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
 
         if (roomListRoom) {
           setRoom(roomListRoom);
@@ -172,7 +161,7 @@ export const RoomPage = () => {
         }
         break;
       case "rejected":
-        setIsLoading(true);
+        setIsLoading(false);
         console.log({roomListError});
         break;
       default:
@@ -185,9 +174,27 @@ export const RoomPage = () => {
       roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
   }, [roomId])
 
-  if (!isLoading) 
-    return (
-      <>
+  const override = {
+    position: "relative",
+    top: "40%",
+    display: "block",
+    margin: "0 auto",
+    borderColor: "#135846",
+  };
+
+  return (
+    isLoading
+    ? <>
+        <BounceLoader
+          color={"#135846"}
+          loading={isLoading}
+          cssOverride={override}
+          size={100}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </>
+    : <>
         <RoomContainer>
           <RoomForm onSubmit={handleSubmit(onSubmit)}>
             <RoomFormFieldListContainer>
@@ -335,7 +342,7 @@ export const RoomPage = () => {
                 if (!roomId)
                   navigate("/rooms");
               }} 
-              disabled={!canEdit && room && roomId} 
+              disabled={!canEdit && room && room} 
               styled="deny" 
               type='button'
               position="left">
@@ -344,7 +351,7 @@ export const RoomPage = () => {
             
 
             <FormButton 
-              disabled={!canEdit && room && roomId} 
+              disabled={!canEdit && room && room} 
               styled="primary" 
               type='submit'
               position="right">
@@ -404,7 +411,5 @@ export const RoomPage = () => {
           </RoomGallery>
         </RoomContainer>        
       </>
-    )
-  else 
-    <></>
+  )
 }
