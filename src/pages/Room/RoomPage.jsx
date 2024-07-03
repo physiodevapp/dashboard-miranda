@@ -2,9 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
-import { FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomSwiperSlideRoomImage, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel } from './RoomPageStyled';
-// import dataRooms from '../../data/mock_rooms.json';
-import { RoomFormFieldListContainer } from './RoomPageStyled';
+import { RoomFormFieldListContainer, FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomSwiperSlideRoomImage, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel, SweetAlertContainer } from './RoomStyled';
 
 import Select from 'react-select';
 
@@ -15,16 +13,16 @@ import { Navigation } from "swiper/modules";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 import { useForm, Controller } from 'react-hook-form';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListUpdateOneThunk } from '../../features/roomList/roomListUpdateOneThunk';
 import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThunk';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
+
 import Swal from 'sweetalert2';
 
 import { roomListCreateOneThunk } from '../../features/roomList/roomListCreateOneThunk';
-
-
 
 export const RoomPage = () => {
   const [room, setRoom] = useState(null);
@@ -55,9 +53,11 @@ export const RoomPage = () => {
   const onSubmit = (formData) => {
     Swal.fire({
       title: `Do you want to ${roomId ? "update" : "create"} the room?`,
+      icon: "question",
       showDenyButton: true,
       confirmButtonText: `${roomId ? "Update" : "Create"}`,
-      denyButtonText: ` ${roomId ? "Don't update" : "Don't create"}`
+      denyButtonText: ` ${roomId ? "Don't update" : "Don't create"}`,
+      reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -109,7 +109,8 @@ export const RoomPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           willOpen: () => {
-            reset()
+            reset();
+            setCanEdit(false)
           }
         });
       }
@@ -120,10 +121,12 @@ export const RoomPage = () => {
     Swal.fire({
       title: "Do you want to delete the room?",
       showDenyButton: true,
-      confirmButtonText: "Delete",
-      denyButtonText: `Don't delete`
+      icon: "warning",
+      denyButtonText: "Delete",
+      confirmButtonText: `Don't delete`,
+      reverseButtons: true,
     }).then((result) => {
-      if (result.isConfirmed) {        
+      if (result.isDenied) {        
         Swal.fire({
           title: "Room deleted successfully",
           icon: "success",
@@ -133,7 +136,7 @@ export const RoomPage = () => {
             roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
           }
         });
-      } else if (result.isDenied) {
+      } else if (result.isConfirmed) {
         Swal.fire({
           title: "Room wasn't deleted",
           icon: "info",
@@ -182,7 +185,7 @@ export const RoomPage = () => {
       roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
   }, [roomId])
 
-  if (!isLoading)
+  if (!isLoading) 
     return (
       <>
         <RoomContainer>
@@ -242,6 +245,7 @@ export const RoomPage = () => {
                         indicatorsContainer: (baseStyles, state) => ({
                           ...baseStyles,
                           cursor: "pointer",
+                          alignSelf: "flex-start",
                           display: state.isDisabled
                             ? "none"
                             : baseStyles.display
@@ -272,7 +276,7 @@ export const RoomPage = () => {
                           ...baseStyles,
                           color: "#135846",
                           backgroundColor: "#EEF9F2",
-                          lineHeight: "4em",
+                          lineHeight: `${canEdit ? "1.4em" : "4em"}`,
                           padding: state.isDisabled 
                             ? "0em 1em !important"
                             : baseStyles.padding
@@ -309,7 +313,7 @@ export const RoomPage = () => {
             <FormButton 
               onClick={() => deleteRoom()}
               disabled={canEdit || !roomId } 
-              styled="secondary" 
+              styled="deny" 
               type='button'
               position="left">
                 Delete 
@@ -332,18 +336,21 @@ export const RoomPage = () => {
                   navigate("/rooms");
               }} 
               disabled={!canEdit && room && roomId} 
-              styled="secondary" 
+              styled="deny" 
               type='button'
               position="left">
                 Dismiss
-              </FormButton>
+            </FormButton>
+            
+
             <FormButton 
               disabled={!canEdit && room && roomId} 
               styled="primary" 
               type='submit'
               position="right">
                 {roomId ? "Update" : "Create"}
-              </FormButton>
+            </FormButton>
+            
           </RoomForm>
           <RoomGallery>
             <Swiper

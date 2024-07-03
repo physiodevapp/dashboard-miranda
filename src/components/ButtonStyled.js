@@ -102,6 +102,18 @@ export const ButtonStyled = styled.button`
           background-color: #E2E2E2;
           color: #6D6D6D;
         `
+      case "deny":
+        return css`
+          border: 2px solid transparent;
+          background-color: #E23428;
+          color: white;
+          &:hover {
+            color: #E23428;
+            border-color: #E23428;
+            background-color: white;
+            background-image: unset !important;
+          }
+        `
     }
   }}
 ` 

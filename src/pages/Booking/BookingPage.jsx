@@ -121,6 +121,7 @@ export const BookingPage = () => {
                     indicatorsContainer: (baseStyles, state) => ({
                       ...baseStyles,
                       cursor: "pointer",
+                      alignSelf: "flex-start",
                       display: state.isDisabled
                         ? "none"
                         : baseStyles.display
@@ -151,7 +152,7 @@ export const BookingPage = () => {
                       ...baseStyles,
                       color: "#135846",
                       backgroundColor: "#EEF9F2",
-                      lineHeight: "4em",
+                      lineHeight: `${canEdit ? "1.4em" : "4em"}`,
                       padding: state.isDisabled 
                         ? "0em 1em !important"
                         : baseStyles.padding

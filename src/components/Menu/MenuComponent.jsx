@@ -24,12 +24,12 @@ export const MenuComponent = () => {
           <LuLayoutDashboard />
           Dashboard
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/bookings')} className={pathname === '/bookings' && 'active'}>
+        <MenuListItem onClick={() => navigate('/bookings')} className={pathname.indexOf('/bookings') !== -1 && 'active'}>
           <span></span>
           <LuCalendarCheck/>
           Bookings
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/rooms')} className={pathname === '/rooms' && 'active'}>
+        <MenuListItem onClick={() => navigate('/rooms')} className={pathname.indexOf('/rooms') !== -1 && 'active'}>
           <span></span>
           <RiKey2Line style={{transform: "rotateZ(130deg)"}}/>
           Rooms
