@@ -28,7 +28,7 @@ import userPhoto from "../../assets/Imagen de perfil.png";
 import Swal from "sweetalert2";
 import 'animate.css';
 
-export const RecentContactListComponent = () => {
+export const RecentContactListComponent = ({onUpdate}) => {
   const [contactsSwiper, setContactsSwiper] = useState({});
   const [recentContacts, setRecentContacts] = useState([]);
   const prevRef = useRef();
@@ -139,7 +139,12 @@ export const RecentContactListComponent = () => {
                 </SwiperSlideAuthorInfo>
                 <SwiperSliderButtons>
                   <FaRegCheckCircle className="post" />
-                  <RiCloseCircleLine className="archive"/>
+                  <RiCloseCircleLine className={`archive ${contact.status === "archived" && "disabled"}`} onClick={() => {
+                    if(contact.status === "archived")
+                      return
+                    contact.status = "archived";
+                    onUpdate(contact);
+                  }}/>
                 </SwiperSliderButtons>
               </SwiperSlideAuthor>
             </SwiperSlide>
