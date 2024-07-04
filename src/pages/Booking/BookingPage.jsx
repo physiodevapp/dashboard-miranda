@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { BookingContainer, BookingFacilities, BookingForm, BookingGallery, BookingGalleryBlackLayer, BookingSwiperPaginationNext, BookingSwiperPaginationPrev, BookingSwiperSlideRoomImage, BookingSwiperSlideRoomInfo, BookingSwiperSliderRoomDescription, BookingSwiperSliderRoomStatus, BookingSwiperSliderRoomType } from './BookingStyled';
+import { BookingContainer, BookingForm, BookingGallery, BookingGalleryBlackLayer, BookingSwiperPaginationNext, BookingSwiperPaginationPrev, BookingSwiperSlideRoomImage, BookingSwiperSlideRoomInfo, BookingSwiperSliderRoomDescription, BookingSwiperSliderRoomStatus, BookingSwiperSliderRoomType } from './BookingStyled';
 import { FormField, FormFieldLabel, FormFieldListContainer, FormInput, FormTextarea } from '../../components/FormField';
 import { useNavigate, useParams } from 'react-router-dom';
 import Select from 'react-select';
@@ -18,7 +18,6 @@ import { BounceLoader } from 'react-spinners';
 
 export const BookingPage = () => {
   const [booking, setBooking] = useState(null);
-  const [room, setRoom] = useState(null)
   const { bookingId } = useParams();
 
   const [canEdit, setCanEdit] = useState(false);
@@ -233,6 +232,9 @@ export const BookingPage = () => {
             </FormFieldListContainer>
           </BookingForm>
           <BookingGallery>
+            <BookingSwiperSliderRoomStatus styled={booking.status}>
+              <h6>{ booking.status.replace("_", " ") }</h6>
+            </BookingSwiperSliderRoomStatus>
             <BookingSwiperSlideRoomInfo>
               <BookingSwiperSliderRoomType>
                 { booking.room_details?.type }

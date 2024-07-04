@@ -6,12 +6,6 @@ export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1,
   const [sortCriteria, setSortCriteria] = useState({header: headerKey, direction: initialSortDirection});
   const headerRowCell = useRef();
 
-  // useEffect(() => {
-
-  //   onSort(sortCriteria);
-    
-  // }, [sortCriteria])
-
   return (
     <>
       <DataTableHeaderRowCell 

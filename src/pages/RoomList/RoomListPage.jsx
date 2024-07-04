@@ -169,7 +169,7 @@ export const RoomListPage = () => {
                   <RoomsTableBodyRowCell key={`${room.number}_status`}>
                     <StatusButton key={`${room.number}_status_button`} styled={room.status}>{ room.status }</StatusButton>
                   </RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell style={{minWidth: "4em"}}>
+                  <RoomsTableBodyRowCell style={{minWidth: "50px"}}>
                     <BsThreeDotsVertical/>
                   </RoomsTableBodyRowCell>
                 </DataTableBodyRow>
