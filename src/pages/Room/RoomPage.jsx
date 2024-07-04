@@ -169,19 +169,10 @@ export const RoomPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
-    console.log({roomId})
     if (roomId)
       roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
 
   }, [roomId])
-
-  const override = {
-    position: "relative",
-    top: "40%",
-    display: "block",
-    margin: "0 auto",
-    borderColor: "#135846",
-  };
 
   return (
     isLoading
@@ -189,7 +180,13 @@ export const RoomPage = () => {
         <BounceLoader
           color={"#135846"}
           loading={isLoading}
-          cssOverride={override}
+          cssOverride={{
+            position: "relative",
+            top: "40%",
+            display: "block",
+            margin: "0 auto",
+            borderColor: "#135846",
+          }}
           size={100}
           aria-label="Loading Spinner"
           data-testid="loader"

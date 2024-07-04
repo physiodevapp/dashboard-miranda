@@ -95,7 +95,7 @@ export const DataTableBodyRow = styled.tr`
 
 export const DataTableBodyRowCell = styled.td`
   text-align: left;
-  min-width: 100px;
+  min-width: 150px;
   padding: 1rem 0rem 1rem 1rem;
 `
 

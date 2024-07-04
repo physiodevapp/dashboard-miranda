@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { BookingContainer, BookingFacilities, BookingForm, BookingGallery, BookingGalleryBlackLayer, BookingSwiperPaginationNext, BookingSwiperPaginationPrev, BookingSwiperSlideRoomImage, BookingSwiperSlideRoomInfo, BookingSwiperSliderRoomDescription, BookingSwiperSliderRoomStatus, BookingSwiperSliderRoomType } from './BookingStyled';
 import { FormField, FormFieldLabel, FormFieldListContainer, FormInput, FormTextarea } from '../../components/FormField';
 import { useNavigate, useParams } from 'react-router-dom';
-import dataBookings from "../../data/mock_bookings.json";
-import dataRooms from "../../data/mock_rooms.json";
 import Select from 'react-select';
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,16 +10,32 @@ import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { bookingListBookingListSelect, bookingListBookingSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+import { bookingListReadOneThunk } from '../../features/bookingList/bookingListReadOneThunk';
+import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';
+import { BounceLoader } from 'react-spinners';
+
 export const BookingPage = () => {
   const [booking, setBooking] = useState(null);
   const [room, setRoom] = useState(null)
   const { bookingId } = useParams();
+
   const [canEdit, setCanEdit] = useState(false);
+
   const navigate = useNavigate();
 
   const [roomPhotosSwiper, setRoomPhotosSwiper] = useState({});
   const prevRef = useRef();
   const nextRef = useRef();
+
+  const bookingListDispatch = useDispatch();
+  const bookingListStatus = useSelector(bookingListStatusSelect);
+  const bookingListBooking = useSelector(bookingListBookingSelect);
+  const bookingListBookingList = useSelector(bookingListBookingListSelect)
+  const bookingListError = useSelector(bookingListErrorSelect);
+  const roomListRoomList = useSelector(roomListRoomListSelect)
+  const [isLoading, setIsLoading] = useState(true);
 
   const formatDatetime = (datetime) => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
@@ -37,30 +51,66 @@ export const BookingPage = () => {
   const getTotalPrice = (checkIn, checkOut) => {
     const diffTime = checkOut - checkIn;    
     const totalNights = Math.round(diffTime / (24 * 3600 * 1000));
-    const finalPrice = room?.has_offer
-      ? (totalNights * room?.price_night * room.discount / 100)
-      : totalNights * room?.price_night
+    const finalPrice = booking.room_details?.has_offer
+      ? (totalNights * booking.room_details?.price_night * booking.room_details.discount / 100)
+      : totalNights * booking.room_details?.price_night
 
     return `$${finalPrice}`
   }
 
   useEffect(() => {
-    if (bookingId) {
-      const booking = JSON.parse(JSON.stringify(dataBookings)).find(room => room['id'] === bookingId);
-      setBooking(booking);
+    switch (bookingListStatus) {
+      case "idle":
+        setIsLoading(false);
+        break;
+      case "pending":
+        setIsLoading(true);
+        break;
+      case "fulfilled":
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+
+        if (bookingListBooking && bookingId)
+          setBooking(bookingListBooking);
+        else if (bookingId && bookingListBooking === null)
+          navigate("/bookings");
+        
+        break;
+      case "rejected":
+        setIsLoading(false);
+        console.log({bookingListError});
+        break;
+      default:
+        break;
     }
-  }, [bookingId])
+  }, [bookingListStatus])
 
   useEffect(() => {
-    if (booking) {
-      const bookingRoom = dataRooms.find((room) => room.number === booking.room_number);
-      setRoom(bookingRoom);        
-    }
-  }, [booking])
+    if (bookingId)
+      bookingListDispatch(bookingListReadOneThunk({id: bookingId, list: bookingListBookingList, roomList: roomListRoomList}))
 
-  if (booking && room) 
-    return (
-      <>
+  }, [bookingId])
+
+  return (
+    isLoading
+    ? <>
+        <BounceLoader
+          color={"#135846"}
+          loading={isLoading}
+          cssOverride={{
+            position: "relative",
+            top: "40%",
+            display: "block",
+            margin: "0 auto",
+            borderColor: "#135846",
+          }}
+          size={100}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </>
+    : <>
         <BookingContainer>
           <BookingForm>
             <FormFieldListContainer>
@@ -90,6 +140,7 @@ export const BookingPage = () => {
               </FormField>
               <FormField>
                 <FormFieldLabel htmlFor="booking_special_request">Special request</FormFieldLabel>
+                
                 <FormTextarea disabled={!canEdit} rows={10} value={booking.special_request}></FormTextarea>
               </FormField>
               <FormField width="100%">
@@ -98,7 +149,7 @@ export const BookingPage = () => {
                   closeMenuOnSelect={false}
                   isMulti
                   defaultValue={
-                    room.facilities.map((facility) => {
+                    booking.room_details.facilities.map((facility) => {
                       return {
                         value: facility,
                         label: facility
@@ -184,10 +235,10 @@ export const BookingPage = () => {
           <BookingGallery>
             <BookingSwiperSlideRoomInfo>
               <BookingSwiperSliderRoomType>
-                { room?.type }
+                { booking.room_details?.type }
               </BookingSwiperSliderRoomType>
               <BookingSwiperSliderRoomDescription>
-                { room?.description }
+                { booking.room_details?.description }
               </BookingSwiperSliderRoomDescription>
             </BookingSwiperSlideRoomInfo>
             <Swiper
@@ -211,9 +262,9 @@ export const BookingPage = () => {
               spaceBetween={0}
             >
               { 
-                room?.photos
-                ? room.photos.map((photo, index) => (
-                  <SwiperSlide key={`${room.id}_${index}`} style={{backgroundImage:`url(${photo})`}}>
+                booking.room_details.photos
+                ? booking.room_details.photos.map((photo, index) => (
+                  <SwiperSlide key={`${booking.room_details.id}_${index}`} style={{backgroundImage:`url(${photo})`}}>
                     <BookingGalleryBlackLayer/>
                     <BookingSwiperSlideRoomImage src={photo}/>
                   </SwiperSlide>
@@ -242,7 +293,5 @@ export const BookingPage = () => {
           </BookingGallery>
         </BookingContainer>
       </>
-    )
-  else 
-    return <></>
+  )
 }

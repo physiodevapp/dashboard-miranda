@@ -2,15 +2,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { DataTableHeaderRowCell } from './DataTableStyled';
 
-export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1, headerKey, onSort, initialSortDirection = -1, toggleSortCriteria = false, activeTab, className = {}, style = {}, children}) => {
+export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1, headerKey, onSort, initialSortDirection = -1, toggleSortCriteria = false, className = {}, style = {}, children}) => {
   const [sortCriteria, setSortCriteria] = useState({header: headerKey, direction: initialSortDirection});
   const headerRowCell = useRef();
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    onSort(sortCriteria);
+  //   onSort(sortCriteria);
     
-  }, [sortCriteria, activeTab])
+  // }, [sortCriteria])
 
   return (
     <>
@@ -21,10 +21,16 @@ export const DataTableHeaderRowCellSortComponent = ({scope = "col", colSpan = 1,
         className={`${className} ${sortCriteria.direction === -1 ? 'down' : 'up'}`}
         style={style} 
         onClick={() => {
+          const updateSortCriteria = JSON.parse(JSON.stringify(sortCriteria));
+
           if (toggleSortCriteria)
-            setSortCriteria({...sortCriteria, direction: -1 * sortCriteria.direction})
+            updateSortCriteria.direction = -1 * sortCriteria.direction
           else
-            setSortCriteria({header: headerKey, direction: initialSortDirection});
+            updateSortCriteria.direction = initialSortDirection          
+
+          setSortCriteria(updateSortCriteria);
+
+          onSort(updateSortCriteria);
         }}>
         { children }
       </DataTableHeaderRowCell>

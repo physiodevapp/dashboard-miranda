@@ -4,7 +4,6 @@ import { contactListReadListThunk } from "./contactListReadListThunk";
 import { contactListUpdateOneThunk } from "./contactListUpdateOneThunk";
 
 
-
 export const contactListSlice = createSlice({
   name: "contactList",
   initialState: {
