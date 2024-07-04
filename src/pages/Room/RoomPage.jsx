@@ -146,13 +146,13 @@ export const RoomPage = () => {
           setIsLoading(false);
         }, 1000);
 
-        if (roomListRoom) {
+        if (roomListRoom && roomId) {
           setRoom(roomListRoom);
   
           reset({
             roomFacilities: roomListRoom.facilities.map((facility) => ({
               value: facility, 
-              label: facility
+              label: facility 
             }))
           })
         } else if (roomId && roomListRoom === null) {
@@ -169,8 +169,10 @@ export const RoomPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
+    console.log({roomId})
     if (roomId)
       roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
+
   }, [roomId])
 
   const override = {
@@ -318,7 +320,7 @@ export const RoomPage = () => {
             </RoomFormFieldListContainer>
             <FormButton 
               onClick={() => deleteRoom()}
-              disabled={canEdit || !roomId } 
+              disabled={canEdit || !room } 
               styled="deny" 
               type='button'
               position="left">
@@ -326,7 +328,7 @@ export const RoomPage = () => {
             </FormButton>
             <FormButton 
               onClick={() => setCanEdit(!canEdit && room)} 
-              disabled={canEdit || !roomId } 
+              disabled={canEdit || !room } 
               styled="primary" 
               type='button'
               position="right">
@@ -341,22 +343,19 @@ export const RoomPage = () => {
                 if (!roomId)
                   navigate("/rooms");
               }} 
-              disabled={!canEdit && room && room} 
+              disabled={!canEdit && room} 
               styled="deny" 
               type='button'
               position="left">
                 Dismiss
-            </FormButton>
-            
-
+            </FormButton>   
             <FormButton 
-              disabled={!canEdit && room && room} 
+              disabled={!canEdit && room} 
               styled="primary" 
               type='submit'
               position="right">
                 {roomId ? "Update" : "Create"}
-            </FormButton>
-            
+            </FormButton>            
           </RoomForm>
           <RoomGallery>
             <Swiper
