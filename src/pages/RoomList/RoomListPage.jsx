@@ -26,6 +26,7 @@ export const RoomListPage = () => {
   const [displayRooms, setDisplayRooms] = useState(roomListRoomList);
 
   const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
+  const [sortCriteria, setSortCriteria] = useState({headerKey: 'datetime', direction: -1})
   
   const navigate = useNavigate();
 
@@ -34,6 +35,18 @@ export const RoomListPage = () => {
   const roomsPerTablePage = 10;
   
   const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
+
+  const sortRows = (rows, { headerKey: key, direction: criteria = -1}) => {
+    return rows.sort((current, next) => {
+      if (current[key] < next[key])
+        return criteria
+
+      if (current[key] > next[key])
+        return -1 * criteria
+      
+      return 0;
+    })
+  }
 
   useEffect(() => {
     switch (roomListStatus) {
@@ -45,6 +58,8 @@ export const RoomListPage = () => {
         break;
       case "fulfilled":
         setIsUpdating(false);
+
+        setRooms(roomListRoomList);
         break;
       case "rejected":
         setIsUpdating(true);
@@ -56,8 +71,10 @@ export const RoomListPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
-    roomListDispatch(roomListReadListThunk({list: roomListRoomList}))
-  }, [])
+    const sortedRows = sortRows([...rooms], sortCriteria);
+
+    setDisplayRooms(sortedRows);
+  }, [rooms, sortCriteria])
   
 
   return (
@@ -74,12 +91,10 @@ export const RoomListPage = () => {
                 colSpan={2}
                 className={`${sortByHeaderKey === 'number' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'number'}
                 initialSort={true}
-                onSort={(sortedRows, key) => {
-                  setDisplayRooms(sortedRows);
-                  setSortByHeaderKey(key);
+                onSort={({header, direction}) => {
+                  setSortCriteria({headerKey: header, direction})
                 }}
               >
                 <>
@@ -94,12 +109,10 @@ export const RoomListPage = () => {
                 colSpan={1}
                 className={`${sortByHeaderKey === 'price_night' && "active"}`}
                 style={{width: "8em", cursor: "pointer"}}
-                rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'price_night'}
                 toggleSortCriteria={true}
-                onSort={(sortedRows, key) => {
-                  setDisplayRooms(sortedRows);
-                  setSortByHeaderKey(key);
+                onSort={({header, direction}) => {
+                  setSortCriteria({headerKey: header, direction})
                 }}
               >
                 <>
@@ -113,11 +126,9 @@ export const RoomListPage = () => {
                 colSpan={2}
                 className={`${sortByHeaderKey === 'status' && "active"}`}
                 style={{width: "10em", cursor: "pointer"}}
-                rows={JSON.parse(JSON.stringify(rooms))}
                 headerKey={'status'}
-                onSort={(sortedRows, key) => {
-                  setDisplayRooms(sortedRows);
-                  setSortByHeaderKey(key);
+                onSort={({header, direction}) => {
+                  setSortCriteria({headerKey: header, direction})
                 }}
               >
                 <>
