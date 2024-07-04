@@ -2,15 +2,13 @@
 import React, { useEffect, useState } from 'react'
 import { TabItem, TabList } from './DataTableTabListStyled';
 
-export const DataTableTabListComponent = ({tabItems, tablePageIndex = 0, rows, rowsPerPage = 10, onTabChange}) => {
+export const DataTableTabListComponent = ({tabItems, onTabChange}) => {
   const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {  
-    const tabRows = [...rows].filter((row) => activeTab.length ? row.status === activeTab : true);
     
-    const pageRows = [...tabRows].slice((tablePageIndex * rowsPerPage), (tablePageIndex * rowsPerPage) + rowsPerPage);
+    onTabChange(activeTab);
 
-    onTabChange(activeTab, tabRows, pageRows);
   },[activeTab])
 
   return (

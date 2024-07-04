@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RecentContactListComponent } from "../../components/RecentContacts/RecentContactListComponent";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
-import dataContacts from "../../data/mock_contacts.json";
-import { ContactsTableBodyRowCell, ContactsTableContainer } from "./ContactsStyled";
+import { ContactsTableBodyRowCell, ContactsTableContainer } from "./ContactListStyled";
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from "../../components/DataTableStyled";
 import { DataTablePaginationComponent } from "../../components/DataTablePagination/DataTablePaginationComponent";
 import { DataTableHeaderRowCellSortComponent } from "../../components/DataTableHeaderRowCellSortComponent";
@@ -10,7 +9,9 @@ import { ButtonStyled } from "../../components/ButtonStyled";
 import { DataTableTabListComponent } from "../../components/DataTableTabs/DataTableTabListComponent";
 import { FaArrowUp } from "react-icons/fa6";
 
-export const ContactsPage = () => {
+import dataContacts from "../../data/mock_contacts.json";
+
+export const ContactListPage = () => {
   const [contacts, setContacts] = useState(dataContacts);
   const [displayContacts, setDisplayContacts] = useState(dataContacts);
   const [sortByHeaderKey, setSortByHeaderKey] = useState('datetime');
@@ -30,10 +31,27 @@ export const ContactsPage = () => {
     });
   } 
 
+  useEffect(() => {
+    const tabRows = JSON.parse(JSON.stringify(contacts)).filter((contact) => activeTab.length ? contact.status === activeTab : true);
+
+    setDisplayContacts(tabRows)
+  }, [contacts, activeTab])
+
   return (
     <>
       <PageElementContainerStyled>
-        <RecentContactListComponent />
+        <RecentContactListComponent
+          onUpdate={(updateContact) => {
+            const updateContactList = JSON.parse(JSON.stringify(contacts)).map((item) => {
+              if (item.id === updateContact.id) {
+                return updateContact
+              }
+
+              return item
+            })
+            setContacts(updateContactList);  
+          }}
+        />
       </PageElementContainerStyled>
       <PageElementContainerStyled>
         <DataTableTabListComponent 
@@ -41,12 +59,8 @@ export const ContactsPage = () => {
             {key: '', htmlContent: 'All contacts'},
             {key: 'archived', htmlContent: 'Archived'}
           ]}
-          rows={contacts}
-          tablePageIndex={tablePageIndex}
-          rowsPerPage={10}
-          onTabChange={(currentTab, tabRows) => {
+          onTabChange={(currentTab) => {
             setTablePageIndex(0);
-            setDisplayContacts(tabRows)
             setActiveTab(currentTab);            
           }}
         />
@@ -113,13 +127,13 @@ export const ContactsPage = () => {
                           <ButtonStyled 
                             styled="publish" 
                             onClick={() => {
-                              const updateContacts = JSON.parse(JSON.stringify(contacts)).map((item) => {
+                              const updateContactList = JSON.parse(JSON.stringify(contacts)).map((item) => {
                                 return {
                                   ...item,
                                   "status": item.id === contact.id ? item.status = "published" : item.status
                                 }
                               })
-                              setContacts(updateContacts);
+                              setContacts(updateContactList);
                             }}>
                               Publish
                           </ButtonStyled>
@@ -127,15 +141,15 @@ export const ContactsPage = () => {
                             styled="archive" 
                             style={{marginLeft: "1em"}}
                             onClick={() => {
-                              const updateContacts = JSON.parse(JSON.stringify(contacts)).map((item) => {
+                              const updateContactList = JSON.parse(JSON.stringify(contacts)).map((item) => {
                                 return {
                                   ...item,
                                   "status": item.id === contact.id ? item.status = "archived" : item.status
                                 }
                               })
-                              setContacts(updateContacts);
+                              setContacts(updateContactList);                              
                             }}>
-                              Archive
+                              { contact.status === "archived" ? "Archived" : "Archive"}
                             </ButtonStyled>
                         </>                    
                       </ContactsTableBodyRowCell>

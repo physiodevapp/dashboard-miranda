@@ -143,18 +143,24 @@ export const SwiperSlideAuthorInfoDatetime = styled.h6`
 
 export const SwiperSliderButtons = styled.div`
   align-self: center;
+  font-size: 1.5rem;
 
   .post {
-    font-size: 1.5rem;
     color: #5AD07A;
     margin-right: 0.4em;
     cursor: default;
   }
 
   .archive {
-    font-size: 1.5rem;
     transform: scale(1.15);
     color: #E23428;
     cursor: pointer;
+
   }
+  
+  .disabled {
+    cursor: default;
+    opacity: 0.2;
+  }
+
 `

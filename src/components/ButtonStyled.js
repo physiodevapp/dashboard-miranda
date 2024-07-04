@@ -78,8 +78,11 @@ export const ButtonStyled = styled.button`
       case "archive":
         return css`
           padding-top: 0em;
+          padding-left: 0em;
           background-color: white;
           color: #E23428;
+          min-width: 84px;
+          text-align: left;
           text-transform: capitalize;
           &:hover {
             text-decoration: underline;

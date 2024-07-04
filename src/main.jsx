@@ -9,7 +9,7 @@ import { Layout } from "./pages/Layout/Layout";
 import { DashboardPage } from "./pages/DashboardPage";
 import { RoomListPage } from "./pages/RoomList/RoomListPage";
 import { RoomPage } from "./pages/Room/RoomPage";
-import { ContactsPage } from "./pages/Contacts/ContactsPage";
+import { ContactListPage } from "./pages/Contacts/ContactListPage";
 import { BookingListPage } from "./pages/BookingList/BookingListPage";
 import { BookingPage } from "./pages/Booking/BookingPage";
 import { Provider } from "react-redux";
@@ -29,7 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="rooms/:roomId" element={<RoomPage/>}></Route>
             <Route path="bookings" element={<BookingListPage/>}></Route>
             <Route path="bookings/:bookingId" element={<BookingPage/>}></Route>
-            <Route path="contacts" element={<ContactsPage/>}></Route>
+            <Route path="contacts" element={<ContactListPage/>}></Route>
             <Route exact path="" element={<NoMatch/>}/>
             <Route path="*" element={<NoMatch/>}/>
           </Route>
