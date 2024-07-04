@@ -9,7 +9,6 @@ import { ButtonStyled } from "../../components/ButtonStyled";
 import { DataTableTabListComponent } from "../../components/DataTableTabs/DataTableTabListComponent";
 import { FaArrowUp } from "react-icons/fa6";
 
-//import dataContacts from "../../data/mock_contacts.json";
 import { useDispatch, useSelector } from "react-redux";
 import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
 import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";
@@ -112,7 +111,6 @@ export const ContactListPage = () => {
                 colSpan={1}
                 className={`${sortCriteria.headerKey === 'datetime' && "active"}`}
                 style={{cursor: "pointer"}}
-                activeTab={activeTab}
                 headerKey={'datetime'}
                 toggleSortCriteria={true}
                 initialSortDirection={1}

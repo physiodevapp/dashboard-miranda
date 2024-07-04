@@ -19,6 +19,13 @@ export const BookingTableBodyRowCellBookingId = styled.p`
   color: #799283;
 `
 
+export const BookingRequestButton = styled(ButtonStyled)`
+  width: 150px;
+  text-transform: capitalize;
+  font-weight: 600;
+`
+
 export const BookingStatusButton = styled(ButtonStyled)`
-  width: 10em;
+  width: 130px;
+  font-weight: 600;
 `

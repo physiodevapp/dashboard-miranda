@@ -26,6 +26,7 @@ import userPhoto from "../../assets/Imagen de perfil.png";
 
 import Swal from "sweetalert2";
 import 'animate.css';
+
 import { useDispatch, useSelector } from "react-redux";
 import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
 import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";

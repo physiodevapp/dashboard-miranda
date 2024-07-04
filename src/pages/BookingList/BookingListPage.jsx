@@ -1,22 +1,37 @@
 
 
 import React, { useEffect, useState } from 'react';
-import dataBookings  from '../../data/mock_bookings.json'
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { DataTableTabListComponent } from '../../components/DataTableTabs/DataTableTabListComponent';
-import { BookingListTableContainer, BookingStatusButton, BookingTableBodyRowCellBooking, BookingTableBodyRowCellBookingId, BookingTableBodyRowCellBookingName } from './BookingListStyled';
+import { BookingListTableContainer, BookingRequestButton, BookingStatusButton, BookingTableBodyRowCellBooking, BookingTableBodyRowCellBookingId, BookingTableBodyRowCellBookingName } from './BookingListStyled';
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from '../../components/DataTableStyled';
 import { FaArrowUp } from 'react-icons/fa6';
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
 import { useNavigate } from 'react-router-dom';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { bookingListBookingListSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+
+import Swal from "sweetalert2";
+import 'animate.css';
+
 export const BookingListPage = () => {
-  const [bookings, setBookings] = useState(dataBookings);
-  const [displayBookings, setDisplayBookings] = useState(dataBookings);
-  const [sortByHeaderKey, setSortByHeaderKey] = useState('order_date');
+  const bookingListDispatch = useDispatch();
+  const bookingListBookingList = useSelector(bookingListBookingListSelect);
+  const bookingListStatus = useSelector(bookingListStatusSelect);
+  const bookingListError = useSelector(bookingListErrorSelect);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const [bookings, setBookings] = useState(bookingListBookingList);
+  const [displayBookings, setDisplayBookings] = useState(bookingListBookingList);
+
+  const [sortCriteria, setSortCriteria] = useState({headerKey: 'order_date', direction: -1})
+
   const [activeTab, setActiveTab] = useState('');
+
   const [tablePageIndex, setTablePageIndex] = useState(0);
+
   const navigate = useNavigate();
 
   const contactsPerTablePage = 10;
@@ -32,6 +47,86 @@ export const BookingListPage = () => {
     });
   } 
 
+  const sortRows = (rows, { headerKey: key, direction: criteria = -1}) => {
+    return rows.sort((current, next) => {
+      if (current[key] < next[key])
+        return criteria
+
+      if (current[key] > next[key])
+        return -1 * criteria
+      
+      return 0;
+    })
+  }
+
+  const showRequest = (booking) => {
+    Swal.fire({
+      title:`Booking request`,
+      showClass: {
+        popup:`
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup:`
+          animate__animated
+          animate__fadeOutUp
+          animate__faster
+        `
+      },
+      html:`
+        <article class="booking__container__article">
+          <section class="container__article__content">
+            <h6 class="container__article__content__title">${booking.first_name} ${booking.last_name}</h6>
+            <h5 class="container__article__content__subtitle"><span>Ordered on </span>${formatDatetime(booking.order_date).split(", ")[0]}</h5>
+            <p class="container__article__content__message">${booking.special_request}</p>
+          </section> 
+        </article>
+      `,
+      showCloseButton: true,
+      showConfirmButton: false,
+      customClass: {
+        title: "booking__title",
+        htmlContainer: "booking__container"
+      }     
+    }).then((result) => {
+      // if (result.isConfirmed) {
+      // }
+    })
+  }
+
+  useEffect(() => {
+    switch (bookingListStatus) {
+      case "idle":
+        setIsUpdating(false);
+        break;
+      case "pending":
+        setIsUpdating(true);
+        break;
+      case "fulfilled":
+        setIsUpdating(false);
+
+        setBookings(bookingListBookingList);
+        break;
+      case "rejected":
+        setIsUpdating(true);
+        console.log({bookingListError});
+        break;
+      default:
+        break;
+    }
+  }, [bookingListStatus])
+
+  useEffect(() => {
+    const tabRows = JSON.parse(JSON.stringify(bookings)).filter((booking) => activeTab.length ? booking.status === activeTab : true);
+
+    const sortedTabRows = sortRows(tabRows, sortCriteria);
+
+    setDisplayBookings(sortedTabRows);
+  }, [bookings, activeTab, sortCriteria])
+
   return (
     <>
       <PageElementContainerStyled>
@@ -42,13 +137,9 @@ export const BookingListPage = () => {
             {key: 'check_out', htmlContent: 'Check Out'},
             {key: 'in_progress', htmlContent: 'In Progress'}
           ]}
-          rows={bookings}
-          tablePageIndex={tablePageIndex}
-          rowsPerPage={10}
-          onTabChange={(currentTab, tabRows) => {
-            setDisplayBookings(tabRows);
-            setActiveTab(currentTab);            
+          onTabChange={(currentTab) => {
             setTablePageIndex(0);
+            setActiveTab(currentTab);            
           }}
         />
       </PageElementContainerStyled>
@@ -60,16 +151,12 @@ export const BookingListPage = () => {
             <DataTableHeaderRowCellSortComponent
               scope='col'                
               colSpan={1}
-              className={`${sortByHeaderKey === 'order_date' && "active"}`}
+              className={`${sortCriteria.headerKey === 'order_date' && "active"}`}
               style={{cursor: "pointer"}}
-              rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
-              activeTab={activeTab}
               headerKey={'order_date'}
               initialSortDirection={1}
-              initialSort={true}
-              onSort={(sortedRows, key) => {
-                setDisplayBookings(sortedRows);
-                setSortByHeaderKey(key);
+              onSort={({header, direction}) => {
+                setSortCriteria({headerKey: header, direction})
               }}
             >
               <>
@@ -80,15 +167,12 @@ export const BookingListPage = () => {
             <DataTableHeaderRowCellSortComponent
               scope='col'                
               colSpan={1}
-              className={`${sortByHeaderKey === 'check_in' && "active"}`}
+              className={`${sortCriteria.headerKey === 'check_in' && "active"}`}
               style={{cursor: "pointer"}}
-              rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
-              activeTab={activeTab}
               headerKey={'check_in'}
               initialSortDirection={1}
-              onSort={(sortedRows, key) => {
-                setDisplayBookings(sortedRows);
-                setSortByHeaderKey(key);
+              onSort={({header, direction}) => {
+                setSortCriteria({headerKey: header, direction})
               }}
             >
               <>
@@ -99,15 +183,12 @@ export const BookingListPage = () => {
             <DataTableHeaderRowCellSortComponent
               scope='col'                
               colSpan={1}
-              className={`${sortByHeaderKey === 'check_out' && "active"}`}
+              className={`${sortCriteria.headerKey === 'check_out' && "active"}`}
               style={{cursor: "pointer"}}
-              rows={JSON.parse(JSON.stringify(bookings)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
-              activeTab={activeTab}
               headerKey={'check_out'}
               initialSortDirection={1}
-              onSort={(sortedRows, key) => {
-                setDisplayBookings(sortedRows);
-                setSortByHeaderKey(key);
+              onSort={({header, direction}) => {
+                setSortCriteria({headerKey: header, direction})
               }}
             >
               <>
@@ -124,7 +205,10 @@ export const BookingListPage = () => {
           {
             displayBookings.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage)
             .map((booking) => (
-              <DataTableBodyRow key={booking.id} onClick={() => navigate(`/bookings/${booking.id}`)}>
+              <DataTableBodyRow key={booking.id} onClick={({target}) => {
+                    if (!target.classList.contains("customClick"))
+                      navigate(`/bookings/${booking.id}`);
+                  }}>
                 <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`}>
                   <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
                     <BookingTableBodyRowCellBookingName>
@@ -137,24 +221,38 @@ export const BookingListPage = () => {
                     </BookingTableBodyRowCellBookingId>
                   </DataTableRowCellContentMultipleEllipsis>
                 </BookingTableBodyRowCellBooking>
-                <DataTableBodyRowCell key={`${booking.id}-order_date`} style={{minWidth: "14rem"}}>
-                  { formatDatetime(booking.order_date) }
+                <DataTableBodyRowCell key={`${booking.id}-order_date`}>
+                  <>
+                    { formatDatetime(booking.order_date).split(", ")[0] },<br/>
+                    { formatDatetime(booking.order_date).split(", ")[1] }
+                  </>
                 </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-check_in`} style={{minWidth: "14rem"}}>
-                  { formatDatetime(booking.check_in) }
+                <DataTableBodyRowCell key={`${booking.id}-check_in`}>
+                  <>                    
+                    { formatDatetime(booking.check_in).split(", ")[0] },<br/>
+                    { formatDatetime(booking.check_in).split(", ")[1] }
+                  </>
                 </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-check_out`} style={{minWidth: "14rem"}}>
-                  { formatDatetime(booking.check_out) }
+                <DataTableBodyRowCell key={`${booking.id}-check_out`}>
+                  <>
+                    { formatDatetime(booking.check_out).split(", ")[0] },<br/>
+                    { formatDatetime(booking.check_out).split(", ")[1] }
+                  </>
                 </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-room_type`} style={{minWidth: "14rem"}}>
+                <DataTableBodyRowCell key={`${booking.id}-room_type`}>
                   { booking.room_type }
                 </DataTableBodyRowCell>
                 <DataTableBodyRowCell>
-                  <DataTableRowCellContentMultipleEllipsis lineclamp={4}>
-                    { booking.special_request }
-                  </DataTableRowCellContentMultipleEllipsis>
+                  <BookingRequestButton 
+                    type='button' 
+                    styled="tertiary"
+                    className='customClick'
+                    onClick={() => showRequest(booking)}
+                    >
+                      View Notes
+                  </BookingRequestButton>
                 </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-status`} style={{minWidth: "14rem"}}>
+                <DataTableBodyRowCell key={`${booking.id}-status`} style={{minWidth: "200px"}}>
                   <BookingStatusButton styled={booking.status}>
                     { booking.status.replace("_", " ") }
                   </BookingStatusButton>

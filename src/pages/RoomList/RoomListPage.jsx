@@ -25,7 +25,6 @@ export const RoomListPage = () => {
   const [rooms, setRooms] = useState(roomListRoomList);
   const [displayRooms, setDisplayRooms] = useState(roomListRoomList);
 
-  const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
   const [sortCriteria, setSortCriteria] = useState({headerKey: 'datetime', direction: -1})
   
   const navigate = useNavigate();
@@ -71,6 +70,7 @@ export const RoomListPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
+    console.log({sortCriteria});
     const sortedRows = sortRows([...rooms], sortCriteria);
 
     setDisplayRooms(sortedRows);
@@ -89,12 +89,14 @@ export const RoomListPage = () => {
               <DataTableHeaderRowCellSortComponent
                 scope='col'
                 colSpan={2}
-                className={`${sortByHeaderKey === 'number' && "active"}`}
+                className={`${sortCriteria.headerKey === 'number' && "active"}`}
                 style={{cursor: "pointer"}}
                 headerKey={'number'}
-                initialSort={true}
                 onSort={({header, direction}) => {
-                  setSortCriteria({headerKey: header, direction})
+                  setSortCriteria({
+                    headerKey: header, 
+                    direction
+                  })
                 }}
               >
                 <>
@@ -107,12 +109,15 @@ export const RoomListPage = () => {
               <DataTableHeaderRowCellSortComponent
                 scope='col'
                 colSpan={1}
-                className={`${sortByHeaderKey === 'price_night' && "active"}`}
+                className={`${sortCriteria.headerKey === 'price_night' && "active"}`}
                 style={{width: "8em", cursor: "pointer"}}
                 headerKey={'price_night'}
                 toggleSortCriteria={true}
                 onSort={({header, direction}) => {
-                  setSortCriteria({headerKey: header, direction})
+                  setSortCriteria({
+                    headerKey: header, 
+                    direction
+                  })
                 }}
               >
                 <>
@@ -124,11 +129,14 @@ export const RoomListPage = () => {
               <DataTableHeaderRowCellSortComponent
                 scope='col'
                 colSpan={2}
-                className={`${sortByHeaderKey === 'status' && "active"}`}
+                className={`${sortCriteria.headerKey === 'status' && "active"}`}
                 style={{width: "10em", cursor: "pointer"}}
                 headerKey={'status'}
                 onSort={({header, direction}) => {
-                  setSortCriteria({headerKey: header, direction})
+                  setSortCriteria({
+                    headerKey: header, 
+                    direction
+                  })
                 }}
               >
                 <>
