@@ -39,7 +39,7 @@ export const MenuComponent = () => {
           <MdOutlineReviews/>
           Contacts
         </MenuListItem>
-        <MenuListItem>
+        <MenuListItem onClick={() => navigate('/users')} className={pathname === '/users' && 'active'}>
           <span></span>
           <FaRegUser/>
           Users

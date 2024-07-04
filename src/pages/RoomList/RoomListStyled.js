@@ -36,16 +36,6 @@ export const RoomsTableBodyRowCell = styled(DataTableBodyRowCell)`
     }
   }
 
-  &.room-price {
-    font-weight: 600;
-
-    span {
-      color: #799283;
-      font-size: 0.9rem;
-      font-weight: 300;
-    }
-  }
-
 `
 
 export const RoomIdentification = styled.div`

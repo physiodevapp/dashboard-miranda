@@ -70,7 +70,6 @@ export const RoomListPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
-    console.log({sortCriteria});
     const sortedRows = sortRows([...rooms], sortCriteria);
 
     setDisplayRooms(sortedRows);

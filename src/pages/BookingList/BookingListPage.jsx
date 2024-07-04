@@ -147,129 +147,129 @@ export const BookingListPage = () => {
         />
       </PageElementContainerStyled>
       <BookingListTableContainer>
-      <DataTable>
-        <DataTableHeader>
-          <DataTableHeaderRow>
-            <DataTableHeaderRowCell scope="col" >Booking</DataTableHeaderRowCell>
-            <DataTableHeaderRowCellSortComponent
-              scope='col'                
-              colSpan={1}
-              className={`${sortCriteria.headerKey === 'order_date' && "active"}`}
-              style={{cursor: "pointer"}}
-              headerKey={'order_date'}
-              initialSortDirection={1}
-              onSort={({header, direction}) => {
-                setSortCriteria({headerKey: header, direction})
-              }}
-            >
-              <>
-                Order date
-                <FaArrowUp/>
-              </>
-            </DataTableHeaderRowCellSortComponent>
-            <DataTableHeaderRowCellSortComponent
-              scope='col'                
-              colSpan={1}
-              className={`${sortCriteria.headerKey === 'check_in' && "active"}`}
-              style={{cursor: "pointer"}}
-              headerKey={'check_in'}
-              initialSortDirection={1}
-              onSort={({header, direction}) => {
-                setSortCriteria({headerKey: header, direction})
-              }}
-            >
-              <>
-                Check In
-                <FaArrowUp/>
-              </>
-            </DataTableHeaderRowCellSortComponent> 
-            <DataTableHeaderRowCellSortComponent
-              scope='col'                
-              colSpan={1}
-              className={`${sortCriteria.headerKey === 'check_out' && "active"}`}
-              style={{cursor: "pointer"}}
-              headerKey={'check_out'}
-              initialSortDirection={1}
-              onSort={({header, direction}) => {
-                setSortCriteria({headerKey: header, direction})
-              }}
-            >
-              <>
-                Check Out
-                <FaArrowUp/>
-              </>
-            </DataTableHeaderRowCellSortComponent>
-            <DataTableHeaderRowCell scope="col" >Room type</DataTableHeaderRowCell>
-            <DataTableHeaderRowCell scope="col" >Request</DataTableHeaderRowCell>
-            <DataTableHeaderRowCell scope="col" colSpan={2} >Status</DataTableHeaderRowCell>
-          </DataTableHeaderRow>
-        </DataTableHeader>
-        <DataTableBody>
-          {
-            displayBookings.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage)
-            .map((booking) => (
-              <DataTableBodyRow key={booking.id} onClick={({target}) => {
-                    if (!target.classList.contains("customClick"))
-                      navigate(`/bookings/${booking.id}`);
-                  }}>
-                <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`}>
-                  <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
-                    <BookingTableBodyRowCellBookingName>
-                      { `${booking.last_name}, ${booking.first_name}` }
-                    </BookingTableBodyRowCellBookingName>
-                  </DataTableRowCellContentMultipleEllipsis>
-                  <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
-                    <BookingTableBodyRowCellBookingId>
-                      { booking.id }
-                    </BookingTableBodyRowCellBookingId>
-                  </DataTableRowCellContentMultipleEllipsis>
-                </BookingTableBodyRowCellBooking>
-                <DataTableBodyRowCell key={`${booking.id}-order_date`}>
-                  <>
-                    { formatDatetime(booking.order_date).split(", ")[0] },<br/>
-                    { formatDatetime(booking.order_date).split(", ")[1] }
-                  </>
-                </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-check_in`}>
-                  <>                    
-                    { formatDatetime(booking.check_in).split(", ")[0] },<br/>
-                    { formatDatetime(booking.check_in).split(", ")[1] }
-                  </>
-                </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-check_out`}>
-                  <>
-                    { formatDatetime(booking.check_out).split(", ")[0] },<br/>
-                    { formatDatetime(booking.check_out).split(", ")[1] }
-                  </>
-                </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-room_type`}>
-                  { booking.room_type }
-                </DataTableBodyRowCell>
-                <DataTableBodyRowCell>
-                  <BookingRequestButton 
-                    type='button' 
-                    styled="tertiary"
+        <DataTable>
+          <DataTableHeader>
+            <DataTableHeaderRow>
+              <DataTableHeaderRowCell scope="col" >Booking</DataTableHeaderRowCell>
+              <DataTableHeaderRowCellSortComponent
+                scope='col'                
+                colSpan={1}
+                className={`${sortCriteria.headerKey === 'order_date' && "active"}`}
+                style={{cursor: "pointer"}}
+                headerKey={'order_date'}
+                initialSortDirection={1}
+                onSort={({header, direction}) => {
+                  setSortCriteria({headerKey: header, direction})
+                }}
+              >
+                <>
+                  Order date
+                  <FaArrowUp/>
+                </>
+              </DataTableHeaderRowCellSortComponent>
+              <DataTableHeaderRowCellSortComponent
+                scope='col'                
+                colSpan={1}
+                className={`${sortCriteria.headerKey === 'check_in' && "active"}`}
+                style={{cursor: "pointer"}}
+                headerKey={'check_in'}
+                initialSortDirection={1}
+                onSort={({header, direction}) => {
+                  setSortCriteria({headerKey: header, direction})
+                }}
+              >
+                <>
+                  Check In
+                  <FaArrowUp/>
+                </>
+              </DataTableHeaderRowCellSortComponent> 
+              <DataTableHeaderRowCellSortComponent
+                scope='col'                
+                colSpan={1}
+                className={`${sortCriteria.headerKey === 'check_out' && "active"}`}
+                style={{cursor: "pointer"}}
+                headerKey={'check_out'}
+                initialSortDirection={1}
+                onSort={({header, direction}) => {
+                  setSortCriteria({headerKey: header, direction})
+                }}
+              >
+                <>
+                  Check Out
+                  <FaArrowUp/>
+                </>
+              </DataTableHeaderRowCellSortComponent>
+              <DataTableHeaderRowCell scope="col" >Room type</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col" >Request</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col" colSpan={2} >Status</DataTableHeaderRowCell>
+            </DataTableHeaderRow>
+          </DataTableHeader>
+          <DataTableBody>
+            {
+              displayBookings.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage)
+              .map((booking) => (
+                <DataTableBodyRow key={booking.id} onClick={({target}) => {
+                      if (!target.classList.contains("customClick"))
+                        navigate(`/bookings/${booking.id}`);
+                    }}>
+                  <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`}>
+                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
+                      <BookingTableBodyRowCellBookingName>
+                        { `${booking.last_name}, ${booking.first_name}` }
+                      </BookingTableBodyRowCellBookingName>
+                    </DataTableRowCellContentMultipleEllipsis>
+                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
+                      <BookingTableBodyRowCellBookingId>
+                        { booking.id }
+                      </BookingTableBodyRowCellBookingId>
+                    </DataTableRowCellContentMultipleEllipsis>
+                  </BookingTableBodyRowCellBooking>
+                  <DataTableBodyRowCell key={`${booking.id}-order_date`}>
+                    <>
+                      { formatDatetime(booking.order_date).split(", ")[0] },<br/>
+                      { formatDatetime(booking.order_date).split(", ")[1] }
+                    </>
+                  </DataTableBodyRowCell>
+                  <DataTableBodyRowCell key={`${booking.id}-check_in`}>
+                    <>                    
+                      { formatDatetime(booking.check_in).split(", ")[0] },<br/>
+                      { formatDatetime(booking.check_in).split(", ")[1] }
+                    </>
+                  </DataTableBodyRowCell>
+                  <DataTableBodyRowCell key={`${booking.id}-check_out`}>
+                    <>
+                      { formatDatetime(booking.check_out).split(", ")[0] },<br/>
+                      { formatDatetime(booking.check_out).split(", ")[1] }
+                    </>
+                  </DataTableBodyRowCell>
+                  <DataTableBodyRowCell key={`${booking.id}-room_type`}>
+                    { booking.room_type }
+                  </DataTableBodyRowCell>
+                  <DataTableBodyRowCell>
+                    <BookingRequestButton 
+                      type='button' 
+                      styled="tertiary"
+                      className='customClick'
+                      onClick={() => showRequest(booking)}
+                      >
+                        View Notes
+                    </BookingRequestButton>
+                  </DataTableBodyRowCell>
+                  <DataTableBodyRowCell key={`${booking.id}-status`}>
+                    <BookingStatusButton styled={booking.status}>
+                      { booking.status.replace("_", " ") }
+                    </BookingStatusButton>
+                  </DataTableBodyRowCell>   
+                  <DataTableBodyRowCell 
+                    style={{minWidth: "50px"}}
                     className='customClick'
-                    onClick={() => showRequest(booking)}
                     >
-                      View Notes
-                  </BookingRequestButton>
-                </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-status`}>
-                  <BookingStatusButton styled={booking.status}>
-                    { booking.status.replace("_", " ") }
-                  </BookingStatusButton>
-                </DataTableBodyRowCell>   
-                <DataTableBodyRowCell 
-                  style={{minWidth: "50px"}}
-                  className='customClick'
-                  >
-                  <BsThreeDotsVertical className='customClick'/>
-                </DataTableBodyRowCell>               
-              </DataTableBodyRow>
-            ))
-          }
-        </DataTableBody>
+                    <BsThreeDotsVertical className='customClick'/>
+                  </DataTableBodyRowCell>               
+                </DataTableBodyRow>
+              ))
+            }
+          </DataTableBody>
         </DataTable>
       </BookingListTableContainer>
       <PageElementContainerStyled>

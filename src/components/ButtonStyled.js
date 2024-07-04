@@ -125,6 +125,26 @@ export const ButtonStyled = styled.button`
             background-image: unset !important;
           }
         `
+      case "active":
+        return css`
+          padding-top: 0em;
+          padding-left: 0em;
+          background-color: white;
+          color: #5AD07A;
+          text-transform: capitalize;
+          text-align: left;
+        `
+      case "inactive":
+        return css`
+          padding-top: 0em;
+          padding-left: 0em;
+          background-color: white;
+          color: #E23428;
+          min-width: 84px;
+          text-align: left;
+          text-transform: capitalize;
+          text-align: left;
+        `
     }
   }}
 ` 
