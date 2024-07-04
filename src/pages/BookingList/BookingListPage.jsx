@@ -5,7 +5,10 @@ import { PageElementContainerStyled } from '../../components/PageElementContaine
 import { DataTableTabListComponent } from '../../components/DataTableTabs/DataTableTabListComponent';
 import { BookingListTableContainer, BookingRequestButton, BookingStatusButton, BookingTableBodyRowCellBooking, BookingTableBodyRowCellBookingId, BookingTableBodyRowCellBookingName } from './BookingListStyled';
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from '../../components/DataTableStyled';
+
 import { FaArrowUp } from 'react-icons/fa6';
+import { BsThreeDotsVertical } from "react-icons/bs";
+
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +29,7 @@ export const BookingListPage = () => {
   const [bookings, setBookings] = useState(bookingListBookingList);
   const [displayBookings, setDisplayBookings] = useState(bookingListBookingList);
 
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'order_date', direction: -1})
+  const [sortCriteria, setSortCriteria] = useState({headerKey: 'order_date', direction: 1})
 
   const [activeTab, setActiveTab] = useState('');
 
@@ -198,7 +201,7 @@ export const BookingListPage = () => {
             </DataTableHeaderRowCellSortComponent>
             <DataTableHeaderRowCell scope="col" >Room type</DataTableHeaderRowCell>
             <DataTableHeaderRowCell scope="col" >Request</DataTableHeaderRowCell>
-            <DataTableHeaderRowCell scope="col" >Status</DataTableHeaderRowCell>
+            <DataTableHeaderRowCell scope="col" colSpan={2} >Status</DataTableHeaderRowCell>
           </DataTableHeaderRow>
         </DataTableHeader>
         <DataTableBody>
@@ -252,11 +255,17 @@ export const BookingListPage = () => {
                       View Notes
                   </BookingRequestButton>
                 </DataTableBodyRowCell>
-                <DataTableBodyRowCell key={`${booking.id}-status`} style={{minWidth: "200px"}}>
+                <DataTableBodyRowCell key={`${booking.id}-status`}>
                   <BookingStatusButton styled={booking.status}>
                     { booking.status.replace("_", " ") }
                   </BookingStatusButton>
-                </DataTableBodyRowCell>                  
+                </DataTableBodyRowCell>   
+                <DataTableBodyRowCell 
+                  style={{minWidth: "50px"}}
+                  className='customClick'
+                  >
+                  <BsThreeDotsVertical className='customClick'/>
+                </DataTableBodyRowCell>               
               </DataTableBodyRow>
             ))
           }

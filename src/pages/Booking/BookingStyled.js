@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
 
 export const BookingContainer = styled(PageElementContainerStyled)`
@@ -90,7 +90,7 @@ export const BookingSwiperPagination = styled.div`
   border-radius: 0.6em;
   width: unset;
   height: unset;
-  top: 25.4em;
+  top: 23.4em;
   &::after {
     content: unset;
   }
@@ -137,10 +137,42 @@ export const BookingSwiperSliderRoomDescription = styled.p`
   text-overflow: ellipsis;
 `
 
-export const BookingSwiperSliderRoomStatus = styled.h6`
+export const BookingSwiperSliderRoomStatus = styled.div`
+  width: 200px;
+  height: 200px;
+  background-color: #5AD07A;
+  position: absolute;
+  z-index: 10;
+  right: 0em;
+  clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 0);
+  text-align: center;
+  line-height: 200px;
 
-`
+  h6 {
+    transform: rotateZ(45deg);
+    font-size: 1.4rem;
+    line-height: 2rem;
+    position: relative;
+    top: 29%;
+    left: 12%;
+    text-transform: uppercase;
+    color: white;
+  }
 
-export const BookingFacilities = styled.ul`
-
+  ${props => {
+    switch(props.styled) {
+      case "check_in":
+        return css`
+          background-color: #5AD07A;
+        `
+      case "check_out":
+        return css`
+          background-color: #E23428;
+        `
+      case "in_progress":
+        return css`
+          background-color: #6D6D6D;
+        `
+    }
+  }}
 `
