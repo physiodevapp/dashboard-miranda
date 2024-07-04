@@ -9,13 +9,27 @@ import { ButtonStyled } from "../../components/ButtonStyled";
 import { DataTableTabListComponent } from "../../components/DataTableTabs/DataTableTabListComponent";
 import { FaArrowUp } from "react-icons/fa6";
 
-import dataContacts from "../../data/mock_contacts.json";
+//import dataContacts from "../../data/mock_contacts.json";
+import { useDispatch, useSelector } from "react-redux";
+import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
+import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";
 
 export const ContactListPage = () => {
-  const [contacts, setContacts] = useState(dataContacts);
-  const [displayContacts, setDisplayContacts] = useState(dataContacts);
+  const contactListDispatch = useDispatch();
+  const contactListContactList = useSelector(contactListcontactListSelect);
+  const contactListStatus = useSelector(contactListStatusSelect);
+  const contactListError = useSelector(contactListErrorSelect);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const [contacts, setContacts] = useState(contactListContactList);
+  const [displayContacts, setDisplayContacts] = useState(contactListContactList);
+
   const [sortByHeaderKey, setSortByHeaderKey] = useState('datetime');
+  const [sortByDirection, setSortByDirection] = useState(-1);
+  const [sortCriteria, setSortCriteria] = useState({headerKey: 'datetime', direction: -1})
+  
   const [activeTab, setActiveTab] = useState('');
+
   const [tablePageIndex, setTablePageIndex] = useState(0);
 
   const contactsPerTablePage = 10;
@@ -31,27 +45,52 @@ export const ContactListPage = () => {
     });
   } 
 
+  const sortRows = (rows, { headerKey: key, direction: criteria = -1}) => {
+    return rows.sort((current, next) => {
+      if (current[key] < next[key])
+        return criteria
+
+      if (current[key] > next[key])
+        return -1 * criteria
+      
+      return 0;
+    })
+  }
+
+  useEffect(() => {
+    switch (contactListStatus) {
+      case "idle":
+        setIsUpdating(false);
+        break;
+      case "pending":
+        setIsUpdating(true);
+        break;
+      case "fulfilled":
+        setIsUpdating(false);
+
+        setContacts(contactListContactList);
+        break;
+      case "rejected":
+        setIsUpdating(true);
+        console.log({contactListError});
+        break;
+      default:
+        break;
+    }
+  }, [contactListStatus])
+
   useEffect(() => {
     const tabRows = JSON.parse(JSON.stringify(contacts)).filter((contact) => activeTab.length ? contact.status === activeTab : true);
 
-    setDisplayContacts(tabRows)
-  }, [contacts, activeTab])
+    const sortedTabRows = sortRows(tabRows, sortCriteria);
+
+    setDisplayContacts(sortedTabRows);
+  }, [contacts, activeTab, sortCriteria])
 
   return (
     <>
       <PageElementContainerStyled>
-        <RecentContactListComponent
-          onUpdate={(updateContact) => {
-            const updateContactList = JSON.parse(JSON.stringify(contacts)).map((item) => {
-              if (item.id === updateContact.id) {
-                return updateContact
-              }
-
-              return item
-            })
-            setContacts(updateContactList);  
-          }}
-        />
+        <RecentContactListComponent/>
       </PageElementContainerStyled>
       <PageElementContainerStyled>
         <DataTableTabListComponent 
@@ -73,16 +112,14 @@ export const ContactListPage = () => {
               <DataTableHeaderRowCellSortComponent
                 scope='col'                
                 colSpan={1}
-                className={`${sortByHeaderKey === 'datetime' && "active"}`}
+                className={`${sortCriteria.headerKey === 'datetime' && "active"}`}
                 style={{cursor: "pointer"}}
-                rows={JSON.parse(JSON.stringify(contacts)).filter((contact) => activeTab.length ? contact.status === activeTab : true)}
                 activeTab={activeTab}
                 headerKey={'datetime'}
                 toggleSortCriteria={true}
-                initialSort={true}
-                onSort={(sortedRows, key) => {
-                  setDisplayContacts(sortedRows);
-                  setSortByHeaderKey(key);
+                initialSortDirection={1}
+                onSort={({header, direction}) => {
+                  setSortCriteria({headerKey: header, direction})
                 }}
               >
                 <>
@@ -125,29 +162,25 @@ export const ContactListPage = () => {
                     ? <ContactsTableBodyRowCell key={`${contact.id}-buttons`}>
                         <>
                           <ButtonStyled 
-                            styled="publish" 
-                            onClick={() => {
-                              const updateContactList = JSON.parse(JSON.stringify(contacts)).map((item) => {
-                                return {
-                                  ...item,
-                                  "status": item.id === contact.id ? item.status = "published" : item.status
-                                }
-                              })
-                              setContacts(updateContactList);
-                            }}>
+                            styled="publish"
+                            disabled={contact.status.length}
+                            >
                               Publish
                           </ButtonStyled>
                           <ButtonStyled 
                             styled="archive" 
+                            disabled={contact.status.length}
                             style={{marginLeft: "1em"}}
                             onClick={() => {
-                              const updateContactList = JSON.parse(JSON.stringify(contacts)).map((item) => {
-                                return {
-                                  ...item,
-                                  "status": item.id === contact.id ? item.status = "archived" : item.status
-                                }
-                              })
-                              setContacts(updateContactList);                              
+                              const updateContact = {
+                                ...contact,
+                                "status": "archived"
+                              }  
+
+                              contactListDispatch(contactListUpdateOneThunk({
+                                contact: updateContact, 
+                                list: contactListContactList
+                              })) 
                             }}>
                               { contact.status === "archived" ? "Archived" : "Archive"}
                             </ButtonStyled>
