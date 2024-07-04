@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
 import './RoomListStyled'
-// import dataRooms from '../../data/mock_rooms.json'
 import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomListStyled';
 import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
 import { NewRoomButton } from './RoomListStyled';
@@ -25,8 +24,11 @@ export const RoomListPage = () => {
 
   const [rooms, setRooms] = useState(roomListRoomList);
   const [displayRooms, setDisplayRooms] = useState(roomListRoomList);
+
   const [sortByHeaderKey, setSortByHeaderKey] = useState('number');
+  
   const navigate = useNavigate();
+
   const [tablePageIndex, setTablePageIndex] = useState(0);
   
   const roomsPerTablePage = 10;

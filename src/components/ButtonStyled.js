@@ -74,6 +74,11 @@ export const ButtonStyled = styled.button`
           color: #5AD07A;
           text-transform: capitalize;
           cursor: default;
+
+          &:disabled {
+            opacity: 0.2;
+            cursor: default;
+          }
         `
       case "archive":
         return css`
@@ -84,8 +89,13 @@ export const ButtonStyled = styled.button`
           min-width: 84px;
           text-align: left;
           text-transform: capitalize;
-          &:hover {
+          &:hover:not(:disabled) {
             text-decoration: underline;
+          }
+
+          &:disabled {
+            opacity: 0.2;
+            cursor: default;
           }
         `
       case "check_in":
