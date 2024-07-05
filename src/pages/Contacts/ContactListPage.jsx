@@ -23,7 +23,7 @@ export const ContactListPage = () => {
   const [contacts, setContacts] = useState(contactListContactList);
   const [displayContacts, setDisplayContacts] = useState(contactListContactList);
 
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'datetime', direction: -1})
+  const [sortCriteria, setSortCriteria] = useState({headerKey: 'datetime', direction: 1})
   
   const [activeTab, setActiveTab] = useState('');
 
