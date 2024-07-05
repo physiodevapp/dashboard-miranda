@@ -36,6 +36,8 @@ export const BookingPage = () => {
   const roomListRoomList = useSelector(roomListRoomListSelect)
   const [isLoading, setIsLoading] = useState(true);
 
+  const [canRedirectBack, setCanRedirectBack] = useState(false);
+
   const formatDatetime = (datetime) => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
       day: "2-digit",
@@ -69,7 +71,7 @@ export const BookingPage = () => {
 
         if (bookingListBooking && bookingId)
           setBooking(bookingListBooking);
-        else if (bookingId && bookingListBooking === null)
+        else if (canRedirectBack)
           navigate("/bookings");
         
         break;
