@@ -40,10 +40,7 @@ export const BookingPage = () => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
-      month: "short",
-      hour12: true,
-      hour:"2-digit",
-      minute: "2-digit"
+      month: "short"
     });
   } 
 

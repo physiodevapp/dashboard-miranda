@@ -15,6 +15,7 @@ import { BookingPage } from "./pages/Booking/BookingPage";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { UserListPage } from "./pages/UserList/UserListPage";
+import { UserPage } from "./pages/User/UserPage";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -32,6 +33,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="bookings/:bookingId" element={<BookingPage/>}></Route>
             <Route path="contacts" element={<ContactListPage/>}></Route>
             <Route path="users" element={<UserListPage/>}></Route>
+            <Route path="users/new" element={<UserPage/>}></Route>
+            <Route path="users/:userId" element={<UserPage/>}></Route>
             <Route exact path="" element={<NoMatch/>}/>
             <Route path="*" element={<NoMatch/>}/>
           </Route>

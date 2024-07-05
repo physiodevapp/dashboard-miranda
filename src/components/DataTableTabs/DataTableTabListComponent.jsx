@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { TabItem, TabList } from './DataTableTabListStyled';
 
-export const DataTableTabListComponent = ({tabItems, onTabChange}) => {
+export const DataTableTabListComponent = ({style = {}, tabItems, onTabChange}) => {
   const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {  
@@ -12,7 +12,7 @@ export const DataTableTabListComponent = ({tabItems, onTabChange}) => {
   },[activeTab])
 
   return (
-    <TabList>
+    <TabList style={style}>
       {
         tabItems.map((item) => (
           <TabItem

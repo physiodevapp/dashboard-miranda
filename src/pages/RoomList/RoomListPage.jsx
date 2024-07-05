@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import './RoomListStyled'
 import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomListStyled';
-import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow } from '../../components/DataTableStyled'
+import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow, DataTableRowCellContentMultipleEllipsis } from '../../components/DataTableStyled'
 import { NewRoomButton } from './RoomListStyled';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { useNavigate } from 'react-router-dom';
@@ -162,7 +162,11 @@ export const RoomListPage = () => {
                     </RoomIdentification>
                   </RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}_type`}>{room.type}</RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell key={`${room.number}_identification_facilities`}>{room.facilities.join(", ")}</RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell key={`${room.number}_identification_facilities`}>
+                    <DataTableRowCellContentMultipleEllipsis width="210px" lineclamp={3}>
+                      { room.facilities.join(", ") }
+                    </DataTableRowCellContentMultipleEllipsis>
+                  </RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}_price`} className='room_price'>{`$${room.price_night}`}<span> /night</span></RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}_discount`}>{ getOfferPrice(room.price_night, room.discount) }</RoomsTableBodyRowCell>
                   <RoomsTableBodyRowCell key={`${room.number}_status`}>
