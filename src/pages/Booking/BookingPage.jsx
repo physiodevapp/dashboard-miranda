@@ -14,7 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bookingListBookingListSelect, bookingListBookingSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 import { bookingListReadOneThunk } from '../../features/bookingList/bookingListReadOneThunk';
 import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';
+
 import { BounceLoader } from 'react-spinners';
+
+import { useForm, Controller } from 'react-hook-form';
 
 export const BookingPage = () => {
   const [booking, setBooking] = useState(null);
@@ -27,6 +30,8 @@ export const BookingPage = () => {
   const [roomPhotosSwiper, setRoomPhotosSwiper] = useState({});
   const prevRef = useRef();
   const nextRef = useRef();
+
+  const { register, handleSubmit, control, reset } = useForm();
 
   const bookingListDispatch = useDispatch();
   const bookingListStatus = useSelector(bookingListStatusSelect);
@@ -46,6 +51,11 @@ export const BookingPage = () => {
     });
   } 
 
+  const facilityOptions = ["Air conditioner", "High speed WiFi", "Breakfast", "Kitchen", "Cleaning", "Shower", "Grocery", "Single bed", "Shop near", "Towels"].map((facility) => ({
+    value: facility,
+    label: facility
+  }))
+
   const getTotalPrice = (checkIn, checkOut) => {
     const diffTime = checkOut - checkIn;    
     const totalNights = Math.round(diffTime / (24 * 3600 * 1000));
@@ -54,6 +64,10 @@ export const BookingPage = () => {
       : totalNights * booking.room_details?.price_night
 
     return `$${finalPrice}`
+  }
+
+  const onSubmit = (formData) => {
+
   }
 
   useEffect(() => {
@@ -69,10 +83,18 @@ export const BookingPage = () => {
           setIsLoading(false);
         }, 1000);
 
-        if (bookingListBooking && bookingId)
+        if (bookingListBooking && bookingId) {
           setBooking(bookingListBooking);
-        else if (canRedirectBack)
+
+          reset({
+            bookingRoomFacilities: bookingListBooking.room_details.facilities.map((facility) => ({
+              value: facility, 
+              label: facility 
+            }))
+          })
+        } else if (canRedirectBack) {
           navigate("/bookings");
+        }
         
         break;
       case "rejected":
@@ -110,123 +132,121 @@ export const BookingPage = () => {
       </>
     : <>
         <BookingContainer>
-          <BookingForm>
+          <BookingForm onSubmit={handleSubmit(onSubmit)}>
             <FormFieldListContainer>
               <FormField width="100%">
-                <FormFieldLabel htmlFor='booking_name'>Fullname</FormFieldLabel>
-                <FormInput disabled={!canEdit} value={`${booking.first_name} ${booking.last_name}`}></FormInput>
+                <FormFieldLabel htmlFor='bookingName'>Fullname</FormFieldLabel>
+                <FormInput disabled={!canEdit} { ...register("bookingName", { value: booking.first_name }) }></FormInput>
               </FormField>
               <FormField width="100%">
-                <FormFieldLabel htmlFor='booking_name'>Booking Id</FormFieldLabel>
-                <FormInput disabled={!canEdit} value={booking.id}></FormInput>
+                <FormFieldLabel htmlFor='bookingId'>Booking Id</FormFieldLabel>
+                <FormInput disabled={!canEdit} { ...register("bookingId", { value: booking.id }) }></FormInput>
               </FormField>
               <FormField width="50%">
-                <FormFieldLabel htmlFor='booking_name'>Check In</FormFieldLabel>
-                <FormInput disabled={!canEdit} value={ formatDatetime(booking.check_in) }></FormInput>
+                <FormFieldLabel htmlFor='bookingCheckIn'>Check In</FormFieldLabel>
+                <FormInput disabled={!canEdit} { ...register("bookingCheckIn", { value: formatDatetime(booking.check_in) }) }></FormInput>
               </FormField>
               <FormField width="50%">
-                <FormFieldLabel htmlFor='booking_name'>Check Out</FormFieldLabel>
-                <FormInput disabled={!canEdit} value={ formatDatetime(booking.check_out) }></FormInput>
+                <FormFieldLabel htmlFor='bookingCheckOut'>Check Out</FormFieldLabel>
+                <FormInput disabled={!canEdit} { ...register("bookingCheckOut", { value: formatDatetime(booking.check_out) }) }></FormInput>
               </FormField>
               <FormField width="50%">
-                <FormFieldLabel htmlFor='booking_name'>Room number</FormFieldLabel>
-                <FormInput disabled={!canEdit} value={ booking.room_number }></FormInput>
+                <FormFieldLabel htmlFor='bookingRoomNumber'>Room number</FormFieldLabel>
+                <FormInput disabled={!canEdit} { ...register("bookingRoomNumber", { value: booking.room_number }) }></FormInput>
               </FormField>
               <FormField width="50%">
-                <FormFieldLabel htmlFor='booking_name'>Final Price</FormFieldLabel>
-                <FormInput disabled={!canEdit} value={ getTotalPrice(booking.check_in, booking.check_out) }></FormInput>
+                <FormFieldLabel htmlFor='bookingTotalPrice'>Final Price</FormFieldLabel>
+                <FormInput disabled={!canEdit} { ...register("bookingTotalPrice", { value: getTotalPrice(booking.check_in, booking.check_out) }) }></FormInput>
               </FormField>
               <FormField>
-                <FormFieldLabel htmlFor="booking_special_request">Special request</FormFieldLabel>
-                
-                <FormTextarea disabled={!canEdit} rows={10} value={booking.special_request}></FormTextarea>
+                <FormFieldLabel htmlFor="bookingSpecialRequest">Special request</FormFieldLabel>                
+                <FormTextarea disabled={!canEdit} rows={10} { ...register("bookingSpecialRequest", { value: booking.special_request }) }></FormTextarea>
               </FormField>
               <FormField width="100%">
-                <FormFieldLabel>Facilities</FormFieldLabel>
-                <Select
-                  closeMenuOnSelect={false}
-                  isMulti
-                  defaultValue={
-                    booking.room_details.facilities.map((facility) => {
-                      return {
-                        value: facility,
-                        label: facility
-                      }
-                    })
-                  }
-                  placeholder={"Select the facilities of the room"}
-                  isDisabled={!canEdit}
-                  styles={{
-                    container: (baseStyles, state) => ({
-                      ...baseStyles,
-                      width: "100%",
-                    }),
-                    valueContainer: (baseStyles, state) => ({
-                      ...baseStyles,
-                      gap: "0.2em",
-                      paddingTop: "0.4em",
-                      paddingBottom: "0.4em"
-                    }),
-                    indicatorsContainer: (baseStyles, state) => ({
-                      ...baseStyles,
-                      cursor: "pointer",
-                      alignSelf: "flex-start",
-                      display: state.isDisabled
-                        ? "none"
-                        : baseStyles.display
-                    }),
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      backgroundColor: "white",
-                      borderColor: state.isDisabled
-                        ? "white"
-                        : baseStyles.borderColor
-                    }),
-                    option: (baseStyles, state) => ({
-                      ...baseStyles,
-                      fontFamily: "Poppins",
-                      fontSize: "0.9rem",  
-                      backgroundColor: state.isFocused
-                        ? "#EEF9F2"
-                        : baseStyles.backgroundColor
-                      ,                  
-                      ':hover': {
-                        ...baseStyles,
-                        fontSize: "0.9rem", 
-                        color: "#135846",
-                        backgroundColor: "#EEF9F2",
-                      }
-                    }),
-                    multiValueLabel: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: "#135846",
-                      backgroundColor: "#EEF9F2",
-                      lineHeight: `${canEdit ? "1.4em" : "4em"}`,
-                      padding: state.isDisabled 
-                        ? "0em 1em !important"
-                        : baseStyles.padding
-                      ,
-                      textAlign: "center",
-                      fontSize: "0.8rem",
-                      fontWeight: 600,
-                      fontFamily: "Poppins"
-                    }), 
-                    multiValueRemove: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: "#135846",
-                      backgroundColor: "#EEF9F2",
-                      display: state.isDisabled
-                        ? "none"
-                        : baseStyles.display
-                      ,
-                      ':hover': {
-                        backgroundColor: "#135846",
-                        color: 'white',
-                        cursor: "pointer"
-                      },
-                    }),                  
-                  }}
-                />
+                <FormFieldLabel htmlFor='bookingRoomFacilities'>Facilities</FormFieldLabel>
+                <Controller
+                  name='bookingRoomFacilities'
+                  control={control} 
+                  render={({ field }) => (
+                    <Select
+                      { ...field }
+                      closeMenuOnSelect={false}
+                      isMulti
+                      options={facilityOptions}
+                      placeholder={"Select the facilities of the room"}
+                      isDisabled={!canEdit}
+                      styles={{
+                        container: (baseStyles, state) => ({
+                          ...baseStyles,
+                          width: "100%",
+                        }),
+                        valueContainer: (baseStyles, state) => ({
+                          ...baseStyles,
+                          gap: "0.2em",
+                          paddingTop: "0.4em",
+                          paddingBottom: "0.4em"
+                        }),
+                        indicatorsContainer: (baseStyles, state) => ({
+                          ...baseStyles,
+                          cursor: "pointer",
+                          alignSelf: "flex-start",
+                          display: state.isDisabled
+                            ? "none"
+                            : baseStyles.display
+                        }),
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          backgroundColor: "white",
+                          borderColor: state.isDisabled
+                            ? "white"
+                            : baseStyles.borderColor
+                        }),
+                        option: (baseStyles, state) => ({
+                          ...baseStyles,
+                          fontFamily: "Poppins",
+                          fontSize: "0.9rem",  
+                          backgroundColor: state.isFocused
+                            ? "#EEF9F2"
+                            : baseStyles.backgroundColor
+                          ,                  
+                          ':hover': {
+                            ...baseStyles,
+                            fontSize: "0.9rem", 
+                            color: "#135846",
+                            backgroundColor: "#EEF9F2",
+                          }
+                        }),
+                        multiValueLabel: (baseStyles, state) => ({
+                          ...baseStyles,
+                          color: "#135846",
+                          backgroundColor: "#EEF9F2",
+                          lineHeight: `${canEdit ? "1.4em" : "4em"}`,
+                          padding: state.isDisabled 
+                            ? "0em 1em !important"
+                            : baseStyles.padding
+                          ,
+                          textAlign: "center",
+                          fontSize: "0.8rem",
+                          fontWeight: 600,
+                          fontFamily: "Poppins"
+                        }), 
+                        multiValueRemove: (baseStyles, state) => ({
+                          ...baseStyles,
+                          color: "#135846",
+                          backgroundColor: "#EEF9F2",
+                          display: state.isDisabled
+                            ? "none"
+                            : baseStyles.display
+                          ,
+                          ':hover': {
+                            backgroundColor: "#135846",
+                            color: 'white',
+                            cursor: "pointer"
+                          },
+                        }),                  
+                      }}
+                    />
+                  )}/>
               </FormField>
             </FormFieldListContainer>
           </BookingForm>
