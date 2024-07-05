@@ -36,9 +36,16 @@ export const UserPage = () => {
   const userListError = useSelector(userListErrorSelect);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [canRedirectBack, setCanRedirectBack] = useState(false);
+
   const jobOptions = ["Manager", "Reservation desk", "Room service"].map((job) => ({
     value: job,
     label: job
+  }))
+
+  const jobStatus = ["Active", "Inactive"].map((status) => ({
+    value: status.toLowerCase(),
+    label: status
   }))
 
   const formatDatetime = (datetime) => {
@@ -75,26 +82,31 @@ export const UserPage = () => {
                 email: formData.userEmail,
                 telephone: formData.userTel,
                 start_date: formData.userStartDate,
-                status: formData.userStatus,
+                status: formData.userStatus.value,
                 job_description: formData.userJobDescription,
-                job: formData.userJob.map((job) => job.value),
+                job: formData.userJob.value,
               }
-              
-              //userListDispatch(userListUpdateOneThunk({user: updateUser, list: userListUserList}));
+
+              setCanRedirectBack(true);
+
+              userListDispatch(userListUpdateOneThunk({user: updateUser, list: userListUserList}));
             } else {
               const newUser = {
                 id: self.crypto.randomUUID(),
+                photo: "http://dummyimage.com/69x68.png/cc0000/ffffff",
                 first_name: formData.userFirstName,
                 last_name: formData.userLastName,
                 email: formData.userEmail,
                 telephone: formData.userTel,
                 start_date: formData.userStartDate,
-                status: formData.userStatus,
+                status: formData.userStatus.value,
                 job_description: formData.userJobDescription,
-                job: formData.userJob.map((job) => job.value)
+                job: formData.userJob.value
               }
+
+              setCanRedirectBack(true);
               
-              //userListDispatch(userListCreateOneThunk({user: newUser, list: userListUserList}))
+              userListDispatch(userListCreateOneThunk({user: newUser, list: userListUserList}))
             }
           }
         });
@@ -121,12 +133,20 @@ export const UserPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
+            setCanRedirectBack(true);
+
             userListDispatch(userListDeleteOneThunk({id: userId, list: userListUserList}));
           }
         });
       } 
     });
   }
+
+  useEffect(() => {
+    if (userId)
+      userListDispatch(userListReadOneThunk({id: userId, list: userListUserList}))
+
+  }, [userId])
 
   useEffect(() => {
     switch (userListStatus) {
@@ -148,9 +168,13 @@ export const UserPage = () => {
             userJob: {
               value: userListUser.job, 
               label: userListUser.job 
+            },
+            userStatus: {
+              value: userListUser.status,
+              label: userListUser.status
             }
           })
-        } else if (userId && userListUser === null) {
+        } else if (canRedirectBack) {
           navigate("/users");
         }
         break;
@@ -162,12 +186,6 @@ export const UserPage = () => {
         break;
     }
   }, [userListStatus])
-  
-  useEffect(() => {
-    if (userId)
-      userListDispatch(userListReadOneThunk({id: userId, list: userListUserList}))
-
-  }, [userId])
 
   return (
     isLoading
@@ -313,10 +331,90 @@ export const UserPage = () => {
               </UserFormField>
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStatus'>Status</FormFieldLabel>
-                <FormInput 
-                  disabled={!canEdit && user} 
-                  style={{textTransform: "capitalize"}}
-                  { ...register("userStatus", { value: user?.status }) }/>
+                  <Controller
+                  name='userStatus'
+                  control={control} 
+                  render={({ field }) => (
+                    <Select
+                      { ...field }
+                      closeMenuOnSelect={false}
+                      options={jobStatus}
+                      placeholder={"Select one"}
+                      isClearable
+                      isDisabled={!canEdit && user}
+                      styles={{
+                        container: (baseStyles, state) => ({
+                          ...baseStyles,
+                          width: "100%",
+                        }),
+                        valueContainer: (baseStyles, state) => ({
+                          ...baseStyles,
+                          gap: "0.2em",
+                          paddingTop: "0.35em",
+                          paddingBottom: "0.35em",
+                          textTransform: "capitalize",
+                        }),
+                        indicatorsContainer: (baseStyles, state) => ({
+                          ...baseStyles,
+                          cursor: "pointer",
+                          display: state.isDisabled
+                            ? "none"
+                            : baseStyles.display
+                        }),
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          backgroundColor: "white",
+                          borderColor: state.isDisabled
+                            ? "white"
+                            : baseStyles.borderColor
+                        }),
+                        option: (baseStyles, state) => ({
+                          ...baseStyles,
+                          fontFamily: "Poppins",
+                          fontSize: "0.9rem",  
+                          backgroundColor: state.isFocused
+                            ? "#EEF9F2"
+                            : baseStyles.backgroundColor
+                          ,                  
+                          ':hover': {
+                            ...baseStyles,
+                            fontSize: "0.9rem", 
+                            color: "#135846",
+                            backgroundColor: "#EEF9F2",
+                          }
+                        }),
+                        multiValueLabel: (baseStyles, state) => ({
+                          ...baseStyles,
+                          color: "#135846",
+                          backgroundColor: "#EEF9F2",
+                          lineHeight: `${canEdit ? "1.4em" : "4em"}`,
+                          padding: state.isDisabled 
+                            ? "0em 1em !important"
+                            : baseStyles.padding
+                          ,
+                          textAlign: "center",
+                          fontSize: "0.8rem",
+                          fontWeight: 600,
+                          fontFamily: "Poppins"
+                        }), 
+                        multiValueRemove: (baseStyles, state) => ({
+                          ...baseStyles,
+                          color: "#135846",
+                          backgroundColor: "#EEF9F2",
+                          display: state.isDisabled
+                            ? "none"
+                            : baseStyles.display
+                          ,
+                          ':hover': {
+                            backgroundColor: "#135846",
+                            color: 'white',
+                            cursor: "pointer"
+                          },
+                        }),                  
+                      }}
+                    />
+                    )}
+                  />
               </UserFormField>
               <UserFormField width="100%">
                 <FormFieldLabel htmlFor="userJobDescription">Job description</FormFieldLabel>

@@ -46,6 +46,8 @@ export const RoomPage = () => {
   const roomListError = useSelector(roomListErrorSelect);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [canRedirectBack, setCanRedirectBack] = useState(false);
+
   const facilityOptions = ["Air conditioner", "High speed WiFi", "Breakfast", "Kitchen", "Cleaning", "Shower", "Grocery", "Single bed", "Shop near", "Towels"].map((facility) => ({
     value: facility,
     label: facility
@@ -82,6 +84,8 @@ export const RoomPage = () => {
                 cancellation_policy: formData.roomPolicy,
               }
               
+              setCanRedirectBack(true);
+
               roomListDispatch(roomListUpdateOneThunk({room: updateRoom, list: roomListRoomList}));
             } else {
               const newRoom = {
@@ -98,6 +102,8 @@ export const RoomPage = () => {
                 facilities: formData.roomFacilities.map((facility) => facility.value),
                 cancellation_policy: formData.roomPolicy
               }
+
+              setCanRedirectBack(true);
               
               roomListDispatch(roomListCreateOneThunk({room: newRoom, list: roomListRoomList}))
             }
@@ -126,6 +132,8 @@ export const RoomPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
+            setCanRedirectBack(true);
+
             roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
           }
         });
@@ -155,7 +163,7 @@ export const RoomPage = () => {
               label: facility 
             }))
           })
-        } else if (roomId && roomListRoom === null) {
+        } else if (canRedirectBack) {
           navigate("/rooms");
         }
         break;
