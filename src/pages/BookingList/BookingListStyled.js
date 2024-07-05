@@ -7,7 +7,7 @@ export const BookingListTableContainer = styled(DataTableContainer)`
 `
 
 export const BookingTableBodyRowCellBooking = styled(DataTableBodyRowCell)`
-  min-width: 15em;
+  min-width: 220px;
 `
 
 export const BookingTableBodyRowCellBookingName = styled.h6`

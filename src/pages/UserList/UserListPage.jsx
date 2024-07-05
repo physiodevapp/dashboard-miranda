@@ -8,11 +8,12 @@ import { userListErrorSelect, userListStatusSelect, userListUserListSelect } fro
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { DataTableTabListComponent } from '../../components/DataTableTabs/DataTableTabListComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
-import { UserIdentification, UserIdentificationId, UserIdentificationName, UserListTableContainer, UsersTableBodyRowCell } from './UserListStyled';
+import { NewUserButton, UserIdentification, UserIdentificationId, UserIdentificationName, UserListTableContainer, UsersTableBodyRowCell } from './UserListStyled';
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from '../../components/DataTableStyled';
 import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableHeaderRowCellSortComponent';
 import { MdOutlinePhone } from "react-icons/md";
 import { ButtonStyled } from '../../components/ButtonStyled';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 export const UserListPage = () => {
   const userListDispatch = useDispatch();
@@ -38,10 +39,7 @@ export const UserListPage = () => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
-      month: "short",
-      hour12: true,
-      hour:"2-digit",
-      minute: "2-digit"
+      month: "short"
     });
   } 
 
@@ -90,7 +88,11 @@ export const UserListPage = () => {
   return (
     <>
       <PageElementContainerStyled>
+        <NewUserButton onClick={() => navigate("/users/new")} styled="primary">+ New User</NewUserButton>
+      </PageElementContainerStyled>
+      <PageElementContainerStyled>
         <DataTableTabListComponent
+          style={{marginTop: "1em"}}
           tabItems={[
             {key: '', htmlContent: 'All employee'},
             {key: 'active', htmlContent: 'Active employee'},
@@ -142,7 +144,7 @@ export const UserListPage = () => {
                 </>
               </DataTableHeaderRowCellSortComponent>
               <DataTableHeaderRowCell scope="col" >Telephone</DataTableHeaderRowCell>
-              <DataTableHeaderRowCell scope="col" >Status</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col" colSpan={2} >Status</DataTableHeaderRowCell>
             </DataTableHeaderRow>
           </DataTableHeader>
           <DataTableBody>
@@ -151,13 +153,13 @@ export const UserListPage = () => {
               .map((user) => (
                 <DataTableBodyRow key={user.id} onClick={({target}) => {
                     if (!target.classList.contains("customClick"))
-                      navigate(`/bookings/${user.id}`);
+                      navigate(`/users/${user.id}`);
                   }}>
                   <UsersTableBodyRowCell 
                     key={`${user.id}_photo`} 
                     className='user_photo'>
                     <figure key={`${user.id}_identification_photo_container`}>
-                      <img key={`${user.id}_identification_photo_image`} src={user.photos} alt="" />
+                      <img key={`${user.id}_identification_photo_image`} src={user.photo} alt="" />
                     </figure>
                   </UsersTableBodyRowCell>
                   <UsersTableBodyRowCell 
@@ -172,22 +174,25 @@ export const UserListPage = () => {
                     </UserIdentification>
                   </UsersTableBodyRowCell>
                   <UsersTableBodyRowCell>
-                    <DataTableRowCellContentMultipleEllipsis lineclamp={4} width={"350px"}>
+                    <DataTableRowCellContentMultipleEllipsis lineclamp={4} width={"280px"}>
                       { user.job_description }
                     </DataTableRowCellContentMultipleEllipsis>
                   </UsersTableBodyRowCell>
-                  <UsersTableBodyRowCell>
-                    { formatDatetime(user.start_date) }
+                  <UsersTableBodyRowCell style={{minWidth: "200px"}}>
+                    Joined on { formatDatetime(user.start_date) }
                   </UsersTableBodyRowCell>
                   <UsersTableBodyRowCell style={{minWidth:"190px"}}>
                     <MdOutlinePhone /> { user.telephone }
                   </UsersTableBodyRowCell>
-                  <UsersTableBodyRowCell>
+                  <UsersTableBodyRowCell style={{minWidth: "100px"}}>
                     <ButtonStyled
                       styled={user.status}
                       >
                       { user.status }
                     </ButtonStyled>
+                  </UsersTableBodyRowCell>
+                  <UsersTableBodyRowCell style={{minWidth: "50px"}}>
+                    <BsThreeDotsVertical/>
                   </UsersTableBodyRowCell>
                 </DataTableBodyRow>
               ))

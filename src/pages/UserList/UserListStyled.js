@@ -1,5 +1,14 @@
 import styled from "styled-components";
 import { DataTableBodyRowCell, DataTableContainer } from "../../components/DataTableStyled";
+import { ButtonStyled } from '../../components/ButtonStyled';
+
+
+export const NewUserButton = styled(ButtonStyled)`
+  width: 213px;
+  position: relative;
+  left: calc(100%);
+  transform: translateX(-100%);
+`
 
 export const UserListTableContainer = styled(DataTableContainer)`
   height: calc(100% - 8em);
@@ -7,6 +16,11 @@ export const UserListTableContainer = styled(DataTableContainer)`
 
 export const UsersTableBodyRowCell = styled(DataTableBodyRowCell)`
   vertical-align: top;
+
+  svg {
+    vertical-align: middle;
+    font-size: 1.2rem;
+  }
 
   &.user_photo {
     width: 77px;
@@ -25,8 +39,9 @@ export const UsersTableBodyRowCell = styled(DataTableBodyRowCell)`
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%) scale(1.1);
+        transform: translate(-50%, -50%) scale(1.6);
         max-width: 100%;
+        max-height: 100%;
       }
     }
   }

@@ -11,15 +11,22 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
   const { userDispatch } = useContext(AuthContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { roomId } = useParams();
+  const { roomId, bookingId, userId } = useParams();
   const [title, setTitle] = useState('')
 
   useEffect(() => {
     let title;
-    if (roomId)
-      title = "Room details"
-    else if (pathname.split("/")[2] === 'new')
+    
+    if (pathname.indexOf('rooms') !== -1 && pathname.split("/")[2] === 'new')
       title = "New room"
+    else if (roomId)
+      title = "Room details"
+    else if (bookingId)
+      title = "Booking details"
+    else if (pathname.indexOf('users') !== -1 && pathname.split("/")[2] === 'new')
+      title = "New user"
+    else if (userId)
+      title = "User details"
     else
       title = pathname.split("/")[1];
 
