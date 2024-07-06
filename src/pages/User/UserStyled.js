@@ -24,7 +24,7 @@ export const UserForm = styled.form`
   border: none;
   width: 50%;
   position: relative;
-  padding: 2em 2em 6em;
+  padding: 2em 2em;
 `
 
 export const UserFormFieldContainer = styled.div`
@@ -56,9 +56,7 @@ export const UserFormField = styled(FormField)`
 `
 
 export const FormButton = styled(ButtonStyled)`
-  margin: 1em 0em;
-  position: absolute;
-  bottom: 1em;
+  margin: 1em 0em 1em;
   &:disabled {
     display: none;
   }
@@ -68,14 +66,13 @@ export const FormButton = styled(ButtonStyled)`
       case "left":
         return css`
           max-width: 500px;
-          width: calc(50% - 2.5em);
-          left: calc(0% + 2em);
+          width: calc(50% - 1em);
+          margin-right: 2em;
         `
       case "right":
         return css`
           max-width: 500px;
-          width: calc(50% - 2.5em);
-          right: calc(0% + 2em);
+          width: calc(50% - 1em);
         `
     }
   }}
