@@ -289,7 +289,7 @@ export const RoomPage = () => {
                           ...baseStyles,
                           color: "#135846",
                           backgroundColor: "#EEF9F2",
-                          lineHeight: `${canEdit ? "1.4em" : "4em"}`,
+                          lineHeight: `${canEdit || !room ? "1.4em" : "4em"}`,
                           padding: state.isDisabled 
                             ? "0em 1em !important"
                             : baseStyles.padding

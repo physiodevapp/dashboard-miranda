@@ -14,6 +14,10 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useDispatch, useSelector } from 'react-redux';
 import { roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListReadListThunk } from '../../features/roomList/roomListReadListThunk';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { ButtonStyled } from '../../components/ButtonStyled';
+import Swal from 'sweetalert2';
+import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
 
 export const RoomListPage = () => {
   const roomListDispatch = useDispatch();
@@ -45,6 +49,29 @@ export const RoomListPage = () => {
       
       return 0;
     })
+  }
+
+  const deleteRoom = (room) => {
+    Swal.fire({
+      title: "Do you want to delete the room?",
+      showDenyButton: true,
+      icon: "warning",
+      denyButtonText: "Delete",
+      confirmButtonText: `Don't delete`,
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isDenied) {        
+        Swal.fire({
+          title: "Room deleted successfully",
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "Accept", 
+          didOpen: () => {
+            roomListDispatch(roomListDeleteOneThunk({id: room.id, list: roomListRoomList}));
+          }
+        });
+      } 
+    });
   }
 
   useEffect(() => {
@@ -149,7 +176,20 @@ export const RoomListPage = () => {
             {
               displayRooms.slice((tablePageIndex * roomsPerTablePage), (tablePageIndex * roomsPerTablePage) + roomsPerTablePage)
               .map((room) => (
-                <DataTableBodyRow key={room.number} onClick={() => navigate(`/rooms/${room.id}`)}>
+                <DataTableBodyRow 
+                  key={room.id} 
+                  id={`room_${room.id}`} 
+                  offset={"60px"}
+                  onClick={({target}) => {      
+                    if (target.classList.contains("action_click") && !target.classList.contains("slide_cell")){
+                      document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
+                      setTimeout(() => {
+                        document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
+                      }, 1500)
+                    } else if (!target.classList.contains("custom_click")) {
+                      navigate(`/bookings/${room.id}`);
+                    }
+                  }}>
                   <RoomsTableBodyRowCell key={`${room.number}_photo`} className='room_photo'>
                     <figure key={`${room.number}_identification_photo_container`}>
                       <img key={`${room.number}_identification_photo_image`} src={room.photos[0]} alt="" />
@@ -172,9 +212,17 @@ export const RoomListPage = () => {
                   <RoomsTableBodyRowCell key={`${room.number}_status`}>
                     <StatusButton key={`${room.number}_status_button`} styled={room.status}>{ room.status }</StatusButton>
                   </RoomsTableBodyRowCell>
-                  <RoomsTableBodyRowCell style={{minWidth: "50px"}}>
-                    <BsThreeDotsVertical/>
-                  </RoomsTableBodyRowCell>
+                  <RoomsTableBodyRowCell 
+                    style={{minWidth: "50px"}}
+                    className='custom_click action_click'
+                    >
+                    <BsThreeDotsVertical className='custom_click action_click'/>
+                  </RoomsTableBodyRowCell>         
+                  <RoomsTableBodyRowCell className='action_cell custom_click'>
+                    <ButtonStyled styled="deny" className='custom_click' onClick={() => deleteRoom(room)} style={{width: "45px"}}>
+                      <RiDeleteBin6Line className='custom_click'/>
+                    </ButtonStyled>
+                  </RoomsTableBodyRowCell> 
                 </DataTableBodyRow>
               ))
             }
