@@ -36,7 +36,7 @@ export const BookingPage = () => {
   const bookingListDispatch = useDispatch();
   const bookingListStatus = useSelector(bookingListStatusSelect);
   const bookingListBooking = useSelector(bookingListBookingSelect);
-  const bookingListBookingList = useSelector(bookingListBookingListSelect)
+  const bookingListBookingList = useSelector(bookingListBookingListSelect);
   const bookingListError = useSelector(bookingListErrorSelect);
   const roomListRoomList = useSelector(roomListRoomListSelect)
   const [isLoading, setIsLoading] = useState(true);
