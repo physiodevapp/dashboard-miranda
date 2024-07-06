@@ -187,7 +187,7 @@ export const RoomListPage = () => {
                         document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       }, 1500)
                     } else if (!target.classList.contains("custom_click")) {
-                      navigate(`/bookings/${room.id}`);
+                      navigate(`/rooms/${room.id}`);
                     }
                   }}>
                   <RoomsTableBodyRowCell key={`${room.number}_photo`} className='room_photo'>
