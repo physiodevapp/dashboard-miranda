@@ -232,7 +232,7 @@ export const ToggleButtonInput = styled.input`
 `
 
 export const FormButton = styled(ButtonStyled)`
-  margin: 1em 0em 0em;
+  margin: 1em 0em 1em;
   &:disabled {
     display: none;
   }
