@@ -419,46 +419,47 @@ export const UserPage = () => {
               <UserFormField width="100%">
                 <FormFieldLabel htmlFor="userJobDescription">Job description</FormFieldLabel>
                 <FormTextarea name='userJobDescription' disabled={!canEdit && user} rows={10} { ...register("userJobDescription", {value: user?.job_description}) }></FormTextarea>
-              </UserFormField>         
+              </UserFormField>    
+              <FormButton 
+                onClick={() => deleteRoom()}
+                disabled={canEdit || !user } 
+                styled="deny" 
+                type='button'
+                position="left">
+                  Delete 
+              </FormButton>
+              <FormButton 
+                onClick={() => setCanEdit(!canEdit && user)} 
+                disabled={canEdit || !user } 
+                styled="primary" 
+                type='button'
+                position="right">
+                  Edit  
+              </FormButton>
+              <FormButton 
+                onClick={() => {
+                  setCanEdit(!canEdit && user);
+
+                  reset();
+
+                  if (!userId)
+                    navigate("/users");
+                }} 
+                disabled={!canEdit && user} 
+                styled="deny" 
+                type='button'
+                position="left">
+                  Dismiss
+              </FormButton>   
+              <FormButton 
+                disabled={!canEdit && user} 
+                styled="primary" 
+                type='submit'
+                position="right">
+                  {userId ? "Update" : "Create"}
+              </FormButton>
+     
             </FormFieldListContainer>
-            <FormButton 
-              onClick={() => deleteRoom()}
-              disabled={canEdit || !user } 
-              styled="deny" 
-              type='button'
-              position="left">
-                Delete 
-            </FormButton>
-            <FormButton 
-              onClick={() => setCanEdit(!canEdit && user)} 
-              disabled={canEdit || !user } 
-              styled="primary" 
-              type='button'
-              position="right">
-                Edit  
-            </FormButton>
-            <FormButton 
-              onClick={() => {
-                setCanEdit(!canEdit && user);
-
-                reset();
-
-                if (!userId)
-                  navigate("/users");
-              }} 
-              disabled={!canEdit && user} 
-              styled="deny" 
-              type='button'
-              position="left">
-                Dismiss
-            </FormButton>   
-            <FormButton 
-              disabled={!canEdit && user} 
-              styled="primary" 
-              type='submit'
-              position="right">
-                {userId ? "Update" : "Create"}
-            </FormButton>
           </UserForm>
         </UserContainer>
       </>

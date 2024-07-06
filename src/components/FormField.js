@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const FormFieldListContainer = styled.div`
   height: 100%;
   overflow-y: auto;
+  padding-right: 0.4em;
 
   &::-webkit-scrollbar {
     width: 12px;
