@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import dataBookings from "../../data/mock_bookings.json";
 import { bookingListReadListThunk } from "./bookingListReadListThunk";
 import { bookingListReadOneThunk } from "./bookingListReadOneThunk";
+import { bookingListDeleteOneThunk } from "./bookingListDeleteOneThunk";
 
 export const bookingListSlice = createSlice({
   name: "bookingList",
@@ -23,6 +24,19 @@ export const bookingListSlice = createSlice({
       state.status = "fulfilled";
     })
     .addCase(bookingListReadOneThunk.rejected, (state, action) => {
+      state.status = "rejected";
+    })
+
+    .addCase(bookingListDeleteOneThunk.pending, (state, action) => {
+      state.status = "pending";
+    })
+    .addCase(bookingListDeleteOneThunk.fulfilled, (state, action) => {
+      state.booking = null;
+      state.bookingList = action.payload;
+
+      state.status = "fulfilled";
+    })
+    .addCase(bookingListDeleteOneThunk.rejected, (state, action) => {
       state.status = "rejected";
     })
 

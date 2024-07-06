@@ -7,6 +7,10 @@ export const DataTableContainer = styled(PageElementContainerStyled)`
   font-family: "Poppins";
   background-color: white;
 
+  &.table_animating {
+    overflow-x: hidden;
+  }
+
   &::-webkit-scrollbar {
     width: 12px;
     height: 12px;
@@ -81,7 +85,6 @@ export const DataTableHeaderRowCell = styled.th`
       transform: rotateZ(180deg);
     }
   }
-
 `
 
 export const DataTableBody = styled.tbody`
@@ -91,12 +94,38 @@ export const DataTableBody = styled.tbody`
 export const DataTableBodyRow = styled.tr`
   border-top: 1px solid #eae7e7;
   cursor: pointer;
+  position: relative;
+
+  td {
+    z-index: 10;
+    transition: all 0.2s ease-in-out;
+
+    &.action_cell {
+      min-width: unset;
+      height: 100%;
+      width: ${props => `${props.offset || "90px"}`};
+      position: absolute;
+      right: 0px;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0em 0em;
+      background-color: #ebf1ef;
+    }
+
+    &.slide_cell:not(.action_cell) {
+      transform: ${props => `translateX(-${props.offset || "90px"})`};
+    }
+  }
 `
 
 export const DataTableBodyRowCell = styled.td`
   text-align: left;
   min-width: 130px;
   padding: 1rem 0rem 1rem 1rem;
+  background-color: white;
+  position: relative;
 `
 
 export const DataTableRowCellContentMultipleEllipsis = styled.div`

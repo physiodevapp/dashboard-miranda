@@ -18,6 +18,9 @@ import { bookingListBookingListSelect, bookingListErrorSelect, bookingListStatus
 
 import Swal from "sweetalert2";
 import 'animate.css';
+import { ButtonStyled } from '../../components/ButtonStyled';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { bookingListDeleteOneThunk } from '../../features/bookingList/bookingListDeleteOneThunk';
 
 export const BookingListPage = () => {
   const bookingListDispatch = useDispatch();
@@ -100,6 +103,29 @@ export const BookingListPage = () => {
     })
   }
 
+  const deleteBooking = (booking) => {
+    Swal.fire({
+      title: "Do you want to delete the booking order?",
+      showDenyButton: true,
+      icon: "warning",
+      denyButtonText: "Delete",
+      confirmButtonText: `Don't delete`,
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isDenied) {        
+        Swal.fire({
+          title: "Booking deleted successfully",
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "Accept", 
+          didOpen: () => {
+            bookingListDispatch(bookingListDeleteOneThunk({id: booking.id, list: bookingListBookingList}));
+          }
+        });
+      } 
+    });
+  }
+
   useEffect(() => {
     switch (bookingListStatus) {
       case "idle":
@@ -146,7 +172,7 @@ export const BookingListPage = () => {
           }}
         />
       </PageElementContainerStyled>
-      <BookingListTableContainer>
+      <BookingListTableContainer className='table_container'>
         <DataTable>
           <DataTableHeader>
             <DataTableHeaderRow>
@@ -208,10 +234,20 @@ export const BookingListPage = () => {
             {
               displayBookings.slice((tablePageIndex * contactsPerTablePage), (tablePageIndex * contactsPerTablePage) + contactsPerTablePage)
               .map((booking) => (
-                <DataTableBodyRow key={booking.id} onClick={({target}) => {
-                      if (!target.classList.contains("customClick"))
-                        navigate(`/bookings/${booking.id}`);
-                    }}>
+                <DataTableBodyRow 
+                  key={booking.id} 
+                  id={`booking_${booking.id}`} 
+                  offset={"60px"}
+                  onClick={({target}) => {      
+                    if (target.classList.contains("action_click") && !target.classList.contains("slide_cell")){
+                      document.querySelectorAll(`#booking_${booking.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
+                      setTimeout(() => {
+                        document.querySelectorAll(`#booking_${booking.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
+                      }, 1500)
+                    } else if (!target.classList.contains("custom_click")) {
+                      navigate(`/bookings/${booking.id}`);
+                    }
+                  }}>
                   <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`}>
                     <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
                       <BookingTableBodyRowCellBookingName>
@@ -249,7 +285,7 @@ export const BookingListPage = () => {
                     <BookingRequestButton 
                       type='button' 
                       styled="tertiary"
-                      className='customClick'
+                      className='custom_click'
                       onClick={() => showRequest(booking)}
                       >
                         View Notes
@@ -262,10 +298,15 @@ export const BookingListPage = () => {
                   </DataTableBodyRowCell>   
                   <DataTableBodyRowCell 
                     style={{minWidth: "50px"}}
-                    className='customClick'
+                    className='custom_click action_click'
                     >
-                    <BsThreeDotsVertical className='customClick'/>
-                  </DataTableBodyRowCell>               
+                    <BsThreeDotsVertical className='custom_click action_click'/>
+                  </DataTableBodyRowCell>         
+                  <DataTableBodyRowCell className='action_cell custom_click'>
+                    <ButtonStyled styled="deny" className='custom_click' onClick={() => deleteBooking(booking)} style={{width: "45px"}}>
+                      <RiDeleteBin6Line className='custom_click'/>
+                    </ButtonStyled>
+                  </DataTableBodyRowCell>      
                 </DataTableBodyRow>
               ))
             }
