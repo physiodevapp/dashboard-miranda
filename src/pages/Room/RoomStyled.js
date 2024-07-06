@@ -23,7 +23,7 @@ export const RoomForm = styled.form`
   border: none;
   width: 50%;
   position: relative;
-  padding: 2em 2em 6em;
+  padding: 2em 2em;
 `
 
 export const RoomGallery = styled.section`
@@ -91,6 +91,7 @@ export const RoomSwiperPaginationNext = styled(RoomSwiperPagination)`
 export const RoomFormFieldListContainer = styled.div`
   height: 100%;
   overflow-y: auto;
+  padding-right: 0.4em;
 
   &::-webkit-scrollbar {
     width: 12px;
@@ -231,9 +232,7 @@ export const ToggleButtonInput = styled.input`
 `
 
 export const FormButton = styled(ButtonStyled)`
-  margin: 1em 0em;
-  position: absolute;
-  bottom: 1em;
+  margin: 1em 0em 0em;
   &:disabled {
     display: none;
   }
@@ -243,14 +242,13 @@ export const FormButton = styled(ButtonStyled)`
       case "left":
         return css`
           max-width: 500px;
-          width: calc(50% - 2.5em);
-          left: calc(0% + 2em);
+          width: calc(50% - 1em);
+          margin-right: 2em;
         `
       case "right":
         return css`
           max-width: 500px;
-          width: calc(50% - 2.5em);
-          right: calc(0% + 2em);
+          width: calc(50% - 1em);
         `
     }
   }}

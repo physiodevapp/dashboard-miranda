@@ -322,45 +322,45 @@ export const RoomPage = () => {
                 <RoomFormLabel htmlFor="roomPolicy">Cancellation policy</RoomFormLabel>
                 <RoomTextarea name='roomPolicy' disabled={!canEdit && room} rows={10} { ...register("roomPolicy", {value: room?.cancellation_policy}) }></RoomTextarea>
               </RoomFormField>              
+              <FormButton 
+                onClick={() => deleteRoom()}
+                disabled={canEdit || !room } 
+                styled="deny" 
+                type='button'
+                position="left">
+                  Delete 
+              </FormButton>
+              <FormButton 
+                onClick={() => setCanEdit(!canEdit && room)} 
+                disabled={canEdit || !room } 
+                styled="primary" 
+                type='button'
+                position="right">
+                  Edit  
+              </FormButton>
+              <FormButton 
+                onClick={() => {
+                  setCanEdit(!canEdit && room);
+
+                  reset();
+
+                  if (!roomId)
+                    navigate("/rooms");
+                }} 
+                disabled={!canEdit && room} 
+                styled="deny" 
+                type='button'
+                position="left">
+                  Dismiss
+              </FormButton>   
+              <FormButton 
+                disabled={!canEdit && room} 
+                styled="primary" 
+                type='submit'
+                position="right">
+                  {roomId ? "Update" : "Create"}
+              </FormButton>            
             </RoomFormFieldListContainer>
-            <FormButton 
-              onClick={() => deleteRoom()}
-              disabled={canEdit || !room } 
-              styled="deny" 
-              type='button'
-              position="left">
-                Delete 
-            </FormButton>
-            <FormButton 
-              onClick={() => setCanEdit(!canEdit && room)} 
-              disabled={canEdit || !room } 
-              styled="primary" 
-              type='button'
-              position="right">
-                Edit  
-            </FormButton>
-            <FormButton 
-              onClick={() => {
-                setCanEdit(!canEdit && room);
-
-                reset();
-
-                if (!roomId)
-                  navigate("/rooms");
-              }} 
-              disabled={!canEdit && room} 
-              styled="deny" 
-              type='button'
-              position="left">
-                Dismiss
-            </FormButton>   
-            <FormButton 
-              disabled={!canEdit && room} 
-              styled="primary" 
-              type='submit'
-              position="right">
-                {roomId ? "Update" : "Create"}
-            </FormButton>            
           </RoomForm>
           <RoomGallery>
             <Swiper
