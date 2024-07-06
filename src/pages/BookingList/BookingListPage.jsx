@@ -176,12 +176,12 @@ export const BookingListPage = () => {
         <DataTable>
           <DataTableHeader>
             <DataTableHeaderRow>
-              <DataTableHeaderRowCell scope="col" >Booking</DataTableHeaderRowCell>
+              <DataTableHeaderRowCell scope="col" style={{minWidth: "140px"}} >Booking</DataTableHeaderRowCell>
               <DataTableHeaderRowCellSortComponent
                 scope='col'                
                 colSpan={1}
                 className={`${sortCriteria.headerKey === 'order_date' && "active"}`}
-                style={{cursor: "pointer", minWidth: "150px"}}
+                style={{cursor: "pointer", minWidth: "145px"}}
                 headerKey={'order_date'}
                 initialSortDirection={1}
                 onSort={({header, direction}) => {
@@ -197,7 +197,7 @@ export const BookingListPage = () => {
                 scope='col'                
                 colSpan={1}
                 className={`${sortCriteria.headerKey === 'check_in' && "active"}`}
-                style={{cursor: "pointer", minWidth: "150px"}}
+                style={{cursor: "pointer", minWidth: "145px"}}
                 headerKey={'check_in'}
                 initialSortDirection={1}
                 onSort={({header, direction}) => {
@@ -213,7 +213,7 @@ export const BookingListPage = () => {
                 scope='col'                
                 colSpan={1}
                 className={`${sortCriteria.headerKey === 'check_out' && "active"}`}
-                style={{cursor: "pointer", minWidth: "150px"}}
+                style={{cursor: "pointer", minWidth: "145px"}}
                 headerKey={'check_out'}
                 initialSortDirection={1}
                 onSort={({header, direction}) => {
@@ -248,15 +248,15 @@ export const BookingListPage = () => {
                       navigate(`/bookings/${booking.id}`);
                     }
                   }}>
-                  <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`}>
-                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
+                  <BookingTableBodyRowCellBooking key={`${booking.id}-bookingId`} style={{minWidth: "150px"}}>
+                    <DataTableRowCellContentMultipleEllipsis lineclamp={2} width={"100%"}>
                       <BookingTableBodyRowCellBookingName>
                         { `${booking.last_name}, ${booking.first_name}` }
                       </BookingTableBodyRowCellBookingName>
                     </DataTableRowCellContentMultipleEllipsis>
                     <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
                       <BookingTableBodyRowCellBookingId>
-                        { booking.id }
+                        { (booking.id).split("-")[(booking.id).split("-").length - 1] }
                       </BookingTableBodyRowCellBookingId>
                     </DataTableRowCellContentMultipleEllipsis>
                   </BookingTableBodyRowCellBooking>
@@ -281,10 +281,11 @@ export const BookingListPage = () => {
                   <DataTableBodyRowCell key={`${booking.id}-room_type`}>
                     { booking.room_type }
                   </DataTableBodyRowCell>
-                  <DataTableBodyRowCell>
+                  <DataTableBodyRowCell style={{minWidth: "150px"}}>
                     <BookingRequestButton 
                       type='button' 
                       styled="tertiary"
+                      style={{width: "130px"}}
                       className='custom_click'
                       onClick={() => showRequest(booking)}
                       >
