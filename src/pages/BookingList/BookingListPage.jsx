@@ -181,7 +181,7 @@ export const BookingListPage = () => {
                 scope='col'                
                 colSpan={1}
                 className={`${sortCriteria.headerKey === 'order_date' && "active"}`}
-                style={{cursor: "pointer"}}
+                style={{cursor: "pointer", minWidth: "150px"}}
                 headerKey={'order_date'}
                 initialSortDirection={1}
                 onSort={({header, direction}) => {
@@ -197,7 +197,7 @@ export const BookingListPage = () => {
                 scope='col'                
                 colSpan={1}
                 className={`${sortCriteria.headerKey === 'check_in' && "active"}`}
-                style={{cursor: "pointer"}}
+                style={{cursor: "pointer", minWidth: "150px"}}
                 headerKey={'check_in'}
                 initialSortDirection={1}
                 onSort={({header, direction}) => {
@@ -213,7 +213,7 @@ export const BookingListPage = () => {
                 scope='col'                
                 colSpan={1}
                 className={`${sortCriteria.headerKey === 'check_out' && "active"}`}
-                style={{cursor: "pointer"}}
+                style={{cursor: "pointer", minWidth: "150px"}}
                 headerKey={'check_out'}
                 initialSortDirection={1}
                 onSort={({header, direction}) => {
