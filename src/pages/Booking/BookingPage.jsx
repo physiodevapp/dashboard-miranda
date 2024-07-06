@@ -134,13 +134,13 @@ export const BookingPage = () => {
         <BookingContainer>
           <BookingForm onSubmit={handleSubmit(onSubmit)}>
             <FormFieldListContainer>
-              <FormField width="100%">
+              <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingName'>Fullname</FormFieldLabel>
                 <FormInput disabled={!canEdit} { ...register("bookingName", { value: booking.first_name }) }></FormInput>
               </FormField>
-              <FormField width="100%">
+              <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingId'>Booking Id</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingId", { value: booking.id }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingId", { value: (booking.id).split("-")[booking.id.split("-"). length - 1] }) }></FormInput>
               </FormField>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingCheckIn'>Check In</FormFieldLabel>
@@ -157,10 +157,6 @@ export const BookingPage = () => {
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingTotalPrice'>Final Price</FormFieldLabel>
                 <FormInput disabled={!canEdit} { ...register("bookingTotalPrice", { value: getTotalPrice(booking.check_in, booking.check_out) }) }></FormInput>
-              </FormField>
-              <FormField>
-                <FormFieldLabel htmlFor="bookingSpecialRequest">Special request</FormFieldLabel>                
-                <FormTextarea disabled={!canEdit} rows={10} { ...register("bookingSpecialRequest", { value: booking.special_request }) }></FormTextarea>
               </FormField>
               <FormField width="100%">
                 <FormFieldLabel htmlFor='bookingRoomFacilities'>Facilities</FormFieldLabel>
@@ -247,6 +243,10 @@ export const BookingPage = () => {
                       }}
                     />
                   )}/>
+              </FormField>
+              <FormField>
+                <FormFieldLabel htmlFor="bookingSpecialRequest">Special request</FormFieldLabel>                
+                <FormTextarea disabled={!canEdit} rows={10} { ...register("bookingSpecialRequest", { value: booking.special_request }) }></FormTextarea>
               </FormField>
             </FormFieldListContainer>
           </BookingForm>
