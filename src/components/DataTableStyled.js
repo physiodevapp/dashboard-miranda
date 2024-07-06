@@ -43,7 +43,7 @@ export const DataTableHeader = styled.thead`
   position: sticky;
   top: 0em;
   background-color: white;
-  z-index: 1;
+  z-index: 100;
 
   ::after {
     content: "";
