@@ -60,14 +60,6 @@ export const RoomGallery = styled.section`
   }
 `
 
-export const RoomSwiperSlideRoomImage = styled.img`
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1.0);
-  width: 100%;
-`
-
 export const RoomSwiperPagination = styled.div`
   position: absolute;
   border: 1px solid white;

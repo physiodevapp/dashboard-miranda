@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
-import { RoomFormFieldListContainer, FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomSwiperSlideRoomImage, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel } from './RoomStyled';
+import { RoomFormFieldListContainer, FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel } from './RoomStyled';
 
 import Select from 'react-select';
 
@@ -386,9 +386,7 @@ export const RoomPage = () => {
               { 
                 room?.photos
                 ? room?.photos.map((photo, index) => (
-                  <SwiperSlide key={`${room?.id}_${index}`} style={{backgroundImage:`url(${photo})`}}>
-                    <RoomSwiperSlideRoomImage src={photo}/>
-                  </SwiperSlide>
+                  <SwiperSlide key={`${room?.id}_${index}`} style={{backgroundImage:`url(${photo})`}}/>
                 ))
                 : <></>
               }
