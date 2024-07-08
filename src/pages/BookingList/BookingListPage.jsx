@@ -97,9 +97,6 @@ export const BookingListPage = () => {
         title: "booking__title",
         htmlContainer: "booking__container"
       }     
-    }).then((result) => {
-      // if (result.isConfirmed) {
-      // }
     })
   }
 

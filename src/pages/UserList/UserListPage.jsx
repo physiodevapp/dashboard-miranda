@@ -14,6 +14,9 @@ import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableH
 import { MdOutlinePhone } from "react-icons/md";
 import { ButtonStyled } from '../../components/ButtonStyled';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import Swal from 'sweetalert2';
+import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
 
 export const UserListPage = () => {
   const userListDispatch = useDispatch();
@@ -53,6 +56,29 @@ export const UserListPage = () => {
       
       return 0;
     })
+  }
+
+  const deleteUser = (user) => {
+    Swal.fire({
+      title: "Do you want to delete the user?",
+      showDenyButton: true,
+      icon: "warning",
+      denyButtonText: "Delete",
+      confirmButtonText: `Don't delete`,
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isDenied) {        
+        Swal.fire({
+          title: "User deleted successfully",
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "Accept", 
+          didOpen: () => {
+            userListDispatch(userListDeleteOneThunk({id: user.id, list: userListUserList}));
+          }
+        });
+      } 
+    });
   }
 
   useEffect(() => {
@@ -151,9 +177,19 @@ export const UserListPage = () => {
             {
               displayUsers.slice((tablePageIndex * usersPerTablePage), (tablePageIndex * usersPerTablePage) + usersPerTablePage)
               .map((user) => (
-                <DataTableBodyRow key={user.id} onClick={({target}) => {
-                    if (!target.classList.contains("customClick"))
+                <DataTableBodyRow 
+                  key={user.id} 
+                  id={`user_${user.id}`} 
+                  offset={"60px"}
+                  onClick={({target}) => {  
+                    if (target.classList.contains("action_click") && !target.classList.contains("slide_cell")){
+                      document.querySelectorAll(`#user_${user.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
+                      setTimeout(() => {
+                        document.querySelectorAll(`#user_${user.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
+                      }, 1500)
+                    } else if (!target.classList.contains("custom_click") && !target.parentElement.classList.contains("custom_click")) {
                       navigate(`/users/${user.id}`);
+                    }
                   }}>
                   <UsersTableBodyRowCell 
                     key={`${user.id}_photo`} 
@@ -191,9 +227,17 @@ export const UserListPage = () => {
                       { user.status }
                     </ButtonStyled>
                   </UsersTableBodyRowCell>
-                  <UsersTableBodyRowCell style={{minWidth: "50px"}}>
-                    <BsThreeDotsVertical/>
-                  </UsersTableBodyRowCell>
+                  <UsersTableBodyRowCell 
+                    style={{minWidth: "50px"}}
+                    className='custom_click action_click'
+                    >
+                    <BsThreeDotsVertical className='custom_click action_click'/>
+                  </UsersTableBodyRowCell>         
+                  <UsersTableBodyRowCell className='action_cell custom_click'>
+                    <ButtonStyled styled="deny" className='custom_click' onClick={() => deleteUser(user)} style={{width: "45px"}}>
+                      <RiDeleteBin6Line className='custom_click'/>
+                    </ButtonStyled>
+                  </UsersTableBodyRowCell> 
                 </DataTableBodyRow>
               ))
             }
