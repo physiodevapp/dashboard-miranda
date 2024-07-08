@@ -186,7 +186,7 @@ export const RoomListPage = () => {
                       setTimeout(() => {
                         document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       }, 1500)
-                    } else if (!target.classList.contains("custom_click")) {
+                    } else if (!target.classList.contains("custom_click") && !target.parentElement.classList.contains("custom_click")) {
                       navigate(`/rooms/${room.id}`);
                     }
                   }}>

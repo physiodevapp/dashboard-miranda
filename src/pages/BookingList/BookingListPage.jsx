@@ -97,9 +97,6 @@ export const BookingListPage = () => {
         title: "booking__title",
         htmlContainer: "booking__container"
       }     
-    }).then((result) => {
-      // if (result.isConfirmed) {
-      // }
     })
   }
 
@@ -244,7 +241,7 @@ export const BookingListPage = () => {
                       setTimeout(() => {
                         document.querySelectorAll(`#booking_${booking.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       }, 1500)
-                    } else if (!target.classList.contains("custom_click")) {
+                    } else if (!target.classList.contains("custom_click") && !target.parentElement.classList.contains("custom_click")) {
                       navigate(`/bookings/${booking.id}`);
                     }
                   }}>
