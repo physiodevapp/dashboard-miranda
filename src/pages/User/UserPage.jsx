@@ -12,10 +12,15 @@ import { FormButton, UserContainer, UserForm, UserFormField, UserFormFieldContai
 import { FormField, FormFieldLabel, FormFieldListContainer, FormInput, FormTextarea } from '../../components/FormField';
 
 import { useForm, Controller } from 'react-hook-form';
+
 import Swal from 'sweetalert2';
+
 import { userListUpdateOneThunk } from '../../features/userList/userListUpdateOneThunk';
 import { userListCreateOneThunk } from '../../features/userList/userListCreateOneThunk';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
+
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 
 import Select from 'react-select';
 
@@ -37,6 +42,8 @@ export const UserPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [canRedirectBack, setCanRedirectBack] = useState(false);
+
+  const [startDate, setStartDate] = useState()
 
   const jobOptions = ["Manager", "Reservation desk", "Room service"].map((job) => ({
     value: job,
@@ -234,7 +241,8 @@ export const UserPage = () => {
               </UserFormField>
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStartDate'>Start date</FormFieldLabel>
-                <FormInput disabled={!canEdit && user} { ...register("userStartDate", { value: formatDatetime(user?.start_date) }) }/>
+                <DayPicker disabled={!canEdit && user} mode="single" selected={startDate} onSelect={setStartDate} />
+                {/* <FormInput disabled={!canEdit && user} { ...register("userStartDate", { value: formatDatetime(user?.start_date) }) }/> */}
               </UserFormField>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>

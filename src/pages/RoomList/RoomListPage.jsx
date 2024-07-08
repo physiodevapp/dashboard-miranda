@@ -180,13 +180,15 @@ export const RoomListPage = () => {
                   key={room.id} 
                   id={`room_${room.id}`} 
                   offset={"60px"}
-                  onClick={({target}) => {      
-                    if (target.classList.contains("action_click") && !target.classList.contains("slide_cell")){
+                  onClick={({target}) => { 
+                    if (!target.closest('td'))
+                      return    
+                    if (target.closest('td').classList.contains("action_click") && !target.closest('td').classList.contains("slide_cell")){
                       document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       setTimeout(() => {
                         document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       }, 1500)
-                    } else if (!target.classList.contains("custom_click") && !target.parentElement.classList.contains("custom_click")) {
+                    } else if (!target.closest('td').classList.contains("custom_click")) {
                       navigate(`/rooms/${room.id}`);
                     }
                   }}>
@@ -216,11 +218,11 @@ export const RoomListPage = () => {
                     style={{minWidth: "50px"}}
                     className='custom_click action_click'
                     >
-                    <BsThreeDotsVertical className='custom_click action_click'/>
+                    <BsThreeDotsVertical/>
                   </RoomsTableBodyRowCell>         
                   <RoomsTableBodyRowCell className='action_cell custom_click'>
-                    <ButtonStyled styled="deny" className='custom_click' onClick={() => deleteRoom(room)} style={{width: "45px"}}>
-                      <RiDeleteBin6Line className='custom_click'/>
+                    <ButtonStyled styled="deny" onClick={() => deleteRoom(room)} style={{width: "45px"}}>
+                      <RiDeleteBin6Line/>
                     </ButtonStyled>
                   </RoomsTableBodyRowCell> 
                 </DataTableBodyRow>
