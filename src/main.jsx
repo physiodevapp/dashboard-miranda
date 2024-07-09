@@ -17,6 +17,8 @@ import { store } from "./app/store";
 import { UserListPage } from "./pages/UserList/UserListPage";
 import { UserPage } from "./pages/User/UserPage";
 
+import 'animate.css';
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>

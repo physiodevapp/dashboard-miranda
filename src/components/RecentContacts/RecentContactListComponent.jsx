@@ -25,7 +25,6 @@ import { RiCloseCircleLine } from "react-icons/ri";
 import userPhoto from "../../assets/Imagen de perfil.png";
 
 import Swal from "sweetalert2";
-import 'animate.css';
 
 import { useDispatch, useSelector } from "react-redux";
 import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
@@ -91,9 +90,6 @@ export const RecentContactListComponent = () => {
         title: "contact__title",
         htmlContainer: "contact__container"
       }     
-    }).then((result) => {
-      // if (result.isConfirmed) {
-      // }
     })
   }
 
