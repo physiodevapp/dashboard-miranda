@@ -12,12 +12,16 @@ body {
   font-family: 'Poppins';
   max-width: 800px;
   width: 80%;
+
+  &.calendar__popup {
+    width: 400px;
+  }
   
   .swal2-title {
     font-size: 1.6rem;
   }
 
-  .contact__title, .booking__title {
+  .calendar__title, .contact__title, .booking__title {
     text-align: left;
   }
 
@@ -156,6 +160,10 @@ body {
     .container__article__content {
       padding: 0em 1em 1em 0em;
     }
+  }
+
+  .calendar__container {
+    
   }
 }
 

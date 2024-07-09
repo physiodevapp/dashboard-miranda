@@ -48,6 +48,8 @@ export const UserFormFieldPhoto = styled(FormField)`
 `
 
 export const UserFormField = styled(FormField)`
+  align-items: center;
+  position: relative;
 
   input, textarea {
     border-radius: 4px;

@@ -9,25 +9,33 @@ import { userListReadOneThunk } from '../../features/userList/userListReadOneThu
 import { BounceLoader } from 'react-spinners';
 
 import { FormButton, UserContainer, UserForm, UserFormField, UserFormFieldContainer, UserFormFieldPhoto } from './UserStyled';
-import { FormField, FormFieldLabel, FormFieldListContainer, FormInput, FormTextarea } from '../../components/FormField';
+import { FormFieldLabel, FormFieldListContainer, FormInput, FormTextarea } from '../../components/FormField';
 
 import { useForm, Controller } from 'react-hook-form';
+
 import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 import { userListUpdateOneThunk } from '../../features/userList/userListUpdateOneThunk';
 import { userListCreateOneThunk } from '../../features/userList/userListCreateOneThunk';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
 
 import Select from 'react-select';
+import { FaRegCalendarAlt } from 'react-icons/fa';
+
+import { DayPickerComponent } from '../../components/DayPickerComponent';
+
+const calendarSwal = withReactContent(Swal);
 
 export const UserPage = () => {
   const [user, setUser] = useState(null);
-  const { userId } = useParams();
-
   const [canEdit, setCanEdit] = useState(false);
+
+  const { userId } = useParams();
 
   const navigate = useNavigate();
 
-  const { register, handleSubmit, control, reset } = useForm();
+  const { register, handleSubmit, control, reset, setValue } = useForm();
 
   const userListDispatch = useDispatch();
   const userListStatus = useSelector(userListStatusSelect);
@@ -37,6 +45,8 @@ export const UserPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [canRedirectBack, setCanRedirectBack] = useState(false);
+
+  const [startDate, setStartDate] = useState(new Date());
 
   const jobOptions = ["Manager", "Reservation desk", "Room service"].map((job) => ({
     value: job,
@@ -142,6 +152,46 @@ export const UserPage = () => {
     });
   }
 
+  const showCalendar = () => {
+    const onDateChange = (selectedDate) => {
+      const updateUserStartDate = formatDatetime(new Date(selectedDate).getTime());
+      setStartDate(selectedDate);
+      setValue("userStartDate", updateUserStartDate);
+    }
+
+    calendarSwal.fire({
+      title:`Select a date`,
+      showClass: {
+        popup:`
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup:`
+          animate__animated
+          animate__fadeOut
+          animate__faster
+        `
+      },
+      html: <DayPickerComponent 
+        startDate={startDate}
+        onChangeDate={onDateChange}
+        />,
+      showCloseButton: true,
+      showConfirmButton: false,
+      customClass: {
+        popup: "calendar__popup",
+        title: "calendar__title",
+        htmlContainer: "calendar__container"
+      }     
+    }).then((result) => {
+      // if (result.isConfirmed) {
+      // }
+    })    
+  }
+
   useEffect(() => {
     if (userId)
       userListDispatch(userListReadOneThunk({id: userId, list: userListUserList}))
@@ -174,6 +224,9 @@ export const UserPage = () => {
               label: userListUser.status
             }
           })
+
+          setStartDate(new Date(Number(user?.start_date)));
+          // setCalendarMonth(new Date(Number(user?.start_date)));
         } else if (canRedirectBack) {
           navigate("/users");
         }
@@ -234,7 +287,8 @@ export const UserPage = () => {
               </UserFormField>
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStartDate'>Start date</FormFieldLabel>
-                <FormInput disabled={!canEdit && user} { ...register("userStartDate", { value: formatDatetime(user?.start_date) }) }/>
+                <FaRegCalendarAlt style={{display:`${!canEdit && user ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
+                <FormInput disabled={!canEdit && user} style={!canEdit && user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user?.start_date) }) }/>
               </UserFormField>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
