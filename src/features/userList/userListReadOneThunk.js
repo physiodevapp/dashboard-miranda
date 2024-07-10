@@ -8,8 +8,21 @@ const getUserById = (userId, userList) => {
   })
 }
 
-export const userListReadOneThunk = createAsyncThunk("userList/userListReadOne", async ({id, list}) => {
-  const user = await getUserById(id, list);
+const getUserByEmail = (userEmail, userList) => {
+  return new Promise((resolve, rejected) => {
+    setTimeout(() => {
+      resolve(userList.find((user) => user.email === userEmail));
+    }, 200);
+  })
+}
+
+export const userListReadOneThunk = createAsyncThunk("userList/userListReadOne", async ({key, list}) => {
+  let user = undefined;
+
+  user = await getUserById(key, list);
+
+  if (!user)
+    user = await getUserByEmail(key, list)
 
   return user;
 })

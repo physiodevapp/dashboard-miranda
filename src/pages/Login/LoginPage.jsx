@@ -53,10 +53,8 @@ export const LoginPage = () => {
           setIsLoading(false);
         }, 1000);
 
-        console.log('login ', {userListUser})
         if (userListUser) {
           userDispatch({type: 'login', payload: {
-            id: userListUser.id,
             email: userListUser.email,
           }});
           navigate('/dashboard');
