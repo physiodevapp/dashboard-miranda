@@ -17,7 +17,7 @@ export const ButtonStyled = styled.button`
       case "primary":
         return css`
           background-color: #135846;
-          color: #EBF1EF;
+          color: #ebf1ef;
           border-color: #135846;
           &:hover {
             background-color: white;
