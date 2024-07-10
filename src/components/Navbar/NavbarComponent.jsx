@@ -42,7 +42,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
       <NavbarList>
         <li><FaRegEnvelope/></li>
         <li><BiBell/></li>
-        <li>
+        <li id='logout'>
           <MdLogout onClick={ () => {
             userDispatch({type: 'logout'});
             navigate('/login');
