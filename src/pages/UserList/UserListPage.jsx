@@ -17,6 +17,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Swal from 'sweetalert2';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
+import { userListReadListThunk } from '../../features/userList/userListReadListThunk';
 
 export const UserListPage = () => {
   const userListDispatch = useDispatch();

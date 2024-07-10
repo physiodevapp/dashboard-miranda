@@ -5,6 +5,7 @@ import { userListUpdateOneThunk } from "./userListUpdateOneThunk";
 import { userListReadOneThunk } from "./userListReadOneThunk";
 import { userListDeleteOneThunk } from "./userListDeleteOneThunk";
 import { userListCreateOneThunk } from "./userListCreateOneThunk";
+import { userListCanLoginThunk } from "./userListCanLoginThunk";
 
 
 export const userListSlice = createSlice({
@@ -15,7 +16,11 @@ export const userListSlice = createSlice({
     userList: dataUsers,
     user: {},
   },
-  reducers: {},
+  reducers: {
+    userListResetUser: (state, action) => {
+      state.user = null;
+    } 
+  },
   extraReducers: (builder) => {
     builder
     .addCase(userListUpdateOneThunk.pending, (state, action) => {
@@ -41,6 +46,18 @@ export const userListSlice = createSlice({
       state.status = "fulfilled";
     })
     .addCase(userListReadOneThunk.rejected, (state, action) => {
+      state.status = "rejected";
+    })
+
+    .addCase(userListCanLoginThunk.pending, (state, action) => {
+      state.status = "pending";
+    })
+    .addCase(userListCanLoginThunk.fulfilled, (state, action) => {
+      state.user = action.payload;
+
+      state.status = "fulfilled";
+    })
+    .addCase(userListCanLoginThunk.rejected, (state, action) => {
       state.status = "rejected";
     })
 
@@ -86,6 +103,8 @@ export const userListSlice = createSlice({
   }
 
 })
+
+export const { userListResetUser } = userListSlice.actions;
 
 export const userListStatusSelect = (state) => state.userList.status;
 export const userListErrorSelect = (state) => state.userList.error;

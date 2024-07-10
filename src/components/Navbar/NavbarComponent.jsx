@@ -6,13 +6,17 @@ import { LuChevronLeft } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { useDispatch } from 'react-redux';
+import { userListResetUser } from '../../features/userList/userListSlice';
 
 export const NavbarComponent = ({handleClickMenu, show}) => {
   const { userDispatch } = useContext(AuthContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { roomId, bookingId, userId } = useParams();
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState('');
+
+  const userListDispatch = useDispatch()
 
   useEffect(() => {
     let title;
@@ -30,8 +34,10 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
     else
       title = pathname.split("/")[1];
 
-    setTitle(title)
+    setTitle(title);
+
   }, [pathname])
+  
 
   return (
     <>
@@ -44,6 +50,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
         <li><BiBell/></li>
         <li id='logout'>
           <MdLogout onClick={ () => {
+            userListDispatch(userListResetUser());
             userDispatch({type: 'logout'});
             navigate('/login');
           }}/>
