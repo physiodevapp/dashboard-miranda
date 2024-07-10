@@ -127,7 +127,7 @@ export const UserPage = () => {
     })
   }
 
-  const deleteRoom = () => {
+  const deleteUser = () => {
     Swal.fire({
       title: "Do you want to delete the user?",
       showDenyButton: true,
@@ -153,10 +153,10 @@ export const UserPage = () => {
   }
 
   const showCalendar = () => {
+    let calendarDate = null;
+
     const onDateChange = (selectedDate) => {
-      const updateUserStartDate = formatDatetime(new Date(selectedDate).getTime());
-      setStartDate(selectedDate);
-      setValue("userStartDate", updateUserStartDate);
+      calendarDate = selectedDate;
     }
 
     calendarSwal.fire({
@@ -180,16 +180,19 @@ export const UserPage = () => {
         onChangeDate={onDateChange}
         />,
       showCloseButton: true,
-      showConfirmButton: false,
+      showConfirmButton: true,
+      confirmButtonText: 'Update date',
       customClass: {
         popup: "calendar__popup",
         title: "calendar__title",
         htmlContainer: "calendar__container"
       }     
     }).then((result) => {
-      // if (result.isConfirmed) {
-      // }
-    })    
+      if (result.isConfirmed) {
+        setStartDate(calendarDate);
+        setValue("userStartDate", formatDatetime(new Date(calendarDate).getTime()));
+      }
+    })
   }
 
   useEffect(() => {
@@ -212,8 +215,7 @@ export const UserPage = () => {
         }, 1000);
 
         if (userListUser && userId) {
-          setUser(userListUser);
-  
+          
           reset({
             userJob: {
               value: userListUser.job, 
@@ -222,11 +224,13 @@ export const UserPage = () => {
             userStatus: {
               value: userListUser.status,
               label: userListUser.status
-            }
-          })
+            },
+            userStartDate: formatDatetime(userListUser.start_date)
+          });
+          
+          setUser(userListUser);
 
-          setStartDate(new Date(Number(user?.start_date)));
-          // setCalendarMonth(new Date(Number(user?.start_date)));
+          setStartDate(new Date(Number(userListUser.start_date)));
         } else if (canRedirectBack) {
           navigate("/users");
         }
@@ -475,7 +479,7 @@ export const UserPage = () => {
                 <FormTextarea name='userJobDescription' disabled={!canEdit && user} rows={10} { ...register("userJobDescription", {value: user?.job_description}) }></FormTextarea>
               </UserFormField>    
               <FormButton 
-                onClick={() => deleteRoom()}
+                onClick={() => deleteUser()}
                 disabled={canEdit || !user } 
                 styled="deny" 
                 type='button'
