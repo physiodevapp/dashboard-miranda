@@ -280,12 +280,11 @@ export const BookingListPage = () => {
                   <DataTableBodyRowCell key={`${booking.id}-room_type`}>
                     { booking.room_type }
                   </DataTableBodyRowCell>
-                  <DataTableBodyRowCell style={{minWidth: "150px"}}>
+                  <DataTableBodyRowCell className='custom_click' style={{minWidth: "150px"}}>
                     <BookingRequestButton 
                       type='button' 
                       styled="tertiary"
-                      style={{width: "130px"}}
-                      className='custom_click'
+                      style={{width: "130px"}}                      
                       onClick={() => showRequest(booking)}
                       >
                         View Notes

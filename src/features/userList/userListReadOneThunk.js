@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const getUser = (userId, userList) => {
+const getUserById = (userId, userList) => {
   return new Promise((resolve, rejected) => {
     setTimeout(() => {
       resolve(userList.find((user) => user.id === userId));
@@ -9,7 +9,7 @@ const getUser = (userId, userList) => {
 }
 
 export const userListReadOneThunk = createAsyncThunk("userList/userListReadOne", async ({id, list}) => {
-  const user = await getUser(id, list);
+  const user = await getUserById(id, list);
 
   return user;
 })

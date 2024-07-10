@@ -1,6 +1,6 @@
 
 
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import logoImage from '../../assets/dashboard-logo.png';
 import userImage from '../../assets/Imagen de perfil.png';
 import { Logo, MenuList, User, Name, Email, Brand, Copyright, Author, MenuListItem } from './MenuStyled';
@@ -10,10 +10,54 @@ import { MdOutlineReviews } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa6';
 import { ButtonStyled } from '../ButtonStyled';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
+import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
+import { AuthContext } from '../../context/AuthContext';
 
 export const MenuComponent = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
+  const { userState } = useContext(AuthContext);
+
+  const userListDispatch = useDispatch();
+  const userListError = useSelector(userListErrorSelect);
+  const userListStatus = useSelector(userListStatusSelect);
+  const userListUserList = useSelector(userListUserListSelect);
+  const userListUser = useSelector(userListUserSelect);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    userListDispatch(userListReadOneThunk({id: userState.id, list: userListUserList}))
+  }, []);
+
+  useEffect(() => {
+    switch (userListStatus) {
+      case "idle":
+        setIsLoading(false);
+        break;
+      case "pending":
+        setIsLoading(true);
+        break;
+      case "fulfilled":
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+
+        if (userListUser)
+          setUser(userListUser);
+
+        break;
+      case "rejected":
+        setIsLoading(false);
+        console.log({userListError});
+        break;
+      default:
+        break;
+    }
+  }, [userListStatus])
 
   return (
     <>
@@ -47,9 +91,9 @@ export const MenuComponent = () => {
       </MenuList>
       <User>
         <img src={userImage} alt="" />
-        <Name>Edu Gamboa</Name>
-        <Email>edu.gamboa.rodriguez@gmail.com</Email>
-        <ButtonStyled styled="tertiary">Edit</ButtonStyled>
+        <Name>{ `${user.first_name} ${user.last_name}` }</Name>
+        <Email>{ user.email}</Email>
+        <ButtonStyled styled="tertiary" onClick={() => navigate(`/users/${user.id}`)}>Edit</ButtonStyled>
       </User>
       <Brand>Travl Hotel Admin Dashboard</Brand>
       <Copyright>© 2020 All Rights Reserved</Copyright>

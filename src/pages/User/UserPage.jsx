@@ -225,7 +225,7 @@ export const UserPage = () => {
               value: userListUser.status,
               label: userListUser.status
             },
-            userStartDate: formatDatetime(userListUser.start_date)
+            userStartDate: formatDatetime(userListUser.start_date),
           });
           
           setUser(userListUser);

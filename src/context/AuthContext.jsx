@@ -1,7 +1,6 @@
 
 import React, { createContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import bcrypt from 'bcryptjs';
 
 const AuthContext = createContext();
 
@@ -16,12 +15,9 @@ const getUserFromLocalStorage = () => {
 const userReducer = (state, {type, payload}) => {
   switch (type) {
     case 'login':
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(payload.password, salt);
-
-      localStorage.setItem('current-user', JSON.stringify({...payload, password: hash}));
-
-      state = JSON.parse(JSON.stringify({...payload, password: hash}));
+      localStorage.setItem('current-user', JSON.stringify(payload));
+  
+      state = JSON.parse(JSON.stringify(payload));
 
       return state;
     case 'logout':

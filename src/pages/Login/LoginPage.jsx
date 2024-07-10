@@ -2,11 +2,21 @@ import React, { useContext, useEffect, useState } from "react";
 import { Form, Input, SubmitButton, Wrapper } from "./LoginStyled";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from "../../features/userList/userListSlice";
+import { userListCanLoginThunk } from "../../features/userList/userListCanLoginThunk";
 
 export const LoginPage = () => {
   const [user, setUser] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const { userDispatch } = useContext(AuthContext);
+  const { userState, userDispatch } = useContext(AuthContext);
+
+  const userListDispatch = useDispatch();
+  const userListError = useSelector(userListErrorSelect);
+  const userListStatus = useSelector(userListStatusSelect);
+  const userListUserList = useSelector(userListUserListSelect);
+  const userListUser = useSelector(userListUserSelect);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChangeInput = ({ target }) => {
     setUser((prevUser) => ({
@@ -25,11 +35,42 @@ export const LoginPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(isValidForm()) {
-      userDispatch({type: 'login', payload: user});
-      navigate('/dashboard');
-    }
+
+    if(isValidForm())
+      userListDispatch(userListCanLoginThunk({email: user.email, password: user.password, list: userListUserList}))    
   };
+
+  useEffect(() => {
+    switch (userListStatus) {
+      case "idle":
+        setIsLoading(false);
+        break;
+      case "pending":
+        setIsLoading(true);
+        break;
+      case "fulfilled":
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+
+        console.log('login ', {userListUser})
+        if (userListUser) {
+          userDispatch({type: 'login', payload: {
+            id: userListUser.id,
+            email: userListUser.email,
+          }});
+          navigate('/dashboard');
+        }
+
+        break;
+      case "rejected":
+        setIsLoading(false);
+        console.log({userListError});
+        break;
+      default:
+        break;
+    }
+  }, [userListStatus])
 
   return (
     <>
