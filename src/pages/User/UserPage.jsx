@@ -197,7 +197,7 @@ export const UserPage = () => {
 
   useEffect(() => {
     if (userId)
-      userListDispatch(userListReadOneThunk({key: userId, list: userListUserList}))
+      userListDispatch(userListReadOneThunk({key: "id", value: userId, list: userListUserList}))
 
   }, [userId])
 
