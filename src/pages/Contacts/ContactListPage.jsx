@@ -139,7 +139,7 @@ export const ContactListPage = () => {
                 <DataTableBodyRow key={contact.id}>
                   <DataTableBodyRowCell key={`${contact.id}-orderId`}>
                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"8rem"}>
-                    { contact.id }
+                    { contact.id.split("-")[contact.id.split("-").length - 1] }
                    </DataTableRowCellContentMultipleEllipsis>
                   </DataTableBodyRowCell>
                   <DataTableBodyRowCell key={`${contact.id}-date`} style={{minWidth: "14rem"}}>
