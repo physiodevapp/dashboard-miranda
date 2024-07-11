@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { FaArrowUp } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { userListErrorSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
+import { userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { DataTableTabListComponent } from '../../components/DataTableTabs/DataTableTabListComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
@@ -17,23 +17,20 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Swal from 'sweetalert2';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
-import { userListReadListThunk } from '../../features/userList/userListReadListThunk';
 
 export const UserListPage = () => {
   const userListDispatch = useDispatch();
   const userListUserList = useSelector(userListUserListSelect);
   const userListStatus = useSelector(userListStatusSelect);
   const userListError = useSelector(userListErrorSelect);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const userListSearchTerm = useSelector(userListSearchTermSelect);
 
+  const [sortCriteria, setSortCriteria] = useState({headerKey: 'last_name', direction: -1});
+  const [activeTab, setActiveTab] = useState('');
+  const [tablePageIndex, setTablePageIndex] = useState(0);
   const [users, setUsers] = useState(userListUserList);
   const [displayUsers, setDisplayUsers] = useState(userListUserList);
-
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'last_name', direction: -1})
-
-  const [activeTab, setActiveTab] = useState('');
-
-  const [tablePageIndex, setTablePageIndex] = useState(0);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const navigate = useNavigate();
 
@@ -102,15 +99,19 @@ export const UserListPage = () => {
       default:
         break;
     }
-  }, [userListStatus])
+  }, [userListStatus]) 
 
   useEffect(() => {
-    const tabRows = JSON.parse(JSON.stringify(users)).filter((user) => activeTab.length ? user.status === activeTab : true);
+    const filteredUsers = userListSearchTerm.length
+    ? JSON.parse(JSON.stringify(users)).filter((user) => user.first_name.includes(userListSearchTerm) || user.last_name.includes(userListSearchTerm))
+    : userListUserList
+
+    const tabRows = JSON.parse(JSON.stringify(filteredUsers)).filter((user) => activeTab.length ? user.status === activeTab : true);
 
     const sortedTabRows = sortRows(tabRows, sortCriteria);
 
     setDisplayUsers(sortedTabRows);
-  }, [users, activeTab, sortCriteria])
+  }, [users, activeTab, sortCriteria, userListSearchTerm])
 
   return (
     <>
@@ -209,7 +210,7 @@ export const UserListPage = () => {
                       <UserIdentificationName key={`${user.id}_identification_name`}>
                         { user.last_name },<br/>{ user.first_name }
                       </UserIdentificationName>
-                      <UserIdentificationId key={`${user.id}_identification_id`}>{`# ${user.id}`}</UserIdentificationId>
+                      <UserIdentificationId key={`${user.id}_identification_id`}>{`# ${user.id.split("-")[user.id.split("-").length - 1]}`}</UserIdentificationId>
                     </UserIdentification>
                   </UsersTableBodyRowCell>
                   <UsersTableBodyRowCell>

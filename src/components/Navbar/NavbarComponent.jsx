@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { NavbarMenuButton, NavbarPageTitle, NavbarList } from './NavbarStyled';
+import { NavbarMenuButton, NavbarPageTitle, NavbarList, NavbarSearchBarInput, NavbarSearchBarContainer, NavbarSearchBarButton } from './NavbarStyled';
 import { BiBell } from 'react-icons/bi';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { LuChevronLeft } from 'react-icons/lu';
@@ -7,16 +7,39 @@ import { MdLogout } from 'react-icons/md';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { useDispatch } from 'react-redux';
-import { userListResetUser } from '../../features/userList/userListSlice';
+import { userListResetUser, userListSetUserSearchTerm } from '../../features/userList/userListSlice';
+import { IoMdClose } from 'react-icons/io';
+import { IoSearchOutline } from 'react-icons/io5';
 
 export const NavbarComponent = ({handleClickMenu, show}) => {
   const { userDispatch } = useContext(AuthContext);
+
+  const [title, setTitle] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { roomId, bookingId, userId } = useParams();
-  const [title, setTitle] = useState('');
 
-  const userListDispatch = useDispatch()
+  const userListDispatch = useDispatch();
+
+  const clearSearchTerm = () => {
+    setSearchTerm('');
+  }
+
+  const handleSearchTermChange = ({target}) => {
+    setSearchTerm(target.value.trim());
+  }
+
+  const filterTable = () => {
+    userListDispatch(userListSetUserSearchTerm(searchTerm))
+  }
+
+  useEffect(() => {
+    if (!searchTerm.length)
+      filterTable();
+
+  }, [searchTerm])
 
   useEffect(() => {
     let title;
@@ -36,6 +59,8 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
 
     setTitle(title);
 
+    setSearchTerm('');
+
   }, [pathname])
   
 
@@ -45,6 +70,17 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
         <LuChevronLeft onClick={handleClickMenu}/>
       </NavbarMenuButton>
       <NavbarPageTitle>{title}</NavbarPageTitle>
+      {
+        pathname.includes("users") || pathname.includes("bookings") 
+        ? <NavbarSearchBarContainer>
+            <NavbarSearchBarButton onClick={filterTable} disabled={!searchTerm.length}>
+              <IoSearchOutline className='search' />
+            </NavbarSearchBarButton>
+            <NavbarSearchBarInput type='text' value={searchTerm} onChange={handleSearchTermChange}/>
+            <IoMdClose onClick={clearSearchTerm} className={`clear${searchTerm.length ? ' show' : ''}`}/>
+          </NavbarSearchBarContainer>
+        : <></>
+      }
       <NavbarList>
         <li><FaRegEnvelope/></li>
         <li><BiBell/></li>

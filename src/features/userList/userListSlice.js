@@ -15,11 +15,15 @@ export const userListSlice = createSlice({
     status: "idle",
     userList: dataUsers,
     user: {},
+    searchTerm: '',
   },
   reducers: {
     userListResetUser: (state, action) => {
       state.user = null;
-    } 
+    },
+    userListSetUserSearchTerm: (state, action) => {
+      state.searchTerm = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -104,9 +108,10 @@ export const userListSlice = createSlice({
 
 })
 
-export const { userListResetUser } = userListSlice.actions;
+export const { userListResetUser, userListSetUserSearchTerm } = userListSlice.actions;
 
 export const userListStatusSelect = (state) => state.userList.status;
 export const userListErrorSelect = (state) => state.userList.error;
 export const userListUserListSelect = (state) => state.userList.userList;
 export const userListUserSelect = (state) => state.userList.user;
+export const userListSearchTermSelect = (state) => state.userList.searchTerm;
