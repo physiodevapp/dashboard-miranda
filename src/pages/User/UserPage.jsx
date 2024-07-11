@@ -59,11 +59,12 @@ export const UserPage = () => {
   }))
 
   const formatDatetime = (datetime) => {
-    return new Date(Number(datetime)).toLocaleDateString("es-MX", {
-      day: "2-digit",
-      year: "numeric",
-      month: "short"
-    });
+    if (datetime)
+      return new Date(Number(datetime)).toLocaleDateString("es-MX", {
+        day: "2-digit",
+        year: "numeric",
+        month: "short"
+      });
   } 
 
   const onSubmit = (formData) => {

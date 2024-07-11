@@ -29,7 +29,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
   }
 
   const handleSearchTermChange = ({target}) => {
-    setSearchTerm(target.value.trim());
+    setSearchTerm(target.value);
   }
 
   const handleInputKeyDown = (event) => {
