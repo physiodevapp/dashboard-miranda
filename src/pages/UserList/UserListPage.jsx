@@ -103,7 +103,7 @@ export const UserListPage = () => {
 
   useEffect(() => {
     const filteredUsers = userListSearchTerm.length
-    ? JSON.parse(JSON.stringify(users)).filter((user) => user.first_name.includes(userListSearchTerm) || user.last_name.includes(userListSearchTerm))
+    ? JSON.parse(JSON.stringify(users)).filter((user) => user.first_name.toLowerCase().includes(userListSearchTerm.toLowerCase()) || user.last_name.toLowerCase().includes(userListSearchTerm.toLowerCase()))
     : userListUserList
 
     const tabRows = JSON.parse(JSON.stringify(filteredUsers)).filter((user) => activeTab.length ? user.status === activeTab : true);

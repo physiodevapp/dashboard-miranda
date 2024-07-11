@@ -32,6 +32,11 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
     setSearchTerm(target.value.trim());
   }
 
+  const handleInputKeyDown = (event) => {
+    if (event.key === "Enter") 
+      filterTable()
+  }
+
   const filterTable = () => {
     if (pathname.includes("users"))
       modelListDispatch(userListSetUserSearchTerm(searchTerm));
@@ -80,7 +85,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
             <NavbarSearchBarButton onClick={filterTable} disabled={!searchTerm.length}>
               <IoSearchOutline className='search' />
             </NavbarSearchBarButton>
-            <NavbarSearchBarInput type='text' value={searchTerm} onChange={handleSearchTermChange}/>
+            <NavbarSearchBarInput type='text' value={searchTerm} onKeyDown={handleInputKeyDown} onChange={handleSearchTermChange}/>
             <IoMdClose onClick={clearSearchTerm} className={`clear${searchTerm.length ? ' show' : ''}`}/>
           </NavbarSearchBarContainer>
         : <></>
