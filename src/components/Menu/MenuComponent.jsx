@@ -45,8 +45,8 @@ export const MenuComponent = () => {
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
-
-        if (userListUser)
+        
+        if (userListUser.email === userState.email)
           setUser(userListUser);
 
         break;
