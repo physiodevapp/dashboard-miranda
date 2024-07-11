@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { userListResetUser, userListSetUserSearchTerm } from '../../features/userList/userListSlice';
 import { IoMdClose } from 'react-icons/io';
 import { IoSearchOutline } from 'react-icons/io5';
+import { bookingListSetBookingSearchTerm } from '../../features/bookingList/bookingListSlice';
 
 export const NavbarComponent = ({handleClickMenu, show}) => {
   const { userDispatch } = useContext(AuthContext);
@@ -21,7 +22,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
   const navigate = useNavigate();
   const { roomId, bookingId, userId } = useParams();
 
-  const userListDispatch = useDispatch();
+  const modelListDispatch = useDispatch();
 
   const clearSearchTerm = () => {
     setSearchTerm('');
@@ -32,7 +33,10 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
   }
 
   const filterTable = () => {
-    userListDispatch(userListSetUserSearchTerm(searchTerm))
+    if (pathname.includes("users"))
+      modelListDispatch(userListSetUserSearchTerm(searchTerm));
+    else if (pathname.includes("bookings"))
+      modelListDispatch(bookingListSetBookingSearchTerm(searchTerm));
   }
 
   useEffect(() => {
