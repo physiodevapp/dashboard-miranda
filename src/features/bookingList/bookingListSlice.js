@@ -10,9 +10,14 @@ export const bookingListSlice = createSlice({
     error: null,
     status: "idle",
     bookingList: dataBookings,
-    booking: {}
+    booking: {},
+    searchTerm: '',
   },
-  reducers: {},
+  reducers: {
+    bookingListSetBookingSearchTerm: (state, action) => {
+      state.searchTerm = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
     .addCase(bookingListReadOneThunk.pending, (state, action) => {
@@ -55,7 +60,10 @@ export const bookingListSlice = createSlice({
   }
 })
 
+export const { bookingListSetBookingSearchTerm } = bookingListSlice.actions
+
 export const bookingListStatusSelect = (state) => state.bookingList.status;
 export const bookingListErrorSelect = (state) => state.bookingList.error;
 export const bookingListBookingListSelect = (state) => state.bookingList.bookingList;
 export const bookingListBookingSelect = (state) => state.bookingList.booking;
+export const bookingListSearchTermSelect = (state) => state.bookingList.searchTerm;

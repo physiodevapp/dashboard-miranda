@@ -14,7 +14,7 @@ import { DataTablePaginationComponent } from '../../components/DataTablePaginati
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { bookingListBookingListSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+import { bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 
 import Swal from "sweetalert2";
 import 'animate.css';
@@ -27,16 +27,14 @@ export const BookingListPage = () => {
   const bookingListBookingList = useSelector(bookingListBookingListSelect);
   const bookingListStatus = useSelector(bookingListStatusSelect);
   const bookingListError = useSelector(bookingListErrorSelect);
-  const [isUpdating, setIsUpdating] = useState(false);
-
+  const bookingListSearchTerm = useSelector(bookingListSearchTermSelect);
+  
   const [bookings, setBookings] = useState(bookingListBookingList);
   const [displayBookings, setDisplayBookings] = useState(bookingListBookingList);
-
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'order_date', direction: 1})
-
+  const [sortCriteria, setSortCriteria] = useState({headerKey: 'order_date', direction: 1});
   const [activeTab, setActiveTab] = useState('');
-
   const [tablePageIndex, setTablePageIndex] = useState(0);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const navigate = useNavigate();
 
@@ -146,12 +144,16 @@ export const BookingListPage = () => {
   }, [bookingListStatus])
 
   useEffect(() => {
-    const tabRows = JSON.parse(JSON.stringify(bookings)).filter((booking) => activeTab.length ? booking.status === activeTab : true);
+    const filteredBookings = bookingListSearchTerm.length
+    ? JSON.parse(JSON.stringify(bookings)).filter((booking) => booking.first_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()) || booking.last_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()))
+    : bookingListBookingList
+
+    const tabRows = JSON.parse(JSON.stringify(filteredBookings)).filter((booking) => activeTab.length ? booking.status === activeTab : true);
 
     const sortedTabRows = sortRows(tabRows, sortCriteria);
 
     setDisplayBookings(sortedTabRows);
-  }, [bookings, activeTab, sortCriteria])
+  }, [bookings, activeTab, sortCriteria, bookingListSearchTerm])
 
   return (
     <>
@@ -259,22 +261,19 @@ export const BookingListPage = () => {
                       </BookingTableBodyRowCellBookingId>
                     </DataTableRowCellContentMultipleEllipsis>
                   </BookingTableBodyRowCellBooking>
-                  <DataTableBodyRowCell key={`${booking.id}-order_date`}>
+                  <DataTableBodyRowCell key={`${booking.id}-order_date`} style={{width: "100px", minWidth: "unset"}}>
                     <>
-                      { formatDatetime(booking.order_date).split(", ")[0] },<br/>
-                      { formatDatetime(booking.order_date).split(", ")[1] }
+                      { formatDatetime(booking.order_date) }
                     </>
                   </DataTableBodyRowCell>
-                  <DataTableBodyRowCell key={`${booking.id}-check_in`}>
+                  <DataTableBodyRowCell key={`${booking.id}-check_in`} style={{width: "100px", minWidth: "unset"}}>
                     <>                    
-                      { formatDatetime(booking.check_in).split(", ")[0] },<br/>
-                      { formatDatetime(booking.check_in).split(", ")[1] }
+                      { formatDatetime(booking.check_in) }
                     </>
                   </DataTableBodyRowCell>
-                  <DataTableBodyRowCell key={`${booking.id}-check_out`}>
+                  <DataTableBodyRowCell key={`${booking.id}-check_out`} style={{width: "100px", minWidth: "unset"}}>
                     <>
-                      { formatDatetime(booking.check_out).split(", ")[0] },<br/>
-                      { formatDatetime(booking.check_out).split(", ")[1] }
+                      { formatDatetime(booking.check_out) }
                     </>
                   </DataTableBodyRowCell>
                   <DataTableBodyRowCell key={`${booking.id}-room_type`}>
