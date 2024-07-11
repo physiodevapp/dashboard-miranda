@@ -1,28 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const getUserById = (userId, userList) => {
+const getUserByKey = (userKey, userValue, userList) => {
   return new Promise((resolve, rejected) => {
     setTimeout(() => {
-      resolve(userList.find((user) => user.id === userId));
+      resolve(userList.find((user) => user[userKey] === userValue));
     }, 200);
   })
 }
 
-const getUserByEmail = (userEmail, userList) => {
-  return new Promise((resolve, rejected) => {
-    setTimeout(() => {
-      resolve(userList.find((user) => user.email === userEmail));
-    }, 200);
-  })
-}
-
-export const userListReadOneThunk = createAsyncThunk("userList/userListReadOne", async ({key, list}) => {
-  let user = undefined;
-
-  user = await getUserById(key, list);
-
-  if (!user)
-    user = await getUserByEmail(key, list)
+export const userListReadOneThunk = createAsyncThunk("userList/userListReadOne", async ({key, value, list}) => {
+  const user = await getUserByKey(key, value, list)
 
   return user;
 })

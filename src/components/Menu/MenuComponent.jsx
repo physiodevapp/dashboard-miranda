@@ -30,7 +30,7 @@ export const MenuComponent = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    userListDispatch(userListReadOneThunk({key: userState.email, list: userListUserList}))
+    userListDispatch(userListReadOneThunk({key: "email", value: userState.email, list: userListUserList}))
   }, []);
 
   useEffect(() => {
