@@ -18,12 +18,14 @@ export const GridLayout = styled.div`
 `;
 
 export const MenuLayout = styled.aside`
+  position: relative;
   grid-area: 1 / 1 / 3 / 1;
   padding: 1em 0em 0em;
   box-shadow: 13px 3px 40px #00000005;
 `;
 
 export const NavbarLayout = styled.nav`
+  position: relative;
   grid-area: 1 / 2 / 1 / 3;
   padding: 0em 1em 0em 0em;
   background-color: white;

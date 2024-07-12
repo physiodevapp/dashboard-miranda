@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 
 export const NavbarMenuButton = styled.button`
+  z-index: 100;
   font-size: 2.5em;
   border: none;
   background-color: white;
@@ -25,6 +26,7 @@ export const NavbarList = styled.ul`
 `
 
 export const NavbarPageTitle = styled.h3`
+  z-index: 100;
   font-size: 1.8em;
   font-family: "Poppins";
   color: #262626;

@@ -86,6 +86,7 @@ export const Email = styled.h6`
 `
 
 export const Brand = styled.h5`
+  z-index: 10;
   font-size: 1rem;
   color: #212121;
   position: absolute;
@@ -95,6 +96,7 @@ export const Brand = styled.h5`
 `
 
 export const Copyright = styled.h6`
+  z-index: 10;
   font-size: 0.9rem;
   color: #799283;
   position: absolute;
@@ -105,6 +107,7 @@ export const Copyright = styled.h6`
 `
 
 export const Author = styled.h6`
+  z-index: 10;
   position: absolute;
   font-size: 0.8rem;
   bottom: 1.5em;

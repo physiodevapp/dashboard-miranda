@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { RoomFormFieldListContainer, FormButton, RoomContainer, RoomForm, RoomFormField, RoomFormLabel, RoomGallery, RoomInput, RoomSwiperPaginationNext, RoomSwiperPaginationPrev, RoomTextarea, ToggleButtonInput, ToogleButton, ToogleLabel } from './RoomStyled';
 
@@ -25,7 +25,11 @@ import Swal from 'sweetalert2';
 
 import { BounceLoader } from 'react-spinners';
 
+import { FormModeContext } from '../../context/FormModeContext';
+
 export const RoomPage = () => {
+  const { setIsEditingForm } = useContext(FormModeContext);
+
   const [room, setRoom] = useState(null);
   const { roomId } = useParams();
 
@@ -180,7 +184,15 @@ export const RoomPage = () => {
     if (roomId)
       roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
 
-  }, [roomId])
+  }, [roomId]);
+  
+  useEffect(() => {
+    setIsEditingForm(canEdit || !roomId);
+
+    return () => {
+      setIsEditingForm(false);
+    }
+  }, [canEdit]);
 
   return (
     isLoading

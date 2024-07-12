@@ -249,11 +249,12 @@ export const UserPage = () => {
   }, [userListStatus]);
 
   useEffect(() => {
-    console.log(userId)
-    console.log(canEdit)
-    console.log(!userId || canEdit)
-    setIsEditingForm(!!userId || canEdit);
-  }, [canEdit])
+    setIsEditingForm(canEdit || !userId);
+
+    return () => {
+      setIsEditingForm(false);
+    }
+  }, [canEdit]);
 
   return (
     isLoading

@@ -14,11 +14,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
 import { AuthContext } from '../../context/AuthContext';
+import { FormModeContext } from '../../context/FormModeContext';
+import { BlockLayer } from '../BlockLayer';
 
 export const MenuComponent = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
   const { userState } = useContext(AuthContext);
+  const { isEditingForm } = useContext(FormModeContext);
 
   const userListDispatch = useDispatch();
   const userListError = useSelector(userListErrorSelect);
@@ -61,7 +65,9 @@ export const MenuComponent = () => {
 
   return (
     <>
+
       <Logo src={logoImage}/>
+      <BlockLayer className={isEditingForm ? 'show' : ''} style={{height: "87%"}}/>
       <MenuList>
         <MenuListItem onClick={() => navigate('/dashboard')} className={pathname === '/dashboard' && 'active'}>
           <span></span>
