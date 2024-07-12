@@ -25,7 +25,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
   const navigate = useNavigate();
   const { roomId, bookingId, userId } = useParams();
 
-  const userListDispatch = useDispatch();
+  const modelListDispatch = useDispatch();
 
   const clearSearchTerm = () => {
     setSearchTerm('');
@@ -99,7 +99,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
         <li><BiBell/></li>
         <li id='logout'>
           <MdLogout onClick={ () => {
-            userListDispatch(userListResetUser());
+            modelListDispatch(userListResetUser());
             userDispatch({type: 'logout'});
             navigate('/login');
           }}/>
