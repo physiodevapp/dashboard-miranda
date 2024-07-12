@@ -4,10 +4,12 @@ import { MdOutlineKingBed, MdLogout } from "react-icons/md";
 import { LuCalendarCheck} from "react-icons/lu";
 import { useSelector } from 'react-redux';
 import { bookingListBookingListSelect } from '../../features/bookingList/bookingListSlice';
+import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';
 
 export const KPIsListComponent = () => {
 
   const bookingListBookingList = useSelector(bookingListBookingListSelect);
+  const roomListRoomList = useSelector(roomListRoomListSelect);
 
   return (
     <>
@@ -19,7 +21,7 @@ export const KPIsListComponent = () => {
         </KPIsItem>
         <KPIsItem>
           <KPIsIcon><LuCalendarCheck/></KPIsIcon>
-          <Title>963</Title>
+          <Title>{ roomListRoomList.filter((room) => room.status === "booked").length }</Title>
           <Subtitle>Scheduled Room</Subtitle>
         </KPIsItem>
         <KPIsItem>
