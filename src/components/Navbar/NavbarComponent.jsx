@@ -25,7 +25,7 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
   const navigate = useNavigate();
   const { roomId, bookingId, userId } = useParams();
 
-  const modelListDispatch = useDispatch();
+  const userListDispatch = useDispatch();
 
   const clearSearchTerm = () => {
     setSearchTerm('');

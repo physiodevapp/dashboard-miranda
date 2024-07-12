@@ -11,17 +11,25 @@ export const Wrapper = styled.div`
 `
 
 export const Form = styled.form`
-  background-color: #135846;
-  padding: 6em 4em;
+  background-color: white;
+  padding: 4em 4em 4em;
   box-shadow: 0px 20px 30px #00000014;
   border-radius: 18px;
 `
 
+export const FormLogo = styled.img`
+  width: 250px;
+  text-align: center;
+  margin-bottom: 2em;
+`
+
 export const Input = styled.input`
-  border: none;
   display: block;
   margin-bottom: 1em;
-  padding: 0.6em;
+  padding: 1em 0.8em;
+  width: 100%;
+  border-radius: 0.4em;
+  border: 1px solid #13584645;
 `
 
 export const SubmitButton = styled(ButtonStyled)`

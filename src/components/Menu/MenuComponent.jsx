@@ -99,7 +99,7 @@ export const MenuComponent = () => {
         <img src={userImage} alt="" />
         <Name>{ `${user.first_name} ${user.last_name}` }</Name>
         <Email>{ user.email}</Email>
-        <ButtonStyled styled="tertiary" onClick={() => navigate(`/users/${user.id}`)}>Edit</ButtonStyled>
+        <ButtonStyled styled="tertiary" onClick={() => navigate(`/users/${user.id}`)}>View</ButtonStyled>
       </User>
       <Brand>Travl Hotel Admin Dashboard</Brand>
       <Copyright>© 2020 All Rights Reserved</Copyright>
