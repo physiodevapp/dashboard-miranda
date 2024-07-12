@@ -11,9 +11,12 @@ import { userListResetUser, userListSetUserSearchTerm } from '../../features/use
 import { IoMdClose } from 'react-icons/io';
 import { IoSearchOutline } from 'react-icons/io5';
 import { bookingListSetBookingSearchTerm } from '../../features/bookingList/bookingListSlice';
+import { FormModeContext } from '../../context/FormModeContext';
+import { BlockLayer } from '../BlockLayer';
 
 export const NavbarComponent = ({handleClickMenu, show}) => {
   const { userDispatch } = useContext(AuthContext);
+  const { isEditingForm } = useContext(FormModeContext);
 
   const [title, setTitle] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -73,8 +76,9 @@ export const NavbarComponent = ({handleClickMenu, show}) => {
   }, [pathname])
   
 
-  return (
+  return (  
     <>
+      <BlockLayer className={isEditingForm ? 'show' : ''}/>
       <NavbarMenuButton show={show}>
         <LuChevronLeft onClick={handleClickMenu}/>
       </NavbarMenuButton>
