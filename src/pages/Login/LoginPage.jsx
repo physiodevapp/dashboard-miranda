@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Form, Input, SubmitButton, Wrapper } from "./LoginStyled";
+import { Form, FormLogo, Input, SubmitButton, Wrapper } from "./LoginStyled";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from "../../features/userList/userListSlice";
 import { userListCanLoginThunk } from "../../features/userList/userListCanLoginThunk";
+import logoImage from '../../assets/dashboard-logo.png';
 
 export const LoginPage = () => {
   const [user, setUser] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const { userState, userDispatch } = useContext(AuthContext);
+  const { userDispatch } = useContext(AuthContext);
 
   const userListDispatch = useDispatch();
   const userListError = useSelector(userListErrorSelect);
@@ -74,11 +75,12 @@ export const LoginPage = () => {
     <>
       <Wrapper>
         <Form action="" onSubmit={handleSubmit}>
+          <FormLogo src={logoImage}/>
           <Input
             onChange={handleChangeInput}
             value={user.email}
             key={"email"}
-            placeholder="email@example.com"
+            placeholder="try: demo@email.com"
             type="email"
             name="email"
             id="email"
@@ -87,12 +89,12 @@ export const LoginPage = () => {
             onChange={handleChangeInput}
             value={user.password}
             key={"password"}
-            placeholder="password"
+            placeholder="try: 0000"
             type="password"
             name="password"
             id="password"
           />
-          <SubmitButton styled="secondary" type="submit">
+          <SubmitButton styled="primary" type="submit">
             Log in
           </SubmitButton>
         </Form>
