@@ -206,28 +206,28 @@ export const RoomPage = () => {
             <RoomFormFieldListContainer>
               <RoomFormField width="50%">
                 <RoomFormLabel htmlFor="roomType">Room type</RoomFormLabel>
-                <RoomInput disabled={!canEdit && room} {...register("roomType", { value: room?.type })}/>
+                <RoomInput disabled={!canEdit && !!room} {...register("roomType", { value: room?.type })}/>
               </RoomFormField>
               <RoomFormField width="50%">
                 <RoomFormLabel htmlFor="roomNumber">Room number</RoomFormLabel>
-                <RoomInput disabled={!canEdit && room} {...register("roomNumber", { value: room?.number })}/>
+                <RoomInput disabled={!canEdit && !!room} {...register("roomNumber", { value: room?.number })}/>
               </RoomFormField>
               <RoomFormField>
                 <RoomFormLabel htmlFor="roomDescription">Description</RoomFormLabel>
-                <RoomTextarea disabled={!canEdit && room} {...register("roomDescription", { value: room?.description })} rows={10}></RoomTextarea>
+                <RoomTextarea disabled={!canEdit && !!room} {...register("roomDescription", { value: room?.description })} rows={10}></RoomTextarea>
               </RoomFormField>
               <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomPrice">Price</RoomFormLabel>
-                <RoomInput disabled={!canEdit && room} {...register("roomPrice", { value: room?.price_night })}/>
+                <RoomInput disabled={!canEdit && !!room} {...register("roomPrice", { value: room?.price_night })}/>
               </RoomFormField>
               <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomDiscount">Discount</RoomFormLabel>
-                <RoomInput disabled={!canEdit && room} {...register("roomDiscount", { value: room?.discount })}/>
+                <RoomInput disabled={!canEdit && !!room} {...register("roomDiscount", { value: room?.discount })}/>
               </RoomFormField>
               <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomHasOffer">Offer</RoomFormLabel>
                 <ToogleButton>
-                  <ToggleButtonInput id="roomHasOffer" {...register("roomHasOffer", { value: room?.has_offer === "true" ? true : false })} disabled={!canEdit && room} type="checkbox"/>
+                  <ToggleButtonInput id="roomHasOffer" {...register("roomHasOffer", { value: room?.has_offer === "true" ? true : false })} disabled={!canEdit && !!room} type="checkbox"/>
                   <ToogleLabel htmlFor="roomHasOffer"></ToogleLabel>
                 </ToogleButton>
               </RoomFormField>
@@ -243,7 +243,7 @@ export const RoomPage = () => {
                       isMulti
                       options={facilityOptions}
                       placeholder={"Select the facilities of the room"}
-                      isDisabled={!canEdit && room}
+                      isDisabled={!canEdit && !!room}
                       styles={{
                         container: (baseStyles, state) => ({
                           ...baseStyles,
@@ -320,7 +320,7 @@ export const RoomPage = () => {
               </RoomFormField>
               <RoomFormField>
                 <RoomFormLabel htmlFor="roomPolicy">Cancellation policy</RoomFormLabel>
-                <RoomTextarea name='roomPolicy' disabled={!canEdit && room} rows={10} { ...register("roomPolicy", {value: room?.cancellation_policy}) }></RoomTextarea>
+                <RoomTextarea name='roomPolicy' disabled={!canEdit && !!room} rows={10} { ...register("roomPolicy", {value: room?.cancellation_policy}) }></RoomTextarea>
               </RoomFormField>              
               <FormButton 
                 onClick={() => deleteRoom()}
@@ -331,7 +331,7 @@ export const RoomPage = () => {
                   Delete 
               </FormButton>
               <FormButton 
-                onClick={() => setCanEdit(!canEdit && room)} 
+                onClick={() => setCanEdit(!canEdit && !!room)} 
                 disabled={canEdit || !room } 
                 styled="primary" 
                 type='button'
@@ -340,21 +340,21 @@ export const RoomPage = () => {
               </FormButton>
               <FormButton 
                 onClick={() => {
-                  setCanEdit(!canEdit && room);
+                  setCanEdit(!canEdit && !!room);
 
                   reset();
 
                   if (!roomId)
                     navigate("/rooms");
                 }} 
-                disabled={!canEdit && room} 
+                disabled={!canEdit && !!room} 
                 styled="deny" 
                 type='button'
                 position="left">
                   Dismiss
               </FormButton>   
               <FormButton 
-                disabled={!canEdit && room} 
+                disabled={!canEdit && !!room} 
                 styled="primary" 
                 type='submit'
                 position="right">

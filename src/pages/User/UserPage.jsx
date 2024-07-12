@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -25,26 +25,29 @@ import { FaRegCalendarAlt } from 'react-icons/fa';
 
 import { DayPickerComponent } from '../../components/DayPickerComponent';
 
+import { FormModeContext } from '../../context/FormModeContext'
+
 const calendarSwal = withReactContent(Swal);
 
 export const UserPage = () => {
-  const [user, setUser] = useState(null);
-  const [canEdit, setCanEdit] = useState(false);
-
-  const { userId } = useParams();
-
-  const navigate = useNavigate();
-
-  const { register, handleSubmit, control, reset, setValue } = useForm();
+  const { setIsEditingForm } = useContext(FormModeContext);
 
   const userListDispatch = useDispatch();
   const userListStatus = useSelector(userListStatusSelect);
   const userListUser = useSelector(userListUserSelect);
   const userListUserList = useSelector(userListUserListSelect)
   const userListError = useSelector(userListErrorSelect);
-  const [isLoading, setIsLoading] = useState(true);
 
+  const [user, setUser] = useState(null);
+  const [canEdit, setCanEdit] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [canRedirectBack, setCanRedirectBack] = useState(false);
+
+  const { userId } = useParams();
+
+  const navigate = useNavigate();
+
+  const { register, handleSubmit, control, reset, setValue } = useForm();
 
   const [startDate, setStartDate] = useState(new Date());
 
@@ -83,7 +86,7 @@ export const UserPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
-            setCanEdit(!canEdit && user);
+            setCanEdit(!canEdit && !!user);
         
             if (userId) {
               const updateUser = {
@@ -243,7 +246,14 @@ export const UserPage = () => {
       default:
         break;
     }
-  }, [userListStatus])
+  }, [userListStatus]);
+
+  useEffect(() => {
+    console.log(userId)
+    console.log(canEdit)
+    console.log(!userId || canEdit)
+    setIsEditingForm(!!userId || canEdit);
+  }, [canEdit])
 
   return (
     isLoading
@@ -274,31 +284,31 @@ export const UserPage = () => {
                 <UserFormFieldContainer width="60%" style={{flexDirection: "column"}}>
                   <UserFormField>
                     <FormFieldLabel htmlFor='userFirstName'>First Name</FormFieldLabel>
-                    <FormInput disabled={!canEdit && user} { ...register("userFirstName", { value: user?.first_name }) }/>
+                    <FormInput disabled={!canEdit && !!user} { ...register("userFirstName", { value: user?.first_name }) }/>
                   </UserFormField>
                   <UserFormField>
                     <FormFieldLabel htmlFor='userLastName'>Last name</FormFieldLabel>
-                    <FormInput disabled={!canEdit && user} { ...register("userLastName", { value: user?.last_name }) }/>
+                    <FormInput disabled={!canEdit && !!user} { ...register("userLastName", { value: user?.last_name }) }/>
                   </UserFormField>
                 </UserFormFieldContainer>
               </UserFormFieldContainer>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userEmail'>Email</FormFieldLabel>
-                <FormInput disabled={!canEdit && user} { ...register("userEmail", { value: user?.email }) } />
+                <FormInput disabled={!canEdit && !!user} { ...register("userEmail", { value: user?.email }) } />
               </UserFormField>
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userTel'>Phone number</FormFieldLabel>
-                <FormInput disabled={!canEdit && user} { ...register("userTel", { value: user?.telephone }) }/>
+                <FormInput disabled={!canEdit && !!user} { ...register("userTel", { value: user?.telephone }) }/>
               </UserFormField>
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStartDate'>Start date</FormFieldLabel>
-                <FaRegCalendarAlt style={{display:`${!canEdit && user ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
-                <FormInput disabled={!canEdit && user} style={!canEdit && user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user?.start_date) }) }/>
+                <FaRegCalendarAlt style={{display:`${!canEdit && !!user ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
+                <FormInput disabled={!canEdit && !!user} style={!canEdit && !!user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user?.start_date) }) }/>
               </UserFormField>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
                 <FormInput 
-                  disabled={!canEdit && user} 
+                  disabled={!canEdit && !!user} 
                   style={{textTransform: "capitalize"}}
                   { ...register("userPassword", { value: '' }) }/>
               </UserFormField>
@@ -314,7 +324,7 @@ export const UserPage = () => {
                       options={jobOptions}
                       placeholder={"Select one"}
                       isClearable
-                      isDisabled={!canEdit && user}
+                      isDisabled={!canEdit && !!user}
                       styles={{
                         container: (baseStyles, state) => ({
                           ...baseStyles,
@@ -400,7 +410,7 @@ export const UserPage = () => {
                       options={jobStatus}
                       placeholder={"Select one"}
                       isClearable
-                      isDisabled={!canEdit && user}
+                      isDisabled={!canEdit && !!user}
                       styles={{
                         container: (baseStyles, state) => ({
                           ...baseStyles,
@@ -477,7 +487,7 @@ export const UserPage = () => {
               </UserFormField>
               <UserFormField width="100%">
                 <FormFieldLabel htmlFor="userJobDescription">Job description</FormFieldLabel>
-                <FormTextarea name='userJobDescription' disabled={!canEdit && user} rows={10} { ...register("userJobDescription", {value: user?.job_description}) }></FormTextarea>
+                <FormTextarea name='userJobDescription' disabled={!canEdit && !!user} rows={10} { ...register("userJobDescription", {value: user?.job_description}) }></FormTextarea>
               </UserFormField>    
               <FormButton 
                 onClick={() => deleteUser()}
@@ -488,7 +498,7 @@ export const UserPage = () => {
                   Delete 
               </FormButton>
               <FormButton 
-                onClick={() => setCanEdit(!canEdit && user)} 
+                onClick={() => setCanEdit(!canEdit && !!user)} 
                 disabled={canEdit || !user } 
                 styled="primary" 
                 type='button'
@@ -497,21 +507,21 @@ export const UserPage = () => {
               </FormButton>
               <FormButton 
                 onClick={() => {
-                  setCanEdit(!canEdit && user);
+                  setCanEdit(!canEdit && !!user);
 
                   reset();
 
                   if (!userId)
                     navigate("/users");
                 }} 
-                disabled={!canEdit && user} 
+                disabled={!canEdit && !!user} 
                 styled="deny" 
                 type='button'
                 position="left">
                   Dismiss
               </FormButton>   
               <FormButton 
-                disabled={!canEdit && user} 
+                disabled={!canEdit && !!user} 
                 styled="primary" 
                 type='submit'
                 position="right">

@@ -18,32 +18,35 @@ import { UserListPage } from "./pages/UserList/UserListPage";
 import { UserPage } from "./pages/User/UserPage";
 
 import 'animate.css';
+import { FormModeProvider } from "./context/FormModeContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-      <Provider store={store}>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<Layout/>}>
-            <Route path="dashboard" element={<DashboardPage/>}/>
-            <Route path="rooms" element={<RoomListPage/>}></Route>
-            <Route path="rooms/new" element={<RoomPage/>}></Route>
-            <Route path="rooms/:roomId" element={<RoomPage/>}></Route>
-            <Route path="bookings" element={<BookingListPage/>}></Route>
-            <Route path="bookings/:bookingId" element={<BookingPage/>}></Route>
-            <Route path="contacts" element={<ContactListPage/>}></Route>
-            <Route path="users" element={<UserListPage/>}></Route>
-            <Route path="users/new" element={<UserPage/>}></Route>
-            <Route path="users/:userId" element={<UserPage/>}></Route>
-            <Route exact path="" element={<NoMatch/>}/>
-            <Route path="*" element={<NoMatch/>}/>
-          </Route>
-          <Route exact path="" element={<NoMatch/>}/>
-          <Route path="*" element={<NoMatch/>}/>
-        </Routes>
-      </Provider>
+        <Provider store={store}>
+          <FormModeProvider>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/" element={<Layout/>}>
+                <Route path="dashboard" element={<DashboardPage/>}/>
+                <Route path="rooms" element={<RoomListPage/>}></Route>
+                <Route path="rooms/new" element={<RoomPage/>}></Route>
+                <Route path="rooms/:roomId" element={<RoomPage/>}></Route>
+                <Route path="bookings" element={<BookingListPage/>}></Route>
+                <Route path="bookings/:bookingId" element={<BookingPage/>}></Route>
+                <Route path="contacts" element={<ContactListPage/>}></Route>
+                <Route path="users" element={<UserListPage/>}></Route>
+                <Route path="users/new" element={<UserPage/>}></Route>
+                <Route path="users/:userId" element={<UserPage/>}></Route>
+                <Route exact path="" element={<NoMatch/>}/>
+                <Route path="*" element={<NoMatch/>}/>
+              </Route>
+              <Route exact path="" element={<NoMatch/>}/>
+              <Route path="*" element={<NoMatch/>}/>
+            </Routes>
+          </FormModeProvider>
+        </Provider> 
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
