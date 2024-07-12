@@ -201,7 +201,7 @@ export const RoomPage = () => {
         />
       </>
     : <>
-        <RoomContainer>
+        <RoomContainer style={!roomId ? {maxWidth: "700px"} : {}}>
           <RoomForm onSubmit={handleSubmit(onSubmit)}>
             <RoomFormFieldListContainer>
               <RoomFormField width="50%">
@@ -362,54 +362,58 @@ export const RoomPage = () => {
               </FormButton>            
             </RoomFormFieldListContainer>
           </RoomForm>
-          <RoomGallery>
-            <Swiper
-              modules={[Navigation]}
-              onInit={(event) => setRoomPhotosSwiper(event)}
-              onSlideChange={(swiper) => {
-                if (swiper.isEnd) {
-                  nextRef.current?.classList.add("disabled")
-                } else if (swiper.isBeginning) {
-                  prevRef.current?.classList.add("disabled")
-                } else {
-                  nextRef.current?.classList.remove("disabled")
-                  prevRef.current?.classList.remove("disabled")
+          {
+            roomId 
+            ? <RoomGallery>
+                <Swiper
+                  modules={[Navigation]}
+                  onInit={(event) => setRoomPhotosSwiper(event)}
+                  onSlideChange={(swiper) => {
+                    if (swiper.isEnd) {
+                      nextRef.current?.classList.add("disabled")
+                    } else if (swiper.isBeginning) {
+                      prevRef.current?.classList.add("disabled")
+                    } else {
+                      nextRef.current?.classList.remove("disabled")
+                      prevRef.current?.classList.remove("disabled")
+                    }
+                  }}
+                  navigation={{
+                    prevEl: "swiper-button-prev",
+                    nextEl: "swiper-button-next",
+                  }}
+                  slidesPerView={1}
+                  spaceBetween={0}
+                >
+                  { 
+                    room?.photos
+                    ? room?.photos.map((photo, index) => (
+                      <SwiperSlide key={`${room?.id}_${index}`} style={{backgroundImage:`url(${photo})`}}/>
+                    ))
+                    : <></>
+                  }
+                </Swiper>
+                <RoomSwiperPaginationPrev
+                ref={prevRef}
+                className="swiper-button-prev disabled"
+                onClick={() =>
+                  roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex - 1)
                 }
-              }}
-              navigation={{
-                prevEl: "swiper-button-prev",
-                nextEl: "swiper-button-next",
-              }}
-              slidesPerView={1}
-              spaceBetween={0}
-            >
-              { 
-                room?.photos
-                ? room?.photos.map((photo, index) => (
-                  <SwiperSlide key={`${room?.id}_${index}`} style={{backgroundImage:`url(${photo})`}}/>
-                ))
-                : <></>
-              }
-            </Swiper>
-            <RoomSwiperPaginationPrev
-            ref={prevRef}
-            className="swiper-button-prev disabled"
-            onClick={() =>
-              roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex - 1)
-            }
-          >
-            <FaArrowLeft />
-          </RoomSwiperPaginationPrev>
-          <RoomSwiperPaginationNext
-            ref={nextRef}
-            className="swiper-button-next"
-            onClick={() =>
-              roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex + 1)
-            }
-          >
-            <FaArrowRight />
-          </RoomSwiperPaginationNext>
-          </RoomGallery>
+              >
+                <FaArrowLeft />
+              </RoomSwiperPaginationPrev>
+              <RoomSwiperPaginationNext
+                ref={nextRef}
+                className="swiper-button-next"
+                onClick={() =>
+                  roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex + 1)
+                }
+              >
+                <FaArrowRight />
+              </RoomSwiperPaginationNext>
+              </RoomGallery>
+            : <></>
+          }
         </RoomContainer>        
       </>
   )
