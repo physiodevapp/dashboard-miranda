@@ -78,7 +78,7 @@ export const LoginPage = () => {
             onChange={handleChangeInput}
             value={user.email}
             key={"email"}
-            placeholder="email@example.com"
+            placeholder="Try: admin.miranda@example.com"
             type="email"
             name="email"
             id="email"
@@ -87,7 +87,7 @@ export const LoginPage = () => {
             onChange={handleChangeInput}
             value={user.password}
             key={"password"}
-            placeholder="password"
+            placeholder="Try: 0000"
             type="password"
             name="password"
             id="password"
