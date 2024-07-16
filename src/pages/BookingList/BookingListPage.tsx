@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, MouseEvent } from 'react';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { DataTableTabListComponent } from '../../components/DataTableTabList/DataTableTabListComponent';
 import { BookingListTableContainer, BookingRequestButton, BookingStatusButton, BookingTableBodyRowCellBooking, BookingTableBodyRowCellBookingId, BookingTableBodyRowCellBookingName } from './BookingListStyled';
@@ -14,33 +14,34 @@ import { DataTablePaginationComponent } from '../../components/DataTablePaginati
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+import { BookingInterface, bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 
 import Swal from "sweetalert2";
 import 'animate.css';
 import { ButtonStyled } from '../../components/ButtonStyled';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { bookingListDeleteOneThunk } from '../../features/bookingList/bookingListDeleteOneThunk';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 export const BookingListPage = () => {
-  const bookingListDispatch = useDispatch();
-  const bookingListBookingList = useSelector(bookingListBookingListSelect);
-  const bookingListStatus = useSelector(bookingListStatusSelect);
-  const bookingListError = useSelector(bookingListErrorSelect);
-  const bookingListSearchTerm = useSelector(bookingListSearchTermSelect);
+  const bookingListDispatch = useAppDispatch();
+  const bookingListBookingList = useAppSelector(bookingListBookingListSelect);
+  const bookingListStatus = useAppSelector(bookingListStatusSelect);
+  const bookingListError = useAppSelector(bookingListErrorSelect);
+  const bookingListSearchTerm = useAppSelector(bookingListSearchTermSelect);
   
-  const [bookings, setBookings] = useState(bookingListBookingList);
-  const [displayBookings, setDisplayBookings] = useState(bookingListBookingList);
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'order_date', direction: 1});
-  const [activeTab, setActiveTab] = useState('');
-  const [tablePageIndex, setTablePageIndex] = useState(0);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [bookings, setBookings] = useState<BookingInterface[]>(bookingListBookingList);
+  const [displayBookings, setDisplayBookings] = useState<BookingInterface[]>(bookingListBookingList);
+  const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'order_date', direction: 1});
+  const [activeTab, setActiveTab] = useState<string>('');
+  const [tablePageIndex, setTablePageIndex] = useState<number>(0);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  const contactsPerTablePage = 10;
+  const contactsPerTablePage: number = 10;
 
-  const formatDatetime = (datetime) => {
+  const formatDatetime = (datetime: string): string => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
@@ -51,19 +52,19 @@ export const BookingListPage = () => {
     });
   } 
 
-  const sortRows = (rows, { headerKey: key, direction: criteria = -1}) => {
+  const sortRows = (rows: BookingInterface[], { headerKey, direction = -1}: { headerKey: string, direction: -1 | 1 }): BookingInterface[] => {
     return rows.sort((current, next) => {
-      if (current[key] < next[key])
-        return criteria
+      if (current[headerKey] < next[headerKey])
+        return direction
 
-      if (current[key] > next[key])
-        return -1 * criteria
+      if (current[headerKey] > next[headerKey])
+        return -1 * direction
       
       return 0;
     })
   }
 
-  const showRequest = (booking) => {
+  const showRequest = (booking: BookingInterface) => {
     Swal.fire({
       title:`Booking request`,
       showClass: {
@@ -98,7 +99,7 @@ export const BookingListPage = () => {
     })
   }
 
-  const deleteBooking = (booking) => {
+  const deleteBooking = (booking: BookingInterface) => {
     Swal.fire({
       title: "Do you want to delete the booking order?",
       showDenyButton: true,
@@ -144,13 +145,13 @@ export const BookingListPage = () => {
   }, [bookingListStatus])
 
   useEffect(() => {
-    const filteredBookings = bookingListSearchTerm.length
-    ? JSON.parse(JSON.stringify(bookings)).filter((booking) => booking.first_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()) || booking.last_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()))
+    const filteredBookings: number = bookingListSearchTerm.length
+    ? JSON.parse(JSON.stringify(bookings)).filter((booking: BookingInterface) => booking.first_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()) || booking.last_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()))
     : bookingListBookingList
 
-    const tabRows = JSON.parse(JSON.stringify(filteredBookings)).filter((booking) => activeTab.length ? booking.status === activeTab : true);
+    const tabRows: BookingInterface[] = JSON.parse(JSON.stringify(filteredBookings)).filter((booking: BookingInterface) => activeTab.length ? booking.status === activeTab : true);
 
-    const sortedTabRows = sortRows(tabRows, sortCriteria);
+    const sortedTabRows: BookingInterface[] = sortRows(tabRows, sortCriteria);
 
     setDisplayBookings(sortedTabRows);
   }, [bookings, activeTab, sortCriteria, bookingListSearchTerm])
@@ -183,7 +184,7 @@ export const BookingListPage = () => {
                 style={{cursor: "pointer", minWidth: "145px"}}
                 headerKey={'order_date'}
                 initialSortDirection={1}
-                onSort={({header, direction}) => {
+                onSort={({header, direction}: { header: string, direction: -1 | 1 }) => {
                   setSortCriteria({headerKey: header, direction})
                 }}
               >
@@ -237,15 +238,18 @@ export const BookingListPage = () => {
                   key={booking.id} 
                   id={`booking_${booking.id}`} 
                   offset={"60px"}
-                  onClick={({target}) => { 
+                  onClick={(event: MouseEvent<HTMLTableRowElement>) => { 
+                    const target = event.target as HTMLTableRowElement;
+
                     if (!target.closest('td'))
-                      return       
-                    if (target.closest('td').classList.contains("action_click") && !target.closest('td').classList.contains("slide_cell")){
+                      return   
+
+                    if (target.closest('td')!.classList.contains("action_click") && !target.closest('td')!.classList.contains("slide_cell")){
                       document.querySelectorAll(`#booking_${booking.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       setTimeout(() => {
                         document.querySelectorAll(`#booking_${booking.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       }, 1500)
-                    } else if (!target.closest('td').classList.contains("custom_click")) {
+                    } else if (!target.closest('td')!.classList.contains("custom_click")) {
                       navigate(`/bookings/${booking.id}`);
                     }
                   }}>

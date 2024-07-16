@@ -8,7 +8,7 @@ interface TabItemInterface {
 }
 
 interface DataTableTabListComponentProps {
-  style: {},
+  style?: {},
   tabItems: TabItemInterface[],
   onTabChange: (activeTab: string) => void,
 }

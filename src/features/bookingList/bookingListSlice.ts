@@ -7,6 +7,7 @@ import { bookingListDeleteOneThunk } from "./bookingListDeleteOneThunk";
 import { RoomInterface } from "../roomList/roomListSlice";
 
 export interface BookingInterface {
+  [key: string]: any;
   id: string,
   first_name: string,
   last_name: string,

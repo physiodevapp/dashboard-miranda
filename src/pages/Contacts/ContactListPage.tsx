@@ -10,28 +10,26 @@ import { DataTableTabListComponent } from "../../components/DataTableTabList/Dat
 import { FaArrowUp } from "react-icons/fa6";
 
 import { useDispatch, useSelector } from "react-redux";
-import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
+import { ContactInterface, contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
 import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 export const ContactListPage = () => {
-  const contactListDispatch = useDispatch();
-  const contactListContactList = useSelector(contactListcontactListSelect);
-  const contactListStatus = useSelector(contactListStatusSelect);
-  const contactListError = useSelector(contactListErrorSelect);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const contactListDispatch = useAppDispatch();
+  const contactListContactList = useAppSelector(contactListcontactListSelect);
+  const contactListStatus = useAppSelector(contactListStatusSelect);
+  const contactListError = useAppSelector(contactListErrorSelect);
 
-  const [contacts, setContacts] = useState(contactListContactList);
-  const [displayContacts, setDisplayContacts] = useState(contactListContactList);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [contacts, setContacts] = useState<ContactInterface[]>(contactListContactList);
+  const [displayContacts, setDisplayContacts] = useState<ContactInterface[]>(contactListContactList);
+  const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'datetime', direction: 1})
+  const [activeTab, setActiveTab] = useState<string>('');
+  const [tablePageIndex, setTablePageIndex] = useState<number>(0);
 
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'datetime', direction: 1})
-  
-  const [activeTab, setActiveTab] = useState('');
+  const contactsPerTablePage: number = 10;
 
-  const [tablePageIndex, setTablePageIndex] = useState(0);
-
-  const contactsPerTablePage = 10;
-
-  const formatDatetime = (datetime) => {
+  const formatDatetime = (datetime: string) => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
@@ -42,13 +40,13 @@ export const ContactListPage = () => {
     });
   } 
 
-  const sortRows = (rows, { headerKey: key, direction: criteria = -1}) => {
+  const sortRows = (rows: ContactInterface[], { headerKey, direction = -1}: { headerKey: string, direction: -1 | 1 }): ContactInterface[] => {
     return rows.sort((current, next) => {
-      if (current[key] < next[key])
-        return criteria
+      if (current[headerKey] < next[headerKey])
+        return direction
 
-      if (current[key] > next[key])
-        return -1 * criteria
+      if (current[headerKey] > next[headerKey])
+        return -1 * direction
       
       return 0;
     })
@@ -77,9 +75,9 @@ export const ContactListPage = () => {
   }, [contactListStatus])
 
   useEffect(() => {
-    const tabRows = JSON.parse(JSON.stringify(contacts)).filter((contact) => activeTab.length ? contact.status === activeTab : true);
+    const tabRows: ContactInterface[] = JSON.parse(JSON.stringify(contacts)).filter((contact: ContactInterface) => activeTab.length ? contact.status === activeTab : true);
 
-    const sortedTabRows = sortRows(tabRows, sortCriteria);
+    const sortedTabRows: ContactInterface[] = sortRows(tabRows, sortCriteria);
 
     setDisplayContacts(sortedTabRows);
   }, [contacts, activeTab, sortCriteria])
@@ -95,7 +93,7 @@ export const ContactListPage = () => {
             {key: '', htmlContent: 'All contacts'},
             {key: 'archived', htmlContent: 'Archived'}
           ]}
-          onTabChange={(currentTab) => {
+          onTabChange={(currentTab: string) => {
             setTablePageIndex(0);
             setActiveTab(currentTab);            
           }}
@@ -109,12 +107,12 @@ export const ContactListPage = () => {
               <DataTableHeaderRowCellSortComponent
                 scope='col'                
                 colSpan={1}
-                className={`${sortCriteria.headerKey === 'datetime' && "active"}`}
+                className={`${sortCriteria.headerKey === 'datetime' ? "active" : ""}`}
                 style={{cursor: "pointer"}}
                 headerKey={'datetime'}
                 toggleSortCriteria={true}
                 initialSortDirection={1}
-                onSort={({header, direction}) => {
+                onSort={({header, direction}: {header: string, direction: -1 | 1}) => {
                   setSortCriteria({headerKey: header, direction})
                 }}
               >
@@ -159,18 +157,18 @@ export const ContactListPage = () => {
                         <>
                           <ButtonStyled 
                             styled="publish"
-                            disabled={contact.status.length}
+                            disabled={!!contact.status.length}
                             >
                               Publish
                           </ButtonStyled>
                           <ButtonStyled 
                             styled="archive" 
-                            disabled={contact.status.length}
+                            disabled={!!contact.status.length}
                             style={{marginLeft: "1em"}}
                             onClick={() => {
                               const updateContact = {
                                 ...contact,
-                                "status": "archived"
+                                status: "archived" as ("" | "published" | "archived")
                               }  
 
                               contactListDispatch(contactListUpdateOneThunk({
@@ -195,7 +193,7 @@ export const ContactListPage = () => {
           rowsLength={displayContacts.length}
           rowsPerPage={contactsPerTablePage}
           paginationButtonsMax={5}
-          onTablePageChange={(pageIndex) => {
+          onTablePageChange={(pageIndex: number) => {
             setTablePageIndex(pageIndex);
           }}
         />

@@ -2,9 +2,9 @@ import styled from "styled-components";
 import { PageElementContainerStyled } from "./PageElementContainerStyled";
 
 interface DataTableContainerProps {
-  offset: string,
-  lineclamp: number,
-  width: string
+  offset?: string,
+  lineclamp?: number,
+  width?: string
 }
 
 export const DataTableContainer = styled(PageElementContainerStyled)`
