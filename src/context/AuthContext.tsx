@@ -7,6 +7,16 @@ interface AuthContextInterface {
   userDispatch: Dispatch<ActionInterface>
 }
 
+interface ActionInterface {
+  type: "login" | "logout",
+  payload: {}
+};
+
+type StateType = { email: string } | null;
+
+interface AuthProviderProps {
+  children: ReactNode
+}
 
 const AuthContext = createContext<AuthContextInterface | null>(null);
 
@@ -17,13 +27,6 @@ const getUserFromLocalStorage = (): StateType => {
   else
     return null
 }
-
-interface ActionInterface {
-  type: "login" | "logout",
-  payload: {}
-};
-
-type StateType = { email: string } | null;
 
 const userReducer = (state: StateType, {type, payload}: ActionInterface) => {
   switch (type) {
@@ -42,10 +45,6 @@ const userReducer = (state: StateType, {type, payload}: ActionInterface) => {
     default:
       return state;
   }
-}
-
-interface AuthProviderProps {
-  children: ReactNode
 }
 
 const AuthProvider = ({children}: AuthProviderProps) => {
