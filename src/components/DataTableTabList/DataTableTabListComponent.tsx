@@ -2,8 +2,19 @@
 import React, { useEffect, useState } from 'react'
 import { TabItem, TabList } from './DataTableTabListStyled';
 
-export const DataTableTabListComponent = ({style = {}, tabItems, onTabChange}) => {
-  const [activeTab, setActiveTab] = useState('');
+interface TabItemInterface {
+  key: string,
+  htmlContent: string,
+}
+
+interface DataTableTabListComponentProps {
+  style: {},
+  tabItems: TabItemInterface[],
+  onTabChange: (activeTab: string) => void,
+}
+
+export const DataTableTabListComponent = ({style = {}, tabItems, onTabChange}: DataTableTabListComponentProps) => {
+  const [activeTab, setActiveTab] = useState<string>('');
 
   useEffect(() => {  
     
@@ -17,7 +28,7 @@ export const DataTableTabListComponent = ({style = {}, tabItems, onTabChange}) =
         tabItems.map((item) => (
           <TabItem
             key={ item.key } 
-            className={activeTab === item.key && 'active'} 
+            className={activeTab === item.key ? 'active' : ''} 
             onClick={() => setActiveTab(item.key)}>
             { item.htmlContent }
           </TabItem>

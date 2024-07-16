@@ -1,17 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { MouseEvent, useEffect, useRef, useState } from 'react'
 import { ButtonStyled } from '../ButtonStyled';
 import { NavigationButton, PaginationInfo, DataTablePagination } from './DataTablePaginationStyled';
 
-export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, paginationButtonsMax = 5, onTablePageChange, tablePageIndex = 0}) => {
-  const [pageIndex, setPageIndex] = useState(tablePageIndex);
+interface DataTablePaginationComponentProps {
+  rowsLength: number,
+  rowsPerPage: number,
+  paginationButtonsMax: number,
+  onTablePageChange: (pageIndex: number) => void,
+  tablePageIndex: number,
+}
 
-  const prevButton = useRef();
-  const nextButton = useRef();
-  const beforeMiddleButton = useRef();
-  const middleButton = useRef();
-  const afterMiddleButton = useRef();
+export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, paginationButtonsMax = 5, onTablePageChange, tablePageIndex = 0}: DataTablePaginationComponentProps) => {
+  const [pageIndex, setPageIndex] = useState<number>(tablePageIndex);
 
-  const tableTotalPages = rowsLength%rowsPerPage === 0
+  const prevButton = useRef<HTMLButtonElement>(null);
+  const nextButton = useRef<HTMLButtonElement>(null);
+  const beforeMiddleButton = useRef<HTMLButtonElement>(null);
+  const middleButton = useRef<HTMLButtonElement>(null);
+  const afterMiddleButton = useRef<HTMLButtonElement>(null);
+
+  const tableTotalPages: number = rowsLength%rowsPerPage === 0
     ? Math.floor(rowsLength / rowsPerPage)
     : Math.floor(rowsLength / rowsPerPage) + 1
   
@@ -20,27 +28,27 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, pagi
   }, [rowsLength])
 
   useEffect(() => {
-    const updatePagination = () => {      
+    const updatePagination = (): void => {      
       const current = pageIndex + 1;
 
       document.querySelectorAll(".pagination-button").forEach(element => {
         element?.classList.remove('active')
       }); 
       if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax)
-        middleButton.current.classList.add("active");
+        middleButton.current?.classList.add("active");
       else
         document.querySelector(`[data-index='${pageIndex}']`)?.classList.add("active")
 
       if (middleButton.current) {
         if (current > tableTotalPages - 2) {
-          middleButton.current.innerHTML = tableTotalPages - 2;
-          middleButton.current.dataset.index = tableTotalPages - 3;
+          middleButton.current.innerHTML = `${tableTotalPages - 2}`;
+          middleButton.current.dataset.index = (tableTotalPages - 3).toString();
         } else if (current <= 3 ) {
-          middleButton.current.innerHTML = 3;
-          middleButton.current.dataset.index = 2;
+          middleButton.current.innerHTML = `${3}`;
+          middleButton.current.dataset.index = (2).toString();
         } else if (current >= 3 && current < tableTotalPages - 1 && tableTotalPages > paginationButtonsMax) {
-          middleButton.current.innerHTML = current;
-          middleButton.current.dataset.index = current - 1;
+          middleButton.current.innerHTML = `${current}`;
+          middleButton.current.dataset.index = (current - 1).toString();
         }
       }
 
@@ -51,7 +59,7 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, pagi
           beforeMiddleButton.current.innerHTML = `...`;
         } else {
           beforeMiddleButton.current.classList.remove("dots");
-          beforeMiddleButton.current.dataset.index = 1;
+          beforeMiddleButton.current.dataset.index = (1).toString();
           beforeMiddleButton.current.innerHTML = `${2}`;       
         } 
       }
@@ -59,7 +67,7 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, pagi
       if (afterMiddleButton.current) {
         if (current >= tableTotalPages - 2) {
           afterMiddleButton.current.classList.remove("dots");
-          afterMiddleButton.current.dataset.index = `${tableTotalPages - 2}`;
+          afterMiddleButton.current.dataset.index = (tableTotalPages - 2).toString();
           afterMiddleButton.current.innerHTML = `${tableTotalPages - 1}`;
         } else if (tableTotalPages > paginationButtonsMax) {
           afterMiddleButton.current.classList.add("dots");
@@ -86,19 +94,31 @@ export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, pagi
       </PaginationInfo>
       <NavigationButton ref={prevButton} styled="secondary" className={`${tableTotalPages < 2 && "hide"} ${!pageIndex && "disabled"}`} onClick={() => pageIndex && setPageIndex(pageIndex - 1)}>Prev</NavigationButton>
         {
-          Array(tableTotalPages).fill().map((page, index) => {
+          Array(tableTotalPages).fill('').map((page, index) => {
             const total = tableTotalPages
             const middle = Math.floor(tableTotalPages / 2);
             const current = index + 1;
             
             if (current === 1 || current === total || total <= paginationButtonsMax)
-              return <ButtonStyled key={index} data-index={current - 1} styled="primary" className={`pagination-button ${current === 1 ? "active" : ""} ${tableTotalPages < 2 ? "hide" : ""}`} onClick={(event) => event.target.dataset.index && setPageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
+              return <ButtonStyled key={index} data-index={current - 1} styled="primary" className={`pagination-button ${current === 1 ? "active" : ""} ${tableTotalPages < 2 ? "hide" : ""}`} onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                const target = event.target as HTMLButtonElement;
+                target.dataset.index && setPageIndex(Number(target.dataset.index));
+              }}>{ current }</ButtonStyled>
             else if (current === 2)
-              return <ButtonStyled ref={beforeMiddleButton} key={index} data-index={current - 1} styled="primary" className="pagination-button" onClick={(event) => event.target.dataset.index && setPageIndex(Number(event.target.dataset.index))}>{current}</ButtonStyled>
+              return <ButtonStyled ref={beforeMiddleButton} key={index} data-index={current - 1} styled="primary" className="pagination-button" onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                const target = event.target as HTMLButtonElement;
+                target.dataset.index && setPageIndex(Number(target.dataset.index));
+              }}>{ current }</ButtonStyled>
             else if (current === total - 1)
-              return <ButtonStyled ref={afterMiddleButton} key={index} styled="primary" className="pagination-button dots" onClick={(event) => event.target.dataset.index && setPageIndex(Number(event.target.dataset.index))}>...</ButtonStyled>
+              return <ButtonStyled ref={afterMiddleButton} key={index} styled="primary" className="pagination-button dots" onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                const target = event.target as HTMLButtonElement;
+                target.dataset.index && setPageIndex(Number(target.dataset.index))
+              }}>...</ButtonStyled>
             else if (current === middle)
-              return <ButtonStyled ref={middleButton} key={index} data-index={2} styled="primary" className="pagination-button middle" onClick={(event) => event.target.dataset.index && setPageIndex(Number(event.target.dataset.index))}>{3}</ButtonStyled>
+              return <ButtonStyled ref={middleButton} key={index} data-index={2} styled="primary" className="pagination-button middle" onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                const target = event.target as HTMLButtonElement;
+                target.dataset.index && setPageIndex(Number(target.dataset.index));
+              }}>{3}</ButtonStyled>
             else
               return <ButtonStyled key={index} className="pagination-button hide"></ButtonStyled>
           })

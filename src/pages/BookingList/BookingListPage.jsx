@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
-import { DataTableTabListComponent } from '../../components/DataTableTabs/DataTableTabListComponent';
+import { DataTableTabListComponent } from '../../components/DataTableTabList/DataTableTabListComponent';
 import { BookingListTableContainer, BookingRequestButton, BookingStatusButton, BookingTableBodyRowCellBooking, BookingTableBodyRowCellBookingId, BookingTableBodyRowCellBookingName } from './BookingListStyled';
 import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableRowCellContentMultipleEllipsis } from '../../components/DataTableStyled';
 
