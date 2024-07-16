@@ -1,40 +1,51 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, ChangeEvent, MouseEvent } from "react";
 import { Form, FormLogo, Input, SubmitButton, Wrapper } from "./LoginStyled";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext, AuthContextInterface } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from "../../features/userList/userListSlice";
 import { userListCanLoginThunk } from "../../features/userList/userListCanLoginThunk";
 import logoImage from '../../assets/dashboard-logo.png';
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 export const LoginPage = () => {
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser] = useState<{ email: string, password: string }>({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
   const navigate = useNavigate();
-  const { userDispatch } = useContext(AuthContext);
+  
+  const useAuth = (): AuthContextInterface => {
+    const context = useContext(AuthContext);
+    if (!context) {
+      throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+  };
+  const { userDispatch } = useAuth();
 
-  const userListDispatch = useDispatch();
-  const userListError = useSelector(userListErrorSelect);
-  const userListStatus = useSelector(userListStatusSelect);
-  const userListUserList = useSelector(userListUserListSelect);
-  const userListUser = useSelector(userListUserSelect);
-  const [isLoading, setIsLoading] = useState(false);
+  const userListDispatch = useAppDispatch();
+  const userListError = useAppSelector(userListErrorSelect);
+  const userListStatus = useAppSelector(userListStatusSelect);
+  const userListUserList = useAppSelector(userListUserListSelect);
+  const userListUser = useAppSelector(userListUserSelect);
 
-  const handleChangeInput = ({ target }) => {
+  const handleChangeInput = ( event: ChangeEvent<HTMLInputElement>) => {
+    const target = event.target;
     setUser((prevUser) => ({
       ...prevUser,
       [target.name]: target.value,
     }));
   };
 
-  const isValidForm = () => {
-    const validUser = {
+  const isValidForm = (): string | null => {
+    const validUser: { email: string | null, password: string | null} = {
       email: user.email.trim().length ? user.email.trim() : null,
       password: user.password.trim().length ? user.password.trim() : null
     }
     return validUser.email && validUser.password;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: MouseEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if(isValidForm())
