@@ -4,6 +4,7 @@ import dataBookings from "../../data/mock_bookings.json";
 import { bookingListReadListThunk } from "./bookingListReadListThunk";
 import { bookingListReadOneThunk } from "./bookingListReadOneThunk";
 import { bookingListDeleteOneThunk } from "./bookingListDeleteOneThunk";
+import { RoomInterface } from "../roomList/roomListSlice";
 
 export interface BookingInterface {
   id: string,
@@ -16,13 +17,14 @@ export interface BookingInterface {
   room_number: number,
   status: "check_in" | "check_out" | "in_progress",
   special_request: string,
-}
+  room_details?: RoomInterface | undefined
+} 
 
 interface BookingStateInterface {
   error: null | string,
   status: "idle" | "pending" | "fulfilled" | "rejected",
   bookingList: BookingInterface[],
-  booking: {} | BookingInterface | null | undefined,
+  booking: BookingInterface | null | undefined,
   searchTerm: string,
 }
 
@@ -30,7 +32,7 @@ const initialState: BookingStateInterface = {
   error: null,
   status: "idle",
   bookingList: dataBookings as BookingInterface[],
-  booking: {},
+  booking: undefined,
   searchTerm: '',
 }
 
