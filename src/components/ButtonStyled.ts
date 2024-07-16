@@ -1,7 +1,11 @@
 
 import styled, { css } from 'styled-components';
 
-export const ButtonStyled = styled.button`
+interface ButtonStyledProps {
+  styled: "primary" | "secondary" | "tertiary" | "available" | "booked" | "publish" | "archive" | "check_in" | "check_out" | "in_progress" | "deny" | "active" | "inactive"
+}
+
+export const ButtonStyled = styled.button<ButtonStyledProps>`
   width: 100%;
   font-size: 1rem;
   padding: 0.6em 0.6em;
