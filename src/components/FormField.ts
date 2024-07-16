@@ -1,5 +1,8 @@
 import styled from "styled-components";
 
+interface FormFieldListContainerProps {
+  width: string
+}
 
 export const FormFieldListContainer = styled.div`
   height: 100%;
@@ -28,7 +31,7 @@ export const FormFieldListContainer = styled.div`
   }
 `
 
-export const FormField = styled.div`
+export const FormField = styled.div<FormFieldListContainerProps>`
   width: ${props => props.width || "100%"};
   margin-bottom: 1.4em;
   display: inline-flex;
