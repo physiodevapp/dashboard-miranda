@@ -4,7 +4,7 @@ interface FormModeProviderProps {
   children: ReactNode
 }
 
-interface FormModeContextInterface {
+export interface FormModeContextInterface {
   isEditingForm: boolean,
   setIsEditingForm: Dispatch<boolean>
 }

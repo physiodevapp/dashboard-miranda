@@ -1,41 +1,63 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, KeyboardEvent, ChangeEvent } from 'react'
 import { NavbarMenuButton, NavbarPageTitle, NavbarList, NavbarSearchBarInput, NavbarSearchBarContainer, NavbarSearchBarButton } from './NavbarStyled';
 import { BiBell } from 'react-icons/bi';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { LuChevronLeft } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext, AuthContextInterface } from '../../context/AuthContext';
 import { useDispatch } from 'react-redux';
 import { userListResetUser, userListSetUserSearchTerm } from '../../features/userList/userListSlice';
 import { IoMdClose } from 'react-icons/io';
 import { IoSearchOutline } from 'react-icons/io5';
 import { bookingListSetBookingSearchTerm } from '../../features/bookingList/bookingListSlice';
-import { FormModeContext } from '../../context/FormModeContext';
+import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext';
 import { BlockLayer } from '../BlockLayer';
+import { useAppDispatch } from '../../app/hooks';
 
-export const NavbarComponent = ({handleClickMenu, show}) => {
-  const { userDispatch } = useContext(AuthContext);
-  const { isEditingForm } = useContext(FormModeContext);
+interface NavbarComponentProps {
+  handleClickMenu: () => void,
+  show: 'true' | 'false'
+}
 
-  const [title, setTitle] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+export const NavbarComponent = ({handleClickMenu, show}: NavbarComponentProps) => {
+  const useAuth = (): AuthContextInterface => {
+    const context = useContext(AuthContext);
+    if (!context) {
+      throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+  };
+  const { userDispatch } = useAuth();
+
+  const useFormMode = (): FormModeContextInterface => {
+    const context = useContext(FormModeContext);
+    if (!context) {
+      throw new Error('useFormMode must be used within an FormModeProvider');
+    }
+    return context;
+  };
+  const { isEditingForm } = useFormMode();
+
+  const [title, setTitle] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { roomId, bookingId, userId } = useParams();
 
-  const modelListDispatch = useDispatch();
+  const modelListDispatch = useAppDispatch();
 
-  const clearSearchTerm = () => {
+  const clearSearchTerm = (): void => {
     setSearchTerm('');
   }
 
-  const handleSearchTermChange = ({target}) => {
+  const handleSearchTermChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const target = event.target
     setSearchTerm(target.value);
   }
 
-  const handleInputKeyDown = (event) => {
+  const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") 
       filterTable()
   }
