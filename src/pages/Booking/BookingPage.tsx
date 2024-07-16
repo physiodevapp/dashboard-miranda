@@ -5,45 +5,46 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Select from 'react-select';
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper as SwiperTypes } from "swiper/types";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { bookingListBookingListSelect, bookingListBookingSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+import { BookingInterface, bookingListBookingListSelect, bookingListBookingSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 import { bookingListReadOneThunk } from '../../features/bookingList/bookingListReadOneThunk';
 import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';
 
 import { BounceLoader } from 'react-spinners';
 
 import { useForm, Controller } from 'react-hook-form';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 export const BookingPage = () => {
-  const [booking, setBooking] = useState(null);
+  const [booking, setBooking] = useState<BookingInterface | null>(null);
+  const [canEdit, setCanEdit] = useState<boolean>(false);
+  const [roomPhotosSwiper, setRoomPhotosSwiper] = useState<SwiperTypes | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [canRedirectBack, setCanRedirectBack] = useState<boolean>(false);
+  
   const { bookingId } = useParams();
-
-  const [canEdit, setCanEdit] = useState(false);
-
   const navigate = useNavigate();
 
-  const [roomPhotosSwiper, setRoomPhotosSwiper] = useState({});
-  const prevRef = useRef();
-  const nextRef = useRef();
+  const prevRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLDivElement>(null);
 
   const { register, handleSubmit, control, reset } = useForm();
 
-  const bookingListDispatch = useDispatch();
-  const bookingListStatus = useSelector(bookingListStatusSelect);
-  const bookingListBooking = useSelector(bookingListBookingSelect);
-  const bookingListBookingList = useSelector(bookingListBookingListSelect);
-  const bookingListError = useSelector(bookingListErrorSelect);
-  const roomListRoomList = useSelector(roomListRoomListSelect)
-  const [isLoading, setIsLoading] = useState(true);
+  const bookingListDispatch = useAppDispatch();
+  const bookingListStatus = useAppSelector(bookingListStatusSelect);
+  const bookingListBooking = useAppSelector(bookingListBookingSelect);
+  const bookingListBookingList = useAppSelector(bookingListBookingListSelect);
+  const bookingListError = useAppSelector(bookingListErrorSelect);
+  const roomListRoomList = useAppSelector(roomListRoomListSelect)
 
-  const [canRedirectBack, setCanRedirectBack] = useState(false);
 
-  const formatDatetime = (datetime) => {
+  const formatDatetime = (datetime: string) => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
@@ -56,17 +57,19 @@ export const BookingPage = () => {
     label: facility
   }))
 
-  const getTotalPrice = (checkIn, checkOut) => {
+  const getTotalPrice = (checkIn: number, checkOut: number) => {
     const diffTime = checkOut - checkIn;    
-    const totalNights = Math.round(diffTime / (24 * 3600 * 1000));
-    const finalPrice = booking.room_details?.has_offer
-      ? (totalNights * booking.room_details?.price_night * booking.room_details.discount / 100)
-      : totalNights * booking.room_details?.price_night
+    const DAY_TO_MILISECONDS = (24 * 3600 * 1000);
+    const totalNights: number = Math.round(diffTime / DAY_TO_MILISECONDS);
+    
+    const finalPrice: number = booking!.room_details?.has_offer
+      ? (totalNights * booking!.room_details?.price_night * booking!.room_details.discount / 100)
+      : totalNights * booking!.room_details!.price_night
 
     return `$${finalPrice}`
   }
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: {}) => {
 
   }
 
@@ -87,7 +90,7 @@ export const BookingPage = () => {
           setBooking(bookingListBooking);
 
           reset({
-            bookingRoomFacilities: bookingListBooking.room_details.facilities.map((facility) => ({
+            bookingRoomFacilities: bookingListBooking.room_details?.facilities.map((facility: string) => ({
               value: facility, 
               label: facility 
             }))
@@ -136,27 +139,27 @@ export const BookingPage = () => {
             <FormFieldListContainer>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingName'>Fullname</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingName", { value: booking.first_name }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingName", { value: booking?.first_name }) }></FormInput>
               </FormField>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingId'>Booking Id</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingId", { value: (booking.id).split("-")[booking.id.split("-"). length - 1] }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingId", { value: (booking!.id).split("-")[booking!.id.split("-"). length - 1] }) }></FormInput>
               </FormField>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingCheckIn'>Check In</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingCheckIn", { value: formatDatetime(booking.check_in) }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingCheckIn", { value: formatDatetime(booking!.check_in) }) }></FormInput>
               </FormField>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingCheckOut'>Check Out</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingCheckOut", { value: formatDatetime(booking.check_out) }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingCheckOut", { value: formatDatetime(booking!.check_out) }) }></FormInput>
               </FormField>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingRoomNumber'>Room number</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingRoomNumber", { value: booking.room_number }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingRoomNumber", { value: booking!.room_number }) }></FormInput>
               </FormField>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingTotalPrice'>Final Price</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingTotalPrice", { value: getTotalPrice(booking.check_in, booking.check_out) }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingTotalPrice", { value: getTotalPrice(Number(booking!.check_in), Number(booking!.check_out)) }) }></FormInput>
               </FormField>
               <FormField width="100%">
                 <FormFieldLabel htmlFor='bookingRoomFacilities'>Facilities</FormFieldLabel>
@@ -246,20 +249,20 @@ export const BookingPage = () => {
               </FormField>
               <FormField>
                 <FormFieldLabel htmlFor="bookingSpecialRequest">Special request</FormFieldLabel>                
-                <FormTextarea disabled={!canEdit} rows={10} { ...register("bookingSpecialRequest", { value: booking.special_request }) }></FormTextarea>
+                <FormTextarea disabled={!canEdit} rows={10} { ...register("bookingSpecialRequest", { value: booking?.special_request }) }></FormTextarea>
               </FormField>
             </FormFieldListContainer>
           </BookingForm>
           <BookingGallery>
-            <BookingSwiperSliderRoomStatus styled={booking.status}>
-              <h6>{ booking.status.replace("_", " ") }</h6>
+            <BookingSwiperSliderRoomStatus styled={booking?.status}>
+              <h6>{ booking?.status.replace("_", " ") }</h6>
             </BookingSwiperSliderRoomStatus>
             <BookingSwiperSlideRoomInfo>
               <BookingSwiperSliderRoomType>
-                { booking.room_details?.type }
+                { booking?.room_details?.type }
               </BookingSwiperSliderRoomType>
               <BookingSwiperSliderRoomDescription>
-                { booking.room_details?.description }
+                { booking?.room_details?.description }
               </BookingSwiperSliderRoomDescription>
             </BookingSwiperSlideRoomInfo>
             <Swiper
@@ -283,9 +286,9 @@ export const BookingPage = () => {
               spaceBetween={0}
             >
               { 
-                booking.room_details.photos
-                ? booking.room_details.photos.map((photo, index) => (
-                  <SwiperSlide key={`${booking.room_details.id}_${index}`} style={{backgroundImage:`url(${photo})`}}>
+                booking?.room_details?.photos
+                ? booking?.room_details.photos.map((photo, index) => (
+                  <SwiperSlide key={`${booking?.room_details?.id}_${index}`} style={{backgroundImage:`url(${photo})`}}>
                     <BookingGalleryBlackLayer/>
                     <BookingSwiperSlideRoomImage src={photo}/>
                   </SwiperSlide>
@@ -297,7 +300,7 @@ export const BookingPage = () => {
               ref={prevRef}
               className="swiper-button-prev disabled"
               onClick={() =>
-                roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex - 1)
+                roomPhotosSwiper?.slideTo(roomPhotosSwiper?.activeIndex - 1)
               }
             >
               <FaArrowLeft />
@@ -306,7 +309,7 @@ export const BookingPage = () => {
               ref={nextRef}
               className="swiper-button-next"
               onClick={() =>
-                roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex + 1)
+                roomPhotosSwiper?.slideTo(roomPhotosSwiper.activeIndex + 1)
               }
             >
               <FaArrowRight />

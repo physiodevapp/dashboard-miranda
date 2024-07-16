@@ -1,6 +1,11 @@
 import styled, { css } from "styled-components";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
 
+interface BookingStyledProps {
+  lineclamp?: number,
+  styled?: String,
+}
+
 export const BookingContainer = styled(PageElementContainerStyled)`
   height: 100%;
   max-height: 95%;
@@ -125,7 +130,7 @@ export const BookingSwiperSliderRoomType = styled.h6`
   margin-bottom: 0.6em;
 `
 
-export const BookingSwiperSliderRoomDescription = styled.p`
+export const BookingSwiperSliderRoomDescription = styled.p<BookingStyledProps>`
   font-size: 0.8rem;
   color: #B2B2B2;
   margin: 0em;
@@ -137,7 +142,7 @@ export const BookingSwiperSliderRoomDescription = styled.p`
   text-overflow: ellipsis;
 `
 
-export const BookingSwiperSliderRoomStatus = styled.div`
+export const BookingSwiperSliderRoomStatus = styled.div<BookingStyledProps>`
   width: 200px;
   height: 200px;
   background-color: #5AD07A;

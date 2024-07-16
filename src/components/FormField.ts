@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 interface FormFieldListContainerProps {
-  width: string
+  width?: string
 }
 
 export const FormFieldListContainer = styled.div`
