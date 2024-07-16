@@ -18,7 +18,7 @@ export interface RoomInterface {
   type: string,
   price_night: number,
   discount: number,
-  status: string,
+  status: "available" | "booked",
   photos: string[],
 }
 
@@ -32,7 +32,7 @@ interface RoomStateInterface {
 const initialState: RoomStateInterface = {
   error: null,
   status: "idle",
-  roomList: dataRooms,
+  roomList: dataRooms as RoomInterface[],
   room: {},
 }
 
