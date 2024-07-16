@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { RootState } from '../../app/store';
 import dataUsers from "../../data/mock_users.json";
 import { userListReadListThunk } from "./userListReadListThunk";
 import { userListUpdateOneThunk } from "./userListUpdateOneThunk";
@@ -8,20 +9,45 @@ import { userListCreateOneThunk } from "./userListCreateOneThunk";
 import { userListCanLoginThunk } from "./userListCanLoginThunk";
 
 
+export interface UserInterface {
+  [key: string]: any;
+  id: string,
+  first_name: string,
+  last_name: string,
+  photo: string,
+  start_date: string,
+  job_description: string,
+  telephone: string,
+  status: "active" | "inactive";
+  job: "Manager" | "Reservation desk" | "Room service",
+  password: string,
+  email: string,
+}
+
+interface UserStateInterface {
+  error: null | string,
+  status: "idle" | "pending" | "fulfilled" | "rejected",
+  userList: UserInterface[],
+  user: {} | UserInterface | null | undefined,
+  searchTerm: string
+}
+
+const initialState: UserStateInterface = {
+  error: null,
+  status: "idle",
+  userList: dataUsers as UserInterface[],
+  user: {},
+  searchTerm: '',
+}
+
 export const userListSlice = createSlice({
   name: "userList",
-  initialState: {
-    error: null,
-    status: "idle",
-    userList: dataUsers,
-    user: {},
-    searchTerm: '',
-  },
+  initialState,
   reducers: {
     userListResetUser: (state, action) => {
       state.user = null;
     },
-    userListSetUserSearchTerm: (state, action) => {
+    userListSetUserSearchTerm: (state, action: PayloadAction<string>) => {
       state.searchTerm = action.payload;
     }
   },
@@ -30,7 +56,7 @@ export const userListSlice = createSlice({
     .addCase(userListUpdateOneThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(userListUpdateOneThunk.fulfilled, (state, action) => {
+    .addCase(userListUpdateOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
       state.userList = action.payload
 
       state.user = null;
@@ -44,7 +70,7 @@ export const userListSlice = createSlice({
     .addCase(userListReadOneThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(userListReadOneThunk.fulfilled, (state, action) => {
+    .addCase(userListReadOneThunk.fulfilled, (state, action: PayloadAction<UserInterface | undefined>) => {
       state.user = action.payload;
 
       state.status = "fulfilled";
@@ -56,7 +82,7 @@ export const userListSlice = createSlice({
     .addCase(userListCanLoginThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(userListCanLoginThunk.fulfilled, (state, action) => {
+    .addCase(userListCanLoginThunk.fulfilled, (state, action: PayloadAction<UserInterface | undefined>) => {
       state.user = action.payload;
 
       state.status = "fulfilled";
@@ -68,7 +94,7 @@ export const userListSlice = createSlice({
     .addCase(userListDeleteOneThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(userListDeleteOneThunk.fulfilled, (state, action) => {
+    .addCase(userListDeleteOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
       state.user = null;
       state.userList = action.payload;
 
@@ -81,7 +107,7 @@ export const userListSlice = createSlice({
     .addCase(userListCreateOneThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(userListCreateOneThunk.fulfilled, (state, action) => {
+    .addCase(userListCreateOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
       state.userList = action.payload;
 
       state.user = null;
@@ -95,7 +121,7 @@ export const userListSlice = createSlice({
     .addCase(userListReadListThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(userListReadListThunk.fulfilled, (state, action) => {
+    .addCase(userListReadListThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
       state.userList = action.payload;
       state.user = undefined;
 
@@ -110,8 +136,8 @@ export const userListSlice = createSlice({
 
 export const { userListResetUser, userListSetUserSearchTerm } = userListSlice.actions;
 
-export const userListStatusSelect = (state) => state.userList.status;
-export const userListErrorSelect = (state) => state.userList.error;
-export const userListUserListSelect = (state) => state.userList.userList;
-export const userListUserSelect = (state) => state.userList.user;
-export const userListSearchTermSelect = (state) => state.userList.searchTerm;
+export const userListStatusSelect = (state: RootState) => state.userList.status;
+export const userListErrorSelect = (state: RootState) => state.userList.error;
+export const userListUserListSelect = (state: RootState) => state.userList.userList;
+export const userListUserSelect = (state: RootState) => state.userList.user;
+export const userListSearchTermSelect = (state: RootState) => state.userList.searchTerm;
