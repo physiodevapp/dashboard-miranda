@@ -3,13 +3,13 @@ import { KPIsIcon, KPIsItem, KPIsList, Subtitle, Title } from './KPIsListStyled'
 import { MdOutlineKingBed, MdLogout } from "react-icons/md";
 import { LuCalendarCheck} from "react-icons/lu";
 import { useSelector } from 'react-redux';
-import { useAppSelector } from 'app/hooks';
+import { useAppSelector } from "../../app/hooks";
 import { bookingListBookingListSelect } from '../../features/bookingList/bookingListSlice';
 import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';
 
 export const KPIsListComponent = () => {
 
-  const bookingListBookingList = useSelector(bookingListBookingListSelect);
+  const bookingListBookingList = useAppSelector(bookingListBookingListSelect);
   const roomListRoomList = useAppSelector(roomListRoomListSelect);
 
   return (
