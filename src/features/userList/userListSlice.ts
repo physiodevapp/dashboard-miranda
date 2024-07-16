@@ -44,7 +44,7 @@ export const userListSlice = createSlice({
   name: "userList",
   initialState,
   reducers: {
-    userListResetUser: (state, action) => {
+    userListResetUser: (state) => {
       state.user = null;
     },
     userListSetUserSearchTerm: (state, action: PayloadAction<string>) => {
@@ -53,7 +53,7 @@ export const userListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(userListUpdateOneThunk.pending, (state, action) => {
+    .addCase(userListUpdateOneThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(userListUpdateOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
@@ -63,11 +63,11 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListUpdateOneThunk.rejected, (state, action) => {
+    .addCase(userListUpdateOneThunk.rejected, (state) => {
       state.status = "rejected";
     })
 
-    .addCase(userListReadOneThunk.pending, (state, action) => {
+    .addCase(userListReadOneThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(userListReadOneThunk.fulfilled, (state, action: PayloadAction<UserInterface | undefined>) => {
@@ -75,11 +75,11 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListReadOneThunk.rejected, (state, action) => {
+    .addCase(userListReadOneThunk.rejected, (state) => {
       state.status = "rejected";
     })
 
-    .addCase(userListCanLoginThunk.pending, (state, action) => {
+    .addCase(userListCanLoginThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(userListCanLoginThunk.fulfilled, (state, action: PayloadAction<UserInterface | undefined>) => {
@@ -87,11 +87,11 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListCanLoginThunk.rejected, (state, action) => {
+    .addCase(userListCanLoginThunk.rejected, (state) => {
       state.status = "rejected";
     })
 
-    .addCase(userListDeleteOneThunk.pending, (state, action) => {
+    .addCase(userListDeleteOneThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(userListDeleteOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
@@ -100,11 +100,11 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListDeleteOneThunk.rejected, (state, action) => {
+    .addCase(userListDeleteOneThunk.rejected, (state) => {
       state.status = "rejected";
     })
 
-    .addCase(userListCreateOneThunk.pending, (state, action) => {
+    .addCase(userListCreateOneThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(userListCreateOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
@@ -114,11 +114,11 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListCreateOneThunk.rejected, (state, action) => {
+    .addCase(userListCreateOneThunk.rejected, (state) => {
       state.status = "rejected";
     })
 
-    .addCase(userListReadListThunk.pending, (state, action) => {
+    .addCase(userListReadListThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(userListReadListThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
@@ -127,7 +127,7 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListReadListThunk.rejected, (state, action) => {
+    .addCase(userListReadListThunk.rejected, (state) => {
       state.status = "rejected";
     })
   }

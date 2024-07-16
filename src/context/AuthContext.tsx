@@ -9,7 +9,7 @@ export interface AuthContextInterface {
 
 interface ActionInterface {
   type: "login" | "logout",
-  payload: {}
+  payload?: {}
 };
 
 type StateType = { email: string } | null;

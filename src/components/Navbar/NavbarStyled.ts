@@ -1,7 +1,10 @@
 import styled from "styled-components";
 
+interface NavbarMenuButtonProps {
+  show: string
+}
 
-export const NavbarMenuButton = styled.button`
+export const NavbarMenuButton = styled.button<NavbarMenuButtonProps>`
   z-index: 100;
   font-size: 2.5em;
   border: none;
