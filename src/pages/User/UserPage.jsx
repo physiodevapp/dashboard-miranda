@@ -42,6 +42,7 @@ export const UserPage = () => {
   const [canEdit, setCanEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [canRedirectBack, setCanRedirectBack] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
 
   const { userId } = useParams();
 
@@ -49,7 +50,6 @@ export const UserPage = () => {
 
   const { register, handleSubmit, control, reset, setValue } = useForm();
 
-  const [startDate, setStartDate] = useState(new Date());
 
   const jobOptions = ["Manager", "Reservation desk", "Room service"].map((job) => ({
     value: job,
