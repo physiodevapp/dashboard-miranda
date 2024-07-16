@@ -7,7 +7,7 @@ interface DataTablePaginationComponentProps {
   rowsPerPage: number,
   paginationButtonsMax: number,
   onTablePageChange: (pageIndex: number) => void,
-  tablePageIndex: number,
+  tablePageIndex?: number,
 }
 
 export const DataTablePaginationComponent = ({rowsLength, rowsPerPage = 10, paginationButtonsMax = 5, onTablePageChange, tablePageIndex = 0}: DataTablePaginationComponentProps) => {
