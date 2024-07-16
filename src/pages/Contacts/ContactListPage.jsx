@@ -6,7 +6,7 @@ import { DataTable, DataTableBody, DataTableBodyRow, DataTableBodyRowCell, DataT
 import { DataTablePaginationComponent } from "../../components/DataTablePagination/DataTablePaginationComponent";
 import { DataTableHeaderRowCellSortComponent } from "../../components/DataTableHeaderRowCellSortComponent";
 import { ButtonStyled } from "../../components/ButtonStyled";
-import { DataTableTabListComponent } from "../../components/DataTableTabs/DataTableTabListComponent";
+import { DataTableTabListComponent } from "../../components/DataTableTabList/DataTableTabListComponent";
 import { FaArrowUp } from "react-icons/fa6";
 
 import { useDispatch, useSelector } from "react-redux";
