@@ -20,7 +20,7 @@ import { UserPage } from "./pages/User/UserPage";
 import 'animate.css';
 import { FormModeProvider } from "./context/FormModeContext";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>

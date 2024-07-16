@@ -24,14 +24,15 @@ export const MenuComponent = () => {
   const { userState } = useContext(AuthContext);
   const { isEditingForm } = useContext(FormModeContext);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<{}>({});
+
   const userListDispatch = useDispatch();
   const userListError = useSelector(userListErrorSelect);
   const userListStatus = useSelector(userListStatusSelect);
   const userListUserList = useSelector(userListUserListSelect);
   const userListUser = useSelector(userListUserSelect);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const [user, setUser] = useState({});
 
   useEffect(() => {
     userListDispatch(userListReadOneThunk({key: "email", value: userState.email, list: userListUserList}))
@@ -102,7 +103,7 @@ export const MenuComponent = () => {
         <ButtonStyled styled="tertiary" onClick={() => navigate(`/users/${user.id}`)}>View</ButtonStyled>
       </User>
       <Brand>Travl Hotel Admin Dashboard</Brand>
-      <Copyright>© 2020 All Rights Reserved</Copyright>
+      <Copyright>© 2024 All Rights Reserved</Copyright>
       <Author>Made with ♥ by Edu</Author>
     </>
   )

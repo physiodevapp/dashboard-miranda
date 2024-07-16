@@ -1,10 +1,16 @@
 
-import React, { createContext, useEffect, useReducer, useState } from 'react';
+import React, { createContext, Reducer, Dispatch, ReactNode, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const AuthContext = createContext();
+interface AuthContextInterface {
+  userState: StateType,
+  userDispatch: Dispatch<ActionInterface>
+}
 
-const getUserFromLocalStorage = () => {
+
+const AuthContext = createContext<AuthContextInterface | null>(null);
+
+const getUserFromLocalStorage = (): StateType => {
   const user = localStorage.getItem('current-user');
   if (user)
     return JSON.parse(user)
@@ -12,7 +18,14 @@ const getUserFromLocalStorage = () => {
     return null
 }
 
-const userReducer = (state, {type, payload}) => {
+interface ActionInterface {
+  type: "login" | "logout",
+  payload: {}
+};
+
+type StateType = { email: string } | null;
+
+const userReducer = (state: StateType, {type, payload}: ActionInterface) => {
   switch (type) {
     case 'login':
       localStorage.setItem('current-user', JSON.stringify(payload));
@@ -31,9 +44,14 @@ const userReducer = (state, {type, payload}) => {
   }
 }
 
-const AuthProvider = ({children}) => {
-  const [userState, userDispatch] = useReducer(userReducer, getUserFromLocalStorage());
-  const [refreshUser, setRefreshUser] = useState(false);
+interface AuthProviderProps {
+  children: ReactNode
+}
+
+const AuthProvider = ({children}: AuthProviderProps) => {
+  const [userState, userDispatch] = useReducer<Reducer<StateType, ActionInterface>>(userReducer, getUserFromLocalStorage());
+  const [refreshUser, setRefreshUser] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
