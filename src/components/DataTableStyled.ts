@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import { PageElementContainerStyled } from "./PageElementContainerStyled";
 
+interface DataTableContainerProps {
+  offset: string,
+  lineclamp: number,
+  width: string
+}
+
 export const DataTableContainer = styled(PageElementContainerStyled)`
   overflow: auto;
   border-radius: 1.4em;
@@ -91,7 +97,7 @@ export const DataTableBody = styled.tbody`
 
 `
 
-export const DataTableBodyRow = styled.tr`
+export const DataTableBodyRow = styled.tr<DataTableContainerProps>`
   border-top: 1px solid #eae7e7;
   cursor: pointer;
   position: relative;
@@ -128,7 +134,7 @@ export const DataTableBodyRowCell = styled.td`
   position: relative;
 `
 
-export const DataTableRowCellContentMultipleEllipsis = styled.div`
+export const DataTableRowCellContentMultipleEllipsis = styled.div<DataTableContainerProps>`
   margin: 0em;
   padding: 0em;
   display: -webkit-box;
