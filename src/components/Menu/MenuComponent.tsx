@@ -11,31 +11,48 @@ import { FaRegUser } from 'react-icons/fa6';
 import { ButtonStyled } from '../ButtonStyled';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { UserInterface, userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
-import { AuthContext } from '../../context/AuthContext';
-import { FormModeContext } from '../../context/FormModeContext';
+import { AuthContext, AuthContextInterface } from '../../context/AuthContext';
+import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext';
 import { BlockLayer } from '../BlockLayer';
 
 export const MenuComponent = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const { userState } = useContext(AuthContext);
-  const { isEditingForm } = useContext(FormModeContext);
+  const useAuth = (): AuthContextInterface => {
+    const context = useContext(AuthContext);
+    if (!context) {
+      throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+  };
+  const { userState } = useAuth();
+
+  const useFormMode = (): FormModeContextInterface => {
+    const context = useContext(FormModeContext);
+    if (!context) {
+      throw new Error('useFormMode must be used within an FormModeProvider');
+    }
+    return context;
+  };
+  const { isEditingForm } = useFormMode();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [user, setUser] = useState<{}>({});
+  const [user, setUser] = useState<UserInterface | null>(null);
 
-  const userListDispatch = useDispatch();
-  const userListError = useSelector(userListErrorSelect);
-  const userListStatus = useSelector(userListStatusSelect);
-  const userListUserList = useSelector(userListUserListSelect);
-  const userListUser = useSelector(userListUserSelect);
+  const userListDispatch = useAppDispatch();
+  const userListError = useAppSelector(userListErrorSelect);
+  const userListStatus = useAppSelector(userListStatusSelect);
+  const userListUserList = useAppSelector(userListUserListSelect);
+  const userListUser = useAppSelector(userListUserSelect);
 
 
   useEffect(() => {
-    userListDispatch(userListReadOneThunk({key: "email", value: userState.email, list: userListUserList}))
+    if (userState)
+      userListDispatch(userListReadOneThunk({key: "email", value: userState.email, list: userListUserList}))
   }, []);
 
   useEffect(() => {
@@ -51,7 +68,7 @@ export const MenuComponent = () => {
           setIsLoading(false);
         }, 1000);
         
-        if (userListUser.email === userState.email)
+        if (userListUser && userState && userListUser.email === userState.email)
           setUser(userListUser);
 
         break;
@@ -66,31 +83,30 @@ export const MenuComponent = () => {
 
   return (
     <>
-
       <Logo src={logoImage}/>
       <BlockLayer className={isEditingForm ? 'show' : ''} style={{height: "87%"}}/>
       <MenuList>
-        <MenuListItem onClick={() => navigate('/dashboard')} className={pathname === '/dashboard' && 'active'}>
+        <MenuListItem onClick={() => navigate('/dashboard')} className={pathname === '/dashboard' ? 'active' : ''}>
           <span></span>
           <LuLayoutDashboard />
           Dashboard
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/bookings')} className={pathname.indexOf('/bookings') !== -1 && 'active'}>
+        <MenuListItem onClick={() => navigate('/bookings')} className={pathname.indexOf('/bookings') !== -1 ? 'active' : ''}>
           <span></span>
           <LuCalendarCheck/>
           Bookings
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/rooms')} className={pathname.indexOf('/rooms') !== -1 && 'active'}>
+        <MenuListItem onClick={() => navigate('/rooms')} className={pathname.indexOf('/rooms') !== -1 ? 'active' : ''}>
           <span></span>
           <RiKey2Line style={{transform: "rotateZ(130deg)"}}/>
           Rooms
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/contacts')} className={pathname === '/contacts' && 'active'}>
+        <MenuListItem onClick={() => navigate('/contacts')} className={pathname === '/contacts' ? 'active' : ''}>
           <span></span>
           <MdOutlineReviews/>
           Contacts
         </MenuListItem>
-        <MenuListItem onClick={() => navigate('/users')} className={pathname.indexOf('/users') !== -1 && 'active'}>
+        <MenuListItem onClick={() => navigate('/users')} className={pathname.indexOf('/users') !== -1 ? 'active' : ''}>
           <span></span>
           <FaRegUser/>
           Users
@@ -98,9 +114,9 @@ export const MenuComponent = () => {
       </MenuList>
       <User>
         <img src={userImage} alt="" />
-        <Name>{ `${user.first_name} ${user.last_name}` }</Name>
-        <Email>{ user.email}</Email>
-        <ButtonStyled styled="tertiary" onClick={() => navigate(`/users/${user.id}`)}>View</ButtonStyled>
+        <Name>{ `${user?.first_name} ${user?.last_name}` }</Name>
+        <Email>{ user?.email}</Email>
+        <ButtonStyled styled="tertiary" onClick={() => navigate(`/users/${user?.id}`)}>View</ButtonStyled>
       </User>
       <Brand>Travl Hotel Admin Dashboard</Brand>
       <Copyright>© 2024 All Rights Reserved</Copyright>

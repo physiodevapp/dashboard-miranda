@@ -28,7 +28,7 @@ interface UserStateInterface {
   error: null | string,
   status: "idle" | "pending" | "fulfilled" | "rejected",
   userList: UserInterface[],
-  user: {} | UserInterface | null | undefined,
+  user:  UserInterface | null | undefined,
   searchTerm: string
 }
 
@@ -36,7 +36,7 @@ const initialState: UserStateInterface = {
   error: null,
   status: "idle",
   userList: dataUsers as UserInterface[],
-  user: {},
+  user: undefined,
   searchTerm: '',
 }
 

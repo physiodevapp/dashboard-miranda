@@ -2,7 +2,7 @@
 import React, { createContext, Reducer, Dispatch, ReactNode, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-interface AuthContextInterface {
+export interface AuthContextInterface {
   userState: StateType,
   userDispatch: Dispatch<ActionInterface>
 }
