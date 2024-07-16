@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper as SwiperTypes } from "swiper/types"
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
@@ -27,24 +28,25 @@ import userPhoto from "../../assets/Imagen de perfil.png";
 import Swal from "sweetalert2";
 
 import { useDispatch, useSelector } from "react-redux";
-import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
+import { ContactInterface, contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
 import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 export const RecentContactListComponent = () => {
-  const contactListDispatch = useDispatch();
-  const contactListContactList = useSelector(contactListcontactListSelect);
-  const contactListStatus = useSelector(contactListStatusSelect);
-  const contactListError = useSelector(contactListErrorSelect);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const contactListDispatch = useAppDispatch();
+  const contactListContactList = useAppSelector(contactListcontactListSelect);
+  const contactListStatus = useAppSelector(contactListStatusSelect);
+  const contactListError = useAppSelector(contactListErrorSelect);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
-  const [contactsSwiper, setContactsSwiper] = useState({});
+  const [contactsSwiper, setContactsSwiper] = useState<SwiperTypes | null>(null);
 
-  const [recentContacts, setRecentContacts] = useState([]);
+  const [recentContacts, setRecentContacts] = useState<ContactInterface[]>([]);
 
-  const prevRef = useRef();
-  const nextRef = useRef();
+  const prevRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLDivElement>(null);
 
-  const getTimeDiffNow = (dateTime) => {
+  const getTimeDiffNow = (dateTime: number): string => {
     const dateNow = new Date().getTime();
     const diffTime = dateNow - dateTime;
 
@@ -53,7 +55,7 @@ export const RecentContactListComponent = () => {
     return `${diffDays} days ago`;
   };
 
-  const showContact = (contact) => {
+  const showContact = (contact: ContactInterface) => {
     Swal.fire({
       title:`Contact details`,
       showClass: {
@@ -79,7 +81,7 @@ export const RecentContactListComponent = () => {
           </section>
           <section class="container__article__content">
             <h6 class="container__article__content__title">${contact.first_name} ${contact.last_name}</h6>
-            <h5 class="container__article__content__subtitle">(${getTimeDiffNow(contact.datetime, contact.id)})</h5>
+            <h5 class="container__article__content__subtitle">(${getTimeDiffNow(Number(contact.datetime))})</h5>
             <p class="container__article__content__message">${contact.message}</p>
           </section> 
         </article>
@@ -93,13 +95,13 @@ export const RecentContactListComponent = () => {
     })
   }
 
-  const sortContacts = (contacts, { headerKey: key, direction: criteria = -1}) => {
+  const sortContacts = (contacts: ContactInterface[], { headerKey , direction = -1}: { headerKey: string, direction: -1 | 1 }) => {
     return contacts.sort((current, next) => {
-      if (current[key] < next[key])
-        return criteria
+      if (current[headerKey] < next[headerKey])
+        return direction
 
-      if (current[key] > next[key])
-        return -1 * criteria
+      if (current[headerKey] > next[headerKey])
+        return -1 * direction
       
       return 0;
     })
@@ -145,7 +147,9 @@ export const RecentContactListComponent = () => {
         <SwiperTitle>Latest Review by Customers</SwiperTitle>
         <Swiper
           modules={[Navigation]}
-          onInit={(event) => setContactsSwiper(event)}
+          onInit={(swiper: SwiperTypes) => { 
+            setContactsSwiper(swiper) 
+          }}
           onSlideChange={(swiper) => {
             if (swiper.isEnd) {
               nextRef.current?.classList.add("disabled")
@@ -175,7 +179,7 @@ export const RecentContactListComponent = () => {
                     {`${contact.first_name} ${contact.last_name}`}
                   </SwiperSlideAuthorInfoName>
                   <SwiperSlideAuthorInfoDatetime>
-                    {getTimeDiffNow(contact.datetime, contact.id)}
+                    { getTimeDiffNow(Number(contact.datetime)) }
                   </SwiperSlideAuthorInfoDatetime>
                 </SwiperSlideAuthorInfo>
                 <SwiperSliderButtons>
@@ -200,7 +204,7 @@ export const RecentContactListComponent = () => {
           ref={prevRef}
           className="swiper-button-prev disabled"
           onClick={() =>
-            contactsSwiper.slideTo(contactsSwiper.activeIndex - 1)
+            contactsSwiper!.slideTo(contactsSwiper!.activeIndex - 1)
           }
         >
           <FaArrowLeft />
@@ -209,7 +213,7 @@ export const RecentContactListComponent = () => {
           ref={nextRef}
           className="swiper-button-next"
           onClick={() =>
-            contactsSwiper.slideTo(contactsSwiper.activeIndex + 1)
+            contactsSwiper!.slideTo(contactsSwiper!.activeIndex + 1)
           }
         >
           <FaArrowRight />

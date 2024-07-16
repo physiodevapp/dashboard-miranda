@@ -5,6 +5,7 @@ import { contactListReadListThunk } from "./contactListReadListThunk";
 import { contactListUpdateOneThunk } from "./contactListUpdateOneThunk";
 
 export interface ContactInterface {
+  [key: string]: any;
   id: string,
   status: "" | "published" | "archived",
   first_name: string,
