@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
 
-export const GridLayout = styled.div`
+interface LayoutStyledProps {
+  show: string
+}
+
+export const GridLayout = styled.div<LayoutStyledProps>`
   display: grid;
   grid-template-rows: 90px calc(100vh - 90px);
   grid-template-columns: 345px 1fr;
