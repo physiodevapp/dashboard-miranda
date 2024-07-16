@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { RootState } from '../../app/store';
 import { roomListUpdateOneThunk } from "./roomListUpdateOneThunk";
 import dataRooms from "../../data/mock_rooms.json";
 import { roomListReadOneThunk } from "./roomListReadOneThunk";
@@ -6,21 +7,45 @@ import { roomListReadListThunk } from "./roomListReadListThunk";
 import { roomListDeleteOneThunk } from "./roomListDeleteOneThunk";
 import { roomListCreateOneThunk } from "./roomListCreateOneThunk";
 
+export interface RoomInterface {
+  id: string,
+  number: number,
+  description: string,
+  has_offer: boolean,
+  facilities: string[],
+  name: string,
+  cancellation_policy: string,
+  type: string,
+  price_night: number,
+  discount: number,
+  status: string,
+  photos: string[],
+}
+
+interface RoomStateInterface {
+  error: null | string,
+  status: "idle" | "pending" | "fulfilled" | "rejected",
+  roomList: RoomInterface[],
+  room: {} | RoomInterface | null | undefined,
+}
+
+const initialState: RoomStateInterface = {
+  error: null,
+  status: "idle",
+  roomList: dataRooms,
+  room: {},
+}
+
 export const roomListSlice = createSlice({
   name: "roomList",
-  initialState: {
-    error: null,
-    status: "idle",
-    roomList: dataRooms,
-    room: {},
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(roomListUpdateOneThunk.pending, (state, action) => {
         state.status = "pending";
       })
-      .addCase(roomListUpdateOneThunk.fulfilled, (state, action) => {
+      .addCase(roomListUpdateOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
         state.roomList = action.payload
 
         state.room = null;
@@ -34,7 +59,7 @@ export const roomListSlice = createSlice({
       .addCase(roomListReadOneThunk.pending, (state, action) => {
         state.status = "pending";
       })
-      .addCase(roomListReadOneThunk.fulfilled, (state, action) => {
+      .addCase(roomListReadOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface | undefined>) => {
         state.room = action.payload;
 
         state.status = "fulfilled";
@@ -46,7 +71,7 @@ export const roomListSlice = createSlice({
       .addCase(roomListDeleteOneThunk.pending, (state, action) => {
         state.status = "pending";
       })
-      .addCase(roomListDeleteOneThunk.fulfilled, (state, action) => {
+      .addCase(roomListDeleteOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
         state.room = null;
         state.roomList = action.payload;
 
@@ -59,7 +84,7 @@ export const roomListSlice = createSlice({
       .addCase(roomListCreateOneThunk.pending, (state, action) => {
         state.status = "pending";
       })
-      .addCase(roomListCreateOneThunk.fulfilled, (state, action) => {
+      .addCase(roomListCreateOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
         state.roomList = action.payload;
 
         state.room = null;
@@ -73,7 +98,7 @@ export const roomListSlice = createSlice({
       .addCase(roomListReadListThunk.pending, (state, action) => {
         state.status = "pending";
       })
-      .addCase(roomListReadListThunk.fulfilled, (state, action) => {
+      .addCase(roomListReadListThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
         state.roomList = action.payload;
         state.room = undefined;
 
@@ -85,7 +110,7 @@ export const roomListSlice = createSlice({
   },
 });
 
-export const roomListStatusSelect = (state) => state.roomList.status;
-export const roomListErrorSelect = (state) => state.roomList.error;
-export const roomListRoomListSelect = (state) => state.roomList.roomList;
-export const roomListRoomSelect = (state) => state.roomList.room;
+export const roomListStatusSelect = (state: RootState) => state.roomList.status;
+export const roomListErrorSelect = (state: RootState) => state.roomList.error;
+export const roomListRoomListSelect = (state: RootState) => state.roomList.roomList;
+export const roomListRoomSelect = (state: RootState) => state.roomList.room;
