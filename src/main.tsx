@@ -39,10 +39,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 <Route path="users" element={<UserListPage/>}></Route>
                 <Route path="users/new" element={<UserPage/>}></Route>
                 <Route path="users/:userId" element={<UserPage/>}></Route>
-                <Route exact path="" element={<NoMatch/>}/>
+                <Route path="" element={<NoMatch/>}/>
                 <Route path="*" element={<NoMatch/>}/>
               </Route>
-              <Route exact path="" element={<NoMatch/>}/>
+              <Route path="" element={<NoMatch/>}/>
               <Route path="*" element={<NoMatch/>}/>
             </Routes>
           </FormModeProvider>
