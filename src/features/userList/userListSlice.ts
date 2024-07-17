@@ -18,7 +18,7 @@ export interface UserInterface {
   start_date: string,
   job_description: string,
   telephone: string,
-  status: "active" | "inactive";
+  status: "active" | "inactive",
   job: "Manager" | "Reservation desk" | "Room service",
   password: string,
   email: string,

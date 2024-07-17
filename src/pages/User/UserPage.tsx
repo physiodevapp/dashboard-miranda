@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
+import { UserInterface, userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
 
 import { BounceLoader } from 'react-spinners';
@@ -20,57 +20,91 @@ import { userListUpdateOneThunk } from '../../features/userList/userListUpdateOn
 import { userListCreateOneThunk } from '../../features/userList/userListCreateOneThunk';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
 
-import Select from 'react-select';
+import Select, { GroupBase, OptionsOrGroups } from 'react-select';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 
 import { DayPickerComponent } from '../../components/DayPickerComponent';
 
-import { FormModeContext } from '../../context/FormModeContext'
+import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext'
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+
+type UserStatusType = "active" | "inactive";
+
+interface UserStatusOption {
+  value: UserStatusType,
+  label: UserStatusType,
+}
+
+type UserJobType = "Manager" | "Reservation desk" | "Room service";
+
+interface UserJobOption {
+  value: UserJobType,
+  label: UserJobType,
+}
+
+interface FormInputInterface {
+  userFirstName: string,
+  userLastName: string,
+  userEmail: string,
+  userTel: string,
+  userStartDate: string,
+  userStatus: UserStatusOption,
+  userJobDescription: string,
+  userJob: UserJobOption,
+  userPassword: string,
+}
+
+const jobStatus: UserStatusOption[] = ["Active", "Inactive"].map((status) => ({
+  value: status.toLowerCase() as UserStatusType,
+  label: status as UserStatusType
+}))
+
+const jobOptions: OptionsOrGroups<UserJobOption, GroupBase<UserJobOption>> = ["Manager", "Reservation desk", "Room service"].map((job) => ({
+  value: job as UserJobType,
+  label: job as UserJobType
+}))
 
 const calendarSwal = withReactContent(Swal);
 
 export const UserPage = () => {
-  const { setIsEditingForm } = useContext(FormModeContext);
+  const useFormMode = (): FormModeContextInterface => {
+    const context = useContext(FormModeContext);
+    if (!context) {
+      throw new Error('useFormMode must be used within an FormModeProvider');
+    }
+    return context;
+  };
+  const { setIsEditingForm } = useFormMode();
 
-  const userListDispatch = useDispatch();
-  const userListStatus = useSelector(userListStatusSelect);
-  const userListUser = useSelector(userListUserSelect);
-  const userListUserList = useSelector(userListUserListSelect)
-  const userListError = useSelector(userListErrorSelect);
+  const userListDispatch = useAppDispatch();
+  const userListStatus = useAppSelector(userListStatusSelect);
+  const userListUser = useAppSelector(userListUserSelect);
+  const userListUserList = useAppSelector(userListUserListSelect)
+  const userListError = useAppSelector(userListErrorSelect);
 
-  const [user, setUser] = useState(null);
-  const [canEdit, setCanEdit] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [canRedirectBack, setCanRedirectBack] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
+  const [user, setUser] = useState<UserInterface | null>(null);
+  const [canEdit, setCanEdit] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [canRedirectBack, setCanRedirectBack] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<Date>(new Date());
 
-  const { userId } = useParams();
+  const { userId = "" } = useParams();
 
   const navigate = useNavigate();
 
-  const { register, handleSubmit, control, reset, setValue } = useForm();
+  const { register, handleSubmit, control, reset, setValue } = useForm<FormInputInterface>();
 
-
-  const jobOptions = ["Manager", "Reservation desk", "Room service"].map((job) => ({
-    value: job,
-    label: job
-  }))
-
-  const jobStatus = ["Active", "Inactive"].map((status) => ({
-    value: status.toLowerCase(),
-    label: status
-  }))
-
-  const formatDatetime = (datetime) => {
-    if (datetime)
-      return new Date(Number(datetime)).toLocaleDateString("es-MX", {
-        day: "2-digit",
-        year: "numeric",
-        month: "short"
-      });
+  const formatDatetime = (datetime: string): string => {
+    if (!datetime)
+      datetime = new Date().getTime().toString()
+    return new Date(Number(datetime)).toLocaleDateString("es-MX", {
+      day: "2-digit",
+      year: "numeric",
+      month: "short"
+    })
   } 
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: FormInputInterface) => {
     Swal.fire({
       title: `Do you want to ${userId ? "update" : "create"} the user?`,
       icon: "question",
@@ -89,8 +123,8 @@ export const UserPage = () => {
             setCanEdit(!canEdit && !!user);
         
             if (userId) {
-              const updateUser = {
-                ...user, 
+              const updateUser: UserInterface = {
+                ...user!, 
                 first_name: formData.userFirstName,
                 last_name: formData.userLastName,
                 email: formData.userEmail,
@@ -105,7 +139,7 @@ export const UserPage = () => {
 
               userListDispatch(userListUpdateOneThunk({user: updateUser, list: userListUserList}));
             } else {
-              const newUser = {
+              const newUser: UserInterface = {
                 id: self.crypto.randomUUID(),
                 photo: "http://dummyimage.com/69x68.png/cc0000/ffffff",
                 first_name: formData.userFirstName,
@@ -115,7 +149,8 @@ export const UserPage = () => {
                 start_date: formData.userStartDate,
                 status: formData.userStatus.value,
                 job_description: formData.userJobDescription,
-                job: formData.userJob.value
+                job: formData.userJob.value,
+                password: "",
               }
 
               setCanRedirectBack(true);
@@ -131,7 +166,7 @@ export const UserPage = () => {
     })
   }
 
-  const deleteUser = () => {
+  const deleteUser = (): void => {
     Swal.fire({
       title: "Do you want to delete the user?",
       showDenyButton: true,
@@ -156,10 +191,10 @@ export const UserPage = () => {
     });
   }
 
-  const showCalendar = () => {
-    let calendarDate = null;
+  const showCalendar = (): void => {
+    let calendarDate: Date | null = null;
 
-    const onDateChange = (selectedDate) => {
+    const onDateChange = (selectedDate: Date) => {
       calendarDate = selectedDate;
     }
 
@@ -180,9 +215,9 @@ export const UserPage = () => {
         `
       },
       html: <DayPickerComponent 
-        startDate={startDate}
-        onChangeDate={onDateChange}
-        />,
+              startDate={startDate}
+              onChangeDate={onDateChange}
+              />,
       showCloseButton: true,
       showConfirmButton: true,
       confirmButtonText: 'Update date',
@@ -193,8 +228,8 @@ export const UserPage = () => {
       }     
     }).then((result) => {
       if (result.isConfirmed) {
-        setStartDate(calendarDate);
-        setValue("userStartDate", formatDatetime(new Date(calendarDate).getTime()));
+        setStartDate(calendarDate!);
+        setValue("userStartDate", formatDatetime(new Date(calendarDate!).getTime().toString()));
       }
     })
   }
@@ -304,7 +339,7 @@ export const UserPage = () => {
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStartDate'>Start date</FormFieldLabel>
                 <FaRegCalendarAlt style={{display:`${!canEdit && !!user ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
-                <FormInput disabled={!canEdit && !!user} style={!canEdit && !!user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user?.start_date) }) }/>
+                <FormInput disabled={!canEdit && !!user} style={!canEdit && !!user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user!.start_date) }) }/>
               </UserFormField>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
@@ -488,7 +523,7 @@ export const UserPage = () => {
               </UserFormField>
               <UserFormField width="100%">
                 <FormFieldLabel htmlFor="userJobDescription">Job description</FormFieldLabel>
-                <FormTextarea name='userJobDescription' disabled={!canEdit && !!user} rows={10} { ...register("userJobDescription", {value: user?.job_description}) }></FormTextarea>
+                <FormTextarea disabled={!canEdit && !!user} rows={10} { ...register("userJobDescription", {value: user?.job_description}) }></FormTextarea>
               </UserFormField>    
               <FormButton 
                 onClick={() => deleteUser()}

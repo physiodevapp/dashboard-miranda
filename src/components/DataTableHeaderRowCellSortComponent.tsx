@@ -12,7 +12,7 @@ interface DataTableHeaderRowCellSortComponentProps {
   colSpan: number,
   headerKey: string,
   onSort: (sortCriteria: SortCriteriaInterface) => void,
-  initialSortDirection: (-1 | 1),
+  initialSortDirection?: (-1 | 1),
   toggleSortCriteria?: boolean,
   className: {},
   style: {},
