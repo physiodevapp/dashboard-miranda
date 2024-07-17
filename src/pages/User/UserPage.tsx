@@ -104,7 +104,7 @@ export const UserPage = () => {
     })
   } 
 
-  const onSubmit = (formData: FormInputInterface) => {
+  const onSubmit = (formData: FormInputInterface): void => {
     Swal.fire({
       title: `Do you want to ${userId ? "update" : "create"} the user?`,
       icon: "question",
@@ -339,7 +339,7 @@ export const UserPage = () => {
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStartDate'>Start date</FormFieldLabel>
                 <FaRegCalendarAlt style={{display:`${!canEdit && !!user ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
-                <FormInput disabled={!canEdit && !!user} style={!canEdit && !!user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user!.start_date) }) }/>
+                <FormInput disabled={!canEdit && !!user} style={!canEdit && !!user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user?.start_date || "") }) }/>
               </UserFormField>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
