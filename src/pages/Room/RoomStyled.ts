@@ -2,6 +2,10 @@ import styled, { css } from "styled-components";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
 import { ButtonStyled } from "../../components/ButtonStyled";
 
+interface RoomStyledProps {
+  width?: string,
+  position?: string,
+}
 
 export const RoomContainer = styled(PageElementContainerStyled)`
   height: 100%;
@@ -115,7 +119,7 @@ export const RoomFormFieldListContainer = styled.div`
   }
 `
 
-export const RoomFormField = styled.div`
+export const RoomFormField = styled.div<RoomStyledProps>`
   width: ${props => props.width || "100%"};
   margin-bottom: 1.4em;
   display: inline-flex;
@@ -231,7 +235,7 @@ export const ToggleButtonInput = styled.input`
   display: none;
 `
 
-export const FormButton = styled(ButtonStyled)`
+export const FormButton = styled(ButtonStyled)<RoomStyledProps>`
   margin: 1em 0em 1em;
   &:disabled {
     display: none;

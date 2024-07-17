@@ -26,14 +26,14 @@ interface RoomStateInterface {
   error: null | string,
   status: "idle" | "pending" | "fulfilled" | "rejected",
   roomList: RoomInterface[],
-  room: {} | RoomInterface | null | undefined,
+  room: RoomInterface | null | undefined,
 }
 
 const initialState: RoomStateInterface = {
   error: null,
   status: "idle",
   roomList: dataRooms as RoomInterface[],
-  room: {},
+  room: undefined,
 }
 
 export const roomListSlice = createSlice({
