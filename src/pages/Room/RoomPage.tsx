@@ -7,6 +7,7 @@ import { RoomFormFieldListContainer, FormButton, RoomContainer, RoomForm, RoomFo
 import Select from 'react-select';
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper as SwiperTypes } from "swiper/types"
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
@@ -15,7 +16,7 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { useForm, Controller } from 'react-hook-form';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
+import { RoomInterface, roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListUpdateOneThunk } from '../../features/roomList/roomListUpdateOneThunk';
 import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThunk';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
@@ -25,39 +26,60 @@ import Swal from 'sweetalert2';
 
 import { BounceLoader } from 'react-spinners';
 
-import { FormModeContext } from '../../context/FormModeContext';
+import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+
+interface FormInputInterface {
+  id: string,
+  name: string,
+  photos: string[],
+  status: "available" | "booked",
+  roomNumber: number,
+  roomType: string,
+  roomDescription: string,
+  roomPrice: number,
+  roomDiscount: number,
+  roomHasOffer: boolean,
+  roomFacilities: { value: string, label: string }[],
+  roomPolicy: string
+}
 
 export const RoomPage = () => {
-  const { setIsEditingForm } = useContext(FormModeContext);
+  const useFormMode = (): FormModeContextInterface => {
+    const context = useContext(FormModeContext);
+    if (!context) {
+      throw new Error('useFormMode must be used within an FormModeProvider');
+    }
+    return context;
+  };
+  const { setIsEditingForm } = useFormMode();
 
-  const [room, setRoom] = useState(null);
-  const { roomId } = useParams();
+  const [room, setRoom] = useState<RoomInterface | null>(null);
+  const [canEdit, setCanEdit] = useState<boolean>(false);
+  const [roomPhotosSwiper, setRoomPhotosSwiper] = useState<SwiperTypes | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [canRedirectBack, setCanRedirectBack] = useState<boolean>(false);
 
-  const [canEdit, setCanEdit] = useState(false);
-
+  const { roomId = "" } = useParams();
   const navigate = useNavigate();
 
-  const [roomPhotosSwiper, setRoomPhotosSwiper] = useState({});
-  const prevRef = useRef();
-  const nextRef = useRef();
+  const prevRef = useRef<HTMLDivElement | null>(null);
+  const nextRef = useRef<HTMLDivElement | null>(null);
 
-  const { register, handleSubmit, control, reset } = useForm();
+  const { register, handleSubmit, control, reset } = useForm<FormInputInterface>();
 
-  const roomListDispatch = useDispatch();
-  const roomListStatus = useSelector(roomListStatusSelect);
-  const roomListRoom = useSelector(roomListRoomSelect);
-  const roomListRoomList = useSelector(roomListRoomListSelect)
-  const roomListError = useSelector(roomListErrorSelect);
-  const [isLoading, setIsLoading] = useState(true);
+  const roomListDispatch = useAppDispatch();
+  const roomListStatus = useAppSelector(roomListStatusSelect);
+  const roomListRoom = useAppSelector(roomListRoomSelect);
+  const roomListRoomList = useAppSelector(roomListRoomListSelect)
+  const roomListError = useAppSelector(roomListErrorSelect);
 
-  const [canRedirectBack, setCanRedirectBack] = useState(false);
-
-  const facilityOptions = ["Air conditioner", "High speed WiFi", "Breakfast", "Kitchen", "Cleaning", "Shower", "Grocery", "Single bed", "Shop near", "Towels"].map((facility) => ({
+  const facilityOptions: {value: string, label: string}[] = ["Air conditioner", "High speed WiFi", "Breakfast", "Kitchen", "Cleaning", "Shower", "Grocery", "Single bed", "Shop near", "Towels"].map((facility: string) => ({
     value: facility,
     label: facility
   }))
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: FormInputInterface) => {
     Swal.fire({
       title: `Do you want to ${roomId ? "update" : "create"} the room?`,
       icon: "question",
@@ -73,11 +95,11 @@ export const RoomPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
-            setCanEdit(!canEdit && room);
+            setCanEdit(!canEdit && !!room);
         
             if (roomId) {
-              const updateRoom = {
-                ...room, 
+              const updateRoom: RoomInterface = {
+                ...room!,
                 number: formData.roomNumber,
                 type: formData.roomType,
                 description: formData.roomDescription,
@@ -92,7 +114,7 @@ export const RoomPage = () => {
 
               roomListDispatch(roomListUpdateOneThunk({room: updateRoom, list: roomListRoomList}));
             } else {
-              const newRoom = {
+              const newRoom: RoomInterface = {
                 id: self.crypto.randomUUID(),
                 name: formData.name,
                 photos: ["http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff"], 
@@ -239,7 +261,7 @@ export const RoomPage = () => {
               <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomHasOffer">Offer</RoomFormLabel>
                 <ToogleButton>
-                  <ToggleButtonInput id="roomHasOffer" {...register("roomHasOffer", { value: room?.has_offer === "true" ? true : false })} disabled={!canEdit && !!room} type="checkbox"/>
+                  <ToggleButtonInput id="roomHasOffer" {...register("roomHasOffer", { value: room?.has_offer })} disabled={!canEdit && !!room} type="checkbox"/>
                   <ToogleLabel htmlFor="roomHasOffer"></ToogleLabel>
                 </ToogleButton>
               </RoomFormField>
@@ -332,7 +354,7 @@ export const RoomPage = () => {
               </RoomFormField>
               <RoomFormField>
                 <RoomFormLabel htmlFor="roomPolicy">Cancellation policy</RoomFormLabel>
-                <RoomTextarea name='roomPolicy' disabled={!canEdit && !!room} rows={10} { ...register("roomPolicy", {value: room?.cancellation_policy}) }></RoomTextarea>
+                <RoomTextarea disabled={!canEdit && !!room} rows={10} { ...register("roomPolicy", {value: room?.cancellation_policy}) }></RoomTextarea>
               </RoomFormField>              
               <FormButton 
                 onClick={() => deleteRoom()}
@@ -409,7 +431,7 @@ export const RoomPage = () => {
                 ref={prevRef}
                 className="swiper-button-prev disabled"
                 onClick={() =>
-                  roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex - 1)
+                  roomPhotosSwiper?.slideTo(roomPhotosSwiper?.activeIndex - 1)
                 }
               >
                 <FaArrowLeft />
@@ -418,7 +440,7 @@ export const RoomPage = () => {
                 ref={nextRef}
                 className="swiper-button-next"
                 onClick={() =>
-                  roomPhotosSwiper.slideTo(roomPhotosSwiper.activeIndex + 1)
+                  roomPhotosSwiper?.slideTo(roomPhotosSwiper?.activeIndex + 1)
                 }
               >
                 <FaArrowRight />
