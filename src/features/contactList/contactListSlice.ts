@@ -21,14 +21,14 @@ interface ContactStateInterface {
   error: null | string,
   status: "idle" | "pending" | "fulfilled" | "rejected",
   contactList: ContactInterface[],
-  contact: {} | ContactInterface | null | undefined
+  contact: ContactInterface | null
 }
 
 const initialState: ContactStateInterface = {
   error: null,
   status: "idle",
   contactList: dataContacts as ContactInterface[],
-  contact: {}
+  contact: null
 }
 
 export const contactListSlice = createSlice({
@@ -37,7 +37,7 @@ export const contactListSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-    .addCase(contactListUpdateOneThunk.pending, (state, action) => {
+    .addCase(contactListUpdateOneThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(contactListUpdateOneThunk.fulfilled, (state, action: PayloadAction<ContactInterface[]>) => {
@@ -47,20 +47,20 @@ export const contactListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(contactListUpdateOneThunk.rejected, (state, action) => {
+    .addCase(contactListUpdateOneThunk.rejected, (state) => {
       state.status = "rejected";
     })
     
-    .addCase(contactListReadListThunk.pending, (state, action) => {
+    .addCase(contactListReadListThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(contactListReadListThunk.fulfilled, (state, action: PayloadAction<ContactInterface[]>) => {
       state.contactList = action.payload;
-      state.contact = undefined;
+      state.contact = null;
 
       state.status = "fulfilled";
     })
-    .addCase(contactListReadListThunk.rejected, (state, action) => {
+    .addCase(contactListReadListThunk.rejected, (state) => {
       state.status = "rejected";
     })
   }

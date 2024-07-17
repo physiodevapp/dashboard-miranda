@@ -2,34 +2,34 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BookingInterface } from './bookingListSlice';
 import { RoomInterface } from '../roomList/roomListSlice';
 
-const getBooking = (bookingId: string, bookingList: BookingInterface[]): Promise<BookingInterface | undefined> => {
+const getBooking = <T extends BookingInterface>(bookingId: string, bookingList: T[]): Promise<T | null> => {
   return new Promise((resolve, rejected) => {
     setTimeout(() => {
-      resolve(bookingList.find((booking: BookingInterface) => booking.id === bookingId));
+      resolve(bookingList.find((booking: T) => booking.id === bookingId) || null);
     }, 200);
   })
 }
 
-const getRoom = (roomNumber: number, roomList: RoomInterface[]): Promise<RoomInterface | undefined> => {
+const getRoom = <T extends RoomInterface>(roomNumber: number, roomList: T[]): Promise<T | null> => {
   return new Promise((resolve, rejected) => {
     setTimeout(() => {
-      resolve(roomList.find((room: RoomInterface) => room.number === roomNumber));
+      resolve(roomList.find((room: T) => room.number === roomNumber) || null);
     }, 200);
   })
 }
 
-export const bookingListReadOneThunk = createAsyncThunk<BookingInterface | undefined, { id: string, list: BookingInterface[], roomList: RoomInterface[] }>("booking/bookingListReadOne", async ({id, list, roomList}) => {
+export const bookingListReadOneThunk = createAsyncThunk<BookingInterface | null, { id: string, list: BookingInterface[], roomList: RoomInterface[] }>("booking/bookingListReadOne", async ({id, list, roomList}) => {
   
-  const booking: BookingInterface | undefined = await getBooking(id, list);
+  const booking = await getBooking<BookingInterface>(id, list);
 
-  let bookingRoom: RoomInterface | undefined
+  let bookingRoom
   if (booking)
-    bookingRoom = await getRoom(booking.room_number, roomList);
+    bookingRoom = await getRoom<RoomInterface>(booking.room_number, roomList);
 
   return booking 
   ? {
-    ...(booking || undefined), 
+    ...booking, 
     room_details: bookingRoom
     }
-  : undefined
+  : null
 })

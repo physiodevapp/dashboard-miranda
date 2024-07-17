@@ -28,7 +28,7 @@ interface UserStateInterface {
   error: null | string,
   status: "idle" | "pending" | "fulfilled" | "rejected",
   userList: UserInterface[],
-  user:  UserInterface | null | undefined,
+  user:  UserInterface | null,
   searchTerm: string
 }
 
@@ -36,7 +36,7 @@ const initialState: UserStateInterface = {
   error: null,
   status: "idle",
   userList: dataUsers as UserInterface[],
-  user: undefined,
+  user: null,
   searchTerm: '',
 }
 
@@ -70,7 +70,7 @@ export const userListSlice = createSlice({
     .addCase(userListReadOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(userListReadOneThunk.fulfilled, (state, action: PayloadAction<UserInterface | undefined>) => {
+    .addCase(userListReadOneThunk.fulfilled, (state, action: PayloadAction<UserInterface | null>) => {
       state.user = action.payload;
 
       state.status = "fulfilled";
@@ -82,7 +82,7 @@ export const userListSlice = createSlice({
     .addCase(userListCanLoginThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(userListCanLoginThunk.fulfilled, (state, action: PayloadAction<UserInterface | undefined>) => {
+    .addCase(userListCanLoginThunk.fulfilled, (state, action: PayloadAction<UserInterface | null>) => {
       state.user = action.payload;
 
       state.status = "fulfilled";
@@ -123,7 +123,7 @@ export const userListSlice = createSlice({
     })
     .addCase(userListReadListThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
       state.userList = action.payload;
-      state.user = undefined;
+      state.user = null;
 
       state.status = "fulfilled";
     })

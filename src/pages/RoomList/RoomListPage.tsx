@@ -36,7 +36,7 @@ export const RoomListPage = () => {
 
   const roomsPerTablePage: number = 10;
   
-  const getOfferPrice = (price: number, discount: number) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
+  const getOfferPrice = (price: number, discount: number): string => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
 
   const sortRows = (rows: RoomInterface[], { headerKey, direction = -1}: { headerKey: string, direction: -1 | 1 }): RoomInterface[] => {
     return rows.sort((current, next) => {
@@ -72,6 +72,10 @@ export const RoomListPage = () => {
       } 
     });
   }
+
+  useEffect(() => {
+    roomListDispatch(roomListReadListThunk({ list: roomListRoomList }))
+  }, [])
 
   useEffect(() => {
     switch (roomListStatus) {

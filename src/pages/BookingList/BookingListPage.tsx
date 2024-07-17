@@ -22,6 +22,7 @@ import { ButtonStyled } from '../../components/ButtonStyled';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { bookingListDeleteOneThunk } from '../../features/bookingList/bookingListDeleteOneThunk';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { bookingListReadListThunk } from '../../features/bookingList/bookingListReadListThunk';
 
 export const BookingListPage = () => {
   const bookingListDispatch = useAppDispatch();
@@ -121,6 +122,10 @@ export const BookingListPage = () => {
       } 
     });
   }
+
+  useEffect(() => {
+    bookingListDispatch(bookingListReadListThunk({ list: bookingListBookingList }))
+  }, [])
 
   useEffect(() => {
     switch (bookingListStatus) {

@@ -1,17 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserInterface } from './userListSlice';
 
-const getUserByKey = (userKey: string, userValue: string, userList: UserInterface[]): Promise<UserInterface | undefined> => {
+const getUserByKey = <T extends UserInterface>(userKey: string, userValue: string, userList: T[]): Promise<T | null> => {
   return new Promise((resolve, rejected) => {
     setTimeout(() => {
-      const user = userList.find((user: UserInterface) => user[userKey] === userValue)
-      resolve(user);
+      const user = userList.find((user: T) => user[userKey] === userValue)
+      resolve(user || null);
     }, 200);
   })
 }
 
-export const userListReadOneThunk = createAsyncThunk<UserInterface | undefined, { key: string, value: string, list: UserInterface[] }>("userList/userListReadOne", async ({key, value, list}) => {
-  const user: UserInterface | undefined = await getUserByKey(key, value, list);
+export const userListReadOneThunk = createAsyncThunk<UserInterface | null, { key: string, value: string, list: UserInterface[] }>("userList/userListReadOne", async ({key, value, list}) => {
+  const user = await getUserByKey<UserInterface>(key, value, list);
 
   return user
 })

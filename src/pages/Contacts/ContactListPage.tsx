@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ContactInterface, contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
 import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { contactListReadListThunk } from "../../features/contactList/contactListReadListThunk";
 
 export const ContactListPage = () => {
   const contactListDispatch = useAppDispatch();
@@ -51,6 +52,10 @@ export const ContactListPage = () => {
       return 0;
     })
   }
+
+  useEffect(() => {
+    contactListDispatch(contactListReadListThunk({ list: contactListContactList }))
+  }, [])
 
   useEffect(() => {
     switch (contactListStatus) {
