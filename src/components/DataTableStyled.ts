@@ -101,10 +101,22 @@ export const DataTableBodyRow = styled.tr<DataTableContainerProps>`
   border-top: 1px solid #eae7e7;
   cursor: pointer;
   position: relative;
+   
+  &:hover td:not(.action_cell) {
+    border-top: 1px solid #135846;
+    border-bottom: 1px solid #135846;
+    }
+    
+  &:hover td:not(.action_cell):first-child h6{
+    color: #135846;
+
+    text-decoration: underline;
+  }
 
   td {
     z-index: 10;
     transition: all 0.2s ease-in-out;
+
 
     &.action_cell {
       min-width: unset;
