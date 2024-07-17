@@ -18,14 +18,14 @@ export interface BookingInterface {
   room_number: number,
   status: "check_in" | "check_out" | "in_progress",
   special_request: string,
-  room_details?: RoomInterface | undefined
+  room_details?: RoomInterface | null
 } 
 
 interface BookingStateInterface {
   error: null | string,
   status: "idle" | "pending" | "fulfilled" | "rejected",
   bookingList: BookingInterface[],
-  booking: BookingInterface | null | undefined,
+  booking: BookingInterface | null ,
   searchTerm: string,
 }
 
@@ -33,7 +33,7 @@ const initialState: BookingStateInterface = {
   error: null,
   status: "idle",
   bookingList: dataBookings as BookingInterface[],
-  booking: undefined,
+  booking: null,
   searchTerm: '',
 }
 
@@ -50,7 +50,7 @@ export const bookingListSlice = createSlice({
     .addCase(bookingListReadOneThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(bookingListReadOneThunk.fulfilled, (state, action: PayloadAction<BookingInterface | undefined>) => {
+    .addCase(bookingListReadOneThunk.fulfilled, (state, action: PayloadAction<BookingInterface | null>) => {
       state.booking = action.payload;
 
       state.status = "fulfilled";
@@ -77,7 +77,7 @@ export const bookingListSlice = createSlice({
     })
     .addCase(bookingListReadListThunk.fulfilled, (state, action: PayloadAction<BookingInterface[]>) => {
       state.bookingList = action.payload;
-      state.booking = undefined;
+      state.booking = null;
 
       state.status = "fulfilled";
     })

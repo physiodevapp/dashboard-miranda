@@ -27,14 +27,14 @@ interface RoomStateInterface {
   error: null | string,
   status: "idle" | "pending" | "fulfilled" | "rejected",
   roomList: RoomInterface[],
-  room: RoomInterface | null | undefined,
+  room: RoomInterface | null,
 }
 
 const initialState: RoomStateInterface = {
   error: null,
   status: "idle",
   roomList: dataRooms as RoomInterface[],
-  room: undefined,
+  room: null,
 }
 
 export const roomListSlice = createSlice({
@@ -43,7 +43,7 @@ export const roomListSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(roomListUpdateOneThunk.pending, (state, action) => {
+      .addCase(roomListUpdateOneThunk.pending, (state) => {
         state.status = "pending";
       })
       .addCase(roomListUpdateOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
@@ -53,23 +53,23 @@ export const roomListSlice = createSlice({
 
         state.status = "fulfilled";
       })
-      .addCase(roomListUpdateOneThunk.rejected, (state, action) => {
+      .addCase(roomListUpdateOneThunk.rejected, (state) => {
         state.status = "rejected";
       })
 
-      .addCase(roomListReadOneThunk.pending, (state, action) => {
+      .addCase(roomListReadOneThunk.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(roomListReadOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface | undefined>) => {
+      .addCase(roomListReadOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface | null>) => {
         state.room = action.payload;
 
         state.status = "fulfilled";
       })
-      .addCase(roomListReadOneThunk.rejected, (state, action) => {
+      .addCase(roomListReadOneThunk.rejected, (state) => {
         state.status = "rejected";
       })
 
-      .addCase(roomListDeleteOneThunk.pending, (state, action) => {
+      .addCase(roomListDeleteOneThunk.pending, (state) => {
         state.status = "pending";
       })
       .addCase(roomListDeleteOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
@@ -78,11 +78,11 @@ export const roomListSlice = createSlice({
 
         state.status = "fulfilled";
       })
-      .addCase(roomListDeleteOneThunk.rejected, (state, action) => {
+      .addCase(roomListDeleteOneThunk.rejected, (state) => {
         state.status = "rejected";
       })
 
-      .addCase(roomListCreateOneThunk.pending, (state, action) => {
+      .addCase(roomListCreateOneThunk.pending, (state) => {
         state.status = "pending";
       })
       .addCase(roomListCreateOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
@@ -92,20 +92,20 @@ export const roomListSlice = createSlice({
 
         state.status = "fulfilled";
       })
-      .addCase(roomListCreateOneThunk.rejected, (state, action) => {
+      .addCase(roomListCreateOneThunk.rejected, (state) => {
         state.status = "rejected";
       })
 
-      .addCase(roomListReadListThunk.pending, (state, action) => {
+      .addCase(roomListReadListThunk.pending, (state) => {
         state.status = "pending";
       })
       .addCase(roomListReadListThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
         state.roomList = action.payload;
-        state.room = undefined;
+        state.room = null;
 
         state.status = "fulfilled";
       })
-      .addCase(roomListReadListThunk.rejected, (state, action) => {
+      .addCase(roomListReadListThunk.rejected, (state) => {
         state.status = "rejected";
       })
   },

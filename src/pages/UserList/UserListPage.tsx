@@ -17,6 +17,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Swal from 'sweetalert2';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
+import { userListReadListThunk } from "../../features/userList/userListReadListThunk";
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 export const UserListPage = () => {
@@ -79,6 +80,10 @@ export const UserListPage = () => {
       } 
     });
   }
+
+  useEffect(() => {
+    userListDispatch(userListReadListThunk({ list: userListUserList }))
+  }, [])
 
   useEffect(() => {
     switch (userListStatus) {
