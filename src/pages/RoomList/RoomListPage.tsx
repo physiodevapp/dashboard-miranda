@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, MouseEvent } from 'react'
 import './RoomListStyled'
 import { RoomIdentification, RoomIdentificationId, RoomIdentificationName, RoomsTableBodyRowCell, RoomsTableContainer, StatusButton } from './RoomListStyled';
 import { DataTable, DataTableHeader, DataTableHeaderRow, DataTableHeaderRowCell, DataTableBody, DataTableBodyRow, DataTableRowCellContentMultipleEllipsis } from '../../components/DataTableStyled'
@@ -12,46 +12,45 @@ import { FaArrowUp } from 'react-icons/fa6';
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 import { useDispatch, useSelector } from 'react-redux';
-import { roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
+import { RoomInterface, roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListReadListThunk } from '../../features/roomList/roomListReadListThunk';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { ButtonStyled } from '../../components/ButtonStyled';
 import Swal from 'sweetalert2';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 export const RoomListPage = () => {
-  const roomListDispatch = useDispatch();
-  const roomListRoomList = useSelector(roomListRoomListSelect);
-  const roomListStatus = useSelector(roomListStatusSelect);
-  const roomListError = useSelector(roomListErrorSelect);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const roomListDispatch = useAppDispatch();
+  const roomListRoomList = useAppSelector(roomListRoomListSelect);
+  const roomListStatus = useAppSelector(roomListStatusSelect);
+  const roomListError = useAppSelector(roomListErrorSelect);
 
-  const [rooms, setRooms] = useState(roomListRoomList);
-  const [displayRooms, setDisplayRooms] = useState(roomListRoomList);
-
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'datetime', direction: -1})
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [rooms, setRooms] = useState<RoomInterface[]>(roomListRoomList);
+  const [displayRooms, setDisplayRooms] = useState<RoomInterface[]>(roomListRoomList);
+  const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'datetime', direction: -1})
+  const [tablePageIndex, setTablePageIndex] = useState<number>(0);
   
   const navigate = useNavigate();
 
-  const [tablePageIndex, setTablePageIndex] = useState(0);
+  const roomsPerTablePage: number = 10;
   
-  const roomsPerTablePage = 10;
-  
-  const getOfferPrice = (price, discount) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
+  const getOfferPrice = (price: number, discount: number) => `$${Math.round(100 * (price * (discount / 100))) / 100}`;
 
-  const sortRows = (rows, { headerKey: key, direction: criteria = -1}) => {
+  const sortRows = (rows: RoomInterface[], { headerKey, direction = -1}: { headerKey: string, direction: -1 | 1 }): RoomInterface[] => {
     return rows.sort((current, next) => {
-      if (current[key] < next[key])
-        return criteria
+      if (current[headerKey] < next[headerKey])
+        return direction
 
-      if (current[key] > next[key])
-        return -1 * criteria
+      if (current[headerKey] > next[headerKey])
+        return -1 * direction
       
       return 0;
     })
   }
 
-  const deleteRoom = (room) => {
+  const deleteRoom = (room: RoomInterface): void => {
     Swal.fire({
       title: "Do you want to delete the room?",
       showDenyButton: true,
@@ -97,7 +96,7 @@ export const RoomListPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
-    const sortedRows = sortRows([...rooms], sortCriteria);
+    const sortedRows: RoomInterface[] = sortRows([...rooms], sortCriteria);
 
     setDisplayRooms(sortedRows);
   }, [rooms, sortCriteria])
@@ -180,15 +179,18 @@ export const RoomListPage = () => {
                   key={room.id} 
                   id={`room_${room.id}`} 
                   offset={"60px"}
-                  onClick={({target}) => { 
+                  onClick={(event: MouseEvent<HTMLTableRowElement>) => { 
+                    const target = event.target as HTMLTableRowElement;
+
                     if (!target.closest('td'))
                       return    
-                    if (target.closest('td').classList.contains("action_click") && !target.closest('td').classList.contains("slide_cell")){
+
+                    if (target.closest('td')?.classList.contains("action_click") && !target.closest('td')?.classList.contains("slide_cell")){
                       document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       setTimeout(() => {
                         document.querySelectorAll(`#room_${room.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       }, 1500)
-                    } else if (!target.closest('td').classList.contains("custom_click")) {
+                    } else if (!target.closest('td')?.classList.contains("custom_click")) {
                       navigate(`/rooms/${room.id}`);
                     }
                   }}>

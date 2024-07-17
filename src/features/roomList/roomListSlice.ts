@@ -8,6 +8,7 @@ import { roomListDeleteOneThunk } from "./roomListDeleteOneThunk";
 import { roomListCreateOneThunk } from "./roomListCreateOneThunk";
 
 export interface RoomInterface {
+  [key: string]: any,
   id: string,
   number: number,
   description: string,
