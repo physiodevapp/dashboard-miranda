@@ -106,12 +106,6 @@ export const DataTableBodyRow = styled.tr<DataTableContainerProps>`
     border-top: 1px solid #135846;
     border-bottom: 1px solid #135846;
     }
-    
-  &:hover td:not(.action_cell):first-child h6{
-    color: #135846;
-
-    text-decoration: underline;
-  }
 
   td {
     z-index: 10;
