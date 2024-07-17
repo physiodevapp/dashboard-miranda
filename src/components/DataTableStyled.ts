@@ -4,7 +4,8 @@ import { PageElementContainerStyled } from "./PageElementContainerStyled";
 interface DataTableContainerProps {
   offset?: string,
   lineclamp?: number,
-  width?: string
+  width?: string,
+  nFirstChildren?: number,
 }
 
 export const DataTableContainer = styled(PageElementContainerStyled)`
@@ -103,14 +104,18 @@ export const DataTableBodyRow = styled.tr<DataTableContainerProps>`
   position: relative;
    
   &:hover td:not(.action_cell) {
-    border-top: 1px solid #135846;
-    border-bottom: 1px solid #135846;
-    }
+    border-top: 1px solid #5eab97;
+    border-bottom: 1px solid #5eab97;
+  }
 
   td {
     z-index: 10;
-    transition: all 0.2s ease-in-out;
+    transition: width 0.2s ease-in-out, transform 0.2s ease-in-out, background 0.2s ease-in-out;
 
+    &:nth-child(-n+${props => `${props.nFirstChildren || "1"}`}) {
+      position: relative;
+      z-index: 100;
+    }
 
     &.action_cell {
       min-width: unset;
@@ -126,8 +131,12 @@ export const DataTableBodyRow = styled.tr<DataTableContainerProps>`
       background-color: #ebf1ef;
     }
 
-    &.slide_cell:not(.action_cell) {
+    &.slide_cell:not(.action_cell):not(:nth-child(-n+${props => `${props.nFirstChildren || "1"}`})) {
       transform: ${props => `translateX(-${props.offset || "90px"})`};
+    }
+
+    &.slide_cell:nth-child(-n+${props => `${props.nFirstChildren || "1"}`}) {
+      background-color: #EBF1EF;
     }
   }
 `

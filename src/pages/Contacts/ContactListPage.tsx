@@ -158,9 +158,10 @@ export const ContactListPage = () => {
                   </DataTableBodyRowCell>
                   { 
                     activeTab === ''
-                    ? <ContactsTableBodyRowCell key={`${contact.id}-buttons`}>
+                    ? <ContactsTableBodyRowCell key={`${contact.id}-buttons`} style={{minWidth: "200px", display: "table-cell", position: "relative"}}>
                         <>
                           <ButtonStyled 
+                            style={{width: "40%", position: "absolute", top: "1em", left: "0em"}}
                             styled="publish"
                             disabled={!!contact.status.length}
                             >
@@ -169,7 +170,7 @@ export const ContactListPage = () => {
                           <ButtonStyled 
                             styled="archive" 
                             disabled={!!contact.status.length}
-                            style={{marginLeft: "1em"}}
+                            style={{marginLeft: "1em", width: "40%", position: "absolute", top: "1em", left: "0em", transform: "translateX(100%)"}}
                             onClick={() => {
                               const updateContact = {
                                 ...contact,

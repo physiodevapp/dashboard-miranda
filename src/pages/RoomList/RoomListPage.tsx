@@ -183,6 +183,7 @@ export const RoomListPage = () => {
                   key={room.id} 
                   id={`room_${room.id}`} 
                   offset={"60px"}
+                  nFirstChildren={2}
                   onClick={(event: MouseEvent<HTMLTableRowElement>) => { 
                     const target = event.target as HTMLTableRowElement;
 

@@ -242,7 +242,7 @@ export const BookingListPage = () => {
                 <DataTableBodyRow 
                   key={booking.id} 
                   id={`booking_${booking.id}`} 
-                  offset={"60px"}
+                  offset={"60px"}                  
                   onClick={(event: MouseEvent<HTMLTableRowElement>) => { 
                     const target = event.target as HTMLTableRowElement;
 
