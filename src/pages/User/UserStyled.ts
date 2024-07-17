@@ -3,6 +3,11 @@ import { ButtonStyled } from "../../components/ButtonStyled";
 import { PageElementContainerStyled } from "../../components/PageElementContainerStyled";
 import { FormField } from "../../components/FormField";
 
+interface UserStyledProps {
+  width?: string,
+  position?: string
+}
+
 export const UserContainer = styled(PageElementContainerStyled)`
   height: 100%;
   max-height: 95%;
@@ -27,7 +32,7 @@ export const UserForm = styled.form`
   padding: 2em 2em;
 `
 
-export const UserFormFieldContainer = styled.div`
+export const UserFormFieldContainer = styled.div<UserStyledProps>`
   display: flex;
   width: ${props => props.width || "100%"};
 `
@@ -57,7 +62,7 @@ export const UserFormField = styled(FormField)`
   }
 `
 
-export const FormButton = styled(ButtonStyled)`
+export const FormButton = styled(ButtonStyled)<UserStyledProps>`
   margin: 1em 0em 1em;
   &:disabled {
     display: none;

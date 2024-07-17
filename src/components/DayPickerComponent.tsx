@@ -5,7 +5,7 @@ import "react-day-picker/dist/style.css";
 
 interface DayPickerComponentProps {
   startDate: Date,
-  onChangeDate: (date: Date) => Date
+  onChangeDate: (date: Date) => void
 }
 
 export const DayPickerComponent = ({startDate, onChangeDate}: DayPickerComponentProps) => {
