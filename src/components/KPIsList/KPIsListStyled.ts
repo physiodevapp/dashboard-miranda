@@ -10,6 +10,27 @@ export const KPIsList = styled.ul`
   margin-bottom: 1em;
   overflow-x: auto;
   font-family: "Poppins";
+  
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    cursor: grab;
+  }
+  &::-webkit-scrollbar-thumb:horizontal {
+    border-radius: 10px;
+  }
 `
 
 export const KPIsItem = styled.li`
