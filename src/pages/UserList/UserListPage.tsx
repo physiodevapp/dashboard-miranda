@@ -1,10 +1,10 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, MouseEvent } from 'react'
 
 import { FaArrowUp } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
+import { UserInterface, userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { DataTableTabListComponent } from '../../components/DataTableTabList/DataTableTabListComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
@@ -17,26 +17,27 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Swal from 'sweetalert2';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 export const UserListPage = () => {
-  const userListDispatch = useDispatch();
-  const userListUserList = useSelector(userListUserListSelect);
-  const userListStatus = useSelector(userListStatusSelect);
-  const userListError = useSelector(userListErrorSelect);
-  const userListSearchTerm = useSelector(userListSearchTermSelect);
+  const userListDispatch = useAppDispatch();
+  const userListUserList = useAppSelector(userListUserListSelect);
+  const userListStatus = useAppSelector(userListStatusSelect);
+  const userListError = useAppSelector(userListErrorSelect);
+  const userListSearchTerm = useAppSelector(userListSearchTermSelect);
 
-  const [sortCriteria, setSortCriteria] = useState({headerKey: 'last_name', direction: -1});
-  const [activeTab, setActiveTab] = useState('');
-  const [tablePageIndex, setTablePageIndex] = useState(0);
-  const [users, setUsers] = useState(userListUserList);
-  const [displayUsers, setDisplayUsers] = useState(userListUserList);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'last_name', direction: -1});
+  const [activeTab, setActiveTab] = useState<string>('');
+  const [tablePageIndex, setTablePageIndex] = useState<number>(0);
+  const [users, setUsers] = useState<UserInterface[]>(userListUserList);
+  const [displayUsers, setDisplayUsers] = useState<UserInterface[]>(userListUserList);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  const usersPerTablePage = 10;
+  const usersPerTablePage: number = 10;
 
-  const formatDatetime = (datetime) => {
+  const formatDatetime = (datetime: string) => {
     return new Date(Number(datetime)).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
@@ -44,19 +45,19 @@ export const UserListPage = () => {
     });
   } 
 
-  const sortRows = (rows, { headerKey: key, direction: criteria = -1}) => {
+  const sortRows = (rows: UserInterface[], { headerKey, direction = -1}: { headerKey: string, direction: -1 | 1 }): UserInterface[] => {
     return rows.sort((current, next) => {
-      if (current[key] < next[key])
-        return criteria
+      if (current[headerKey] < next[headerKey])
+        return direction
 
-      if (current[key] > next[key])
-        return -1 * criteria
+      if (current[headerKey] > next[headerKey])
+        return -1 * direction
       
       return 0;
     })
   }
 
-  const deleteUser = (user) => {
+  const deleteUser = (user: UserInterface): void => {
     Swal.fire({
       title: "Do you want to delete the user?",
       showDenyButton: true,
@@ -102,11 +103,11 @@ export const UserListPage = () => {
   }, [userListStatus]) 
 
   useEffect(() => {
-    const filteredUsers = userListSearchTerm.length
-    ? JSON.parse(JSON.stringify(users)).filter((user) => user.first_name.toLowerCase().includes(userListSearchTerm.toLowerCase()) || user.last_name.toLowerCase().includes(userListSearchTerm.toLowerCase()))
+    const filteredUsers: UserInterface[] = userListSearchTerm.length
+    ? JSON.parse(JSON.stringify(users)).filter((user: UserInterface) => user.first_name.toLowerCase().includes(userListSearchTerm.toLowerCase()) || user.last_name.toLowerCase().includes(userListSearchTerm.toLowerCase()))
     : userListUserList
 
-    const tabRows = JSON.parse(JSON.stringify(filteredUsers)).filter((user) => activeTab.length ? user.status === activeTab : true);
+    const tabRows = JSON.parse(JSON.stringify(filteredUsers)).filter((user: UserInterface) => activeTab.length ? user.status === activeTab : true);
 
     const sortedTabRows = sortRows(tabRows, sortCriteria);
 
@@ -183,15 +184,18 @@ export const UserListPage = () => {
                   key={user.id} 
                   id={`user_${user.id}`} 
                   offset={"60px"}
-                  onClick={({target}) => {  
+                  onClick={(event: MouseEvent<HTMLTableRowElement>) => {  
+                    const target = event.target as HTMLTableRowElement;
+
                     if (!target.closest('td'))
                       return  
-                    if (target.closest('td').classList.contains("action_click") && !target.closest('td').classList.contains("slide_cell")){
+
+                    if (target.closest('td')?.classList.contains("action_click") && !target.closest('td')?.classList.contains("slide_cell")){
                       document.querySelectorAll(`#user_${user.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       setTimeout(() => {
                         document.querySelectorAll(`#user_${user.id} > td`).forEach((htmlElement) => htmlElement.classList.toggle('slide_cell'));
                       }, 1500)
-                    } else if (!target.closest('td').classList.contains("custom_click")) {
+                    } else if (!target.closest('td')?.classList.contains("custom_click")) {
                       navigate(`/users/${user.id}`);
                     }
                   }}>
