@@ -3,7 +3,7 @@
 describe('Login/Logout processs', () => {
 
   beforeEach(() => {
-    cy.login("jwt@example.org", "1234");
+    cy.login("admin.miranda@example.com", "0000");
   })
 
   it('Navigate to the dashboard after log in successfully', () => {
@@ -33,7 +33,9 @@ describe("Redirection process", () => {
 
   it("Redirect to Dashboard page if user is logged but trying to go back to Login page", () => {
 
-    cy.login("jwt@example.org", "1234");
+    cy.login("admin.miranda@example.com", "0000");
+
+    cy.wait(1000);
 
     cy.visit('http://localhost:5173/login');
 
@@ -43,9 +45,11 @@ describe("Redirection process", () => {
 
   it("Redirect to Dashboard page if user is logged and the page does not exist", () => {
 
-    cy.login("jwt@example.org", "1234");
+    cy.login("admin.miranda@example.com", "0000");
 
-    cy.visit('http://localhost:5173/people');
+    cy.wait(1000);
+
+    cy.visit('http://localhost:5173/fdsfdsa');
 
     cy.url().should('include', '/dashboard');
 

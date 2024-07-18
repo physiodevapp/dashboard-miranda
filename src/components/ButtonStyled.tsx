@@ -1,8 +1,10 @@
 
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 interface ButtonStyledProps {
-  styled?: "" | "primary" | "secondary" | "tertiary" | "available" | "booked" | "publish" | "archive" | "check_in" | "check_out" | "in_progress" | "deny" | "active" | "inactive"
+  styled?: "" | "primary" | "secondary" | "tertiary" | "available" | "booked" | "publish" | "archive" | "check_in" | "check_out" | "in_progress" | "deny" | "active" | "inactive",
+  children?: ReactNode;
 }
 
 export const ButtonStyled = styled.button<ButtonStyledProps>`

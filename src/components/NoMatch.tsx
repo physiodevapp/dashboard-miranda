@@ -14,9 +14,10 @@ export const NoMatch = () => {
   };
   const { userState } = useAuth();
 
-  if (userState)
-    return <Navigate to={'/dashboard'} replace={true}/>
-  else 
-    return <Navigate to={'/login'} replace={true}/>
+  return (
+    userState
+    ? <Navigate to={'/dashboard'} replace={true}/>
+    : <Navigate to={'/login'} replace={true}/>
+  )
   
 }
