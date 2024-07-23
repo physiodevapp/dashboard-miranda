@@ -13,7 +13,7 @@
 
 ### Contacts
 - /contacts
-- /contacts/contactId
+- /contacts/:contactId
 
 ### Rooms
 - /rooms
