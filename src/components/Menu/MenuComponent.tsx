@@ -12,11 +12,12 @@ import { ButtonStyled } from '../ButtonStyled';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { UserInterface, userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
+import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
 import { AuthContext, AuthContextInterface } from '../../context/AuthContext';
 import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext';
 import { BlockLayer } from '../BlockLayer';
+import { UserInterface } from '../../modelInterface';
 
 export const MenuComponent = () => {
   const navigate = useNavigate();

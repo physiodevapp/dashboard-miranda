@@ -1,7 +1,7 @@
 
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RoomInterface } from './roomListSlice';
+import { RoomInterface } from "../../modelInterface";
 
 const createRoom = (room: RoomInterface, list: RoomInterface[]): Promise<RoomInterface[]> => {
   return new Promise((resolve, rejected) => {

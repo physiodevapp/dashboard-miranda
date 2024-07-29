@@ -12,7 +12,7 @@ import { Navigation } from "swiper/modules";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { BookingInterface, bookingListBookingListSelect, bookingListBookingSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+import { bookingListBookingListSelect, bookingListBookingSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 import { bookingListReadOneThunk } from '../../features/bookingList/bookingListReadOneThunk';
 import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';
 
@@ -20,6 +20,7 @@ import { BounceLoader } from 'react-spinners';
 
 import { useForm, Controller } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { BookingInterface } from '../../modelInterface';
 
 export const BookingPage = () => {
   const [booking, setBooking] = useState<BookingInterface | null>(null);

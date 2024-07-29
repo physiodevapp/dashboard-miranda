@@ -12,13 +12,14 @@ import { FaArrowUp } from 'react-icons/fa6';
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 import { useDispatch, useSelector } from 'react-redux';
-import { RoomInterface, roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
+import { roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListReadListThunk } from '../../features/roomList/roomListReadListThunk';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { ButtonStyled } from '../../components/ButtonStyled';
 import Swal from 'sweetalert2';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { RoomInterface } from '../../modelInterface';
 
 export const RoomListPage = () => {
   const roomListDispatch = useAppDispatch();

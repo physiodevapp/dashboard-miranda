@@ -1,6 +1,6 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { UserInterface } from './userListSlice';
+import { UserInterface } from "../../modelInterface";
 
 const deleteUser = (userId: string, userList: UserInterface[]): Promise<UserInterface[]> => {
   return new Promise((resolve, rejected) => {

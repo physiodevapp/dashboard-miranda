@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { UserInterface } from './userListSlice';
+import { UserInterface } from "../../modelInterface";
 
 const updateUser = (updateUser: UserInterface, list:UserInterface[]): Promise<UserInterface[]> => {
   return new Promise((resolve, rejected) => {

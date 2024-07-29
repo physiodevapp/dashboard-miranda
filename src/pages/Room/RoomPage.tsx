@@ -16,7 +16,7 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { useForm, Controller } from 'react-hook-form';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { RoomInterface, roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
+import { roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListUpdateOneThunk } from '../../features/roomList/roomListUpdateOneThunk';
 import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThunk';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
@@ -28,6 +28,7 @@ import { BounceLoader } from 'react-spinners';
 
 import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { RoomInterface } from '../../modelInterface';
 
 interface FormInputInterface {
   id: string,

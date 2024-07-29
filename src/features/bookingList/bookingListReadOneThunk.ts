@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { BookingInterface } from './bookingListSlice';
-import { RoomInterface } from '../roomList/roomListSlice';
+import { BookingInterface, RoomInterface } from "../../modelInterface";
 
 const getBooking = <T extends BookingInterface>(bookingId: string, bookingList: T[]): Promise<T | null> => {
   return new Promise((resolve, rejected) => {

@@ -4,22 +4,7 @@ import dataBookings from "../../data/mock_bookings.json";
 import { bookingListReadListThunk } from "./bookingListReadListThunk";
 import { bookingListReadOneThunk } from "./bookingListReadOneThunk";
 import { bookingListDeleteOneThunk } from "./bookingListDeleteOneThunk";
-import { RoomInterface } from "../roomList/roomListSlice";
-
-export interface BookingInterface {
-  [key: string]: any;
-  id: string,
-  first_name: string,
-  last_name: string,
-  order_date: string,
-  check_in: string,
-  check_out: string,
-  room_type: "Single Bed" | "Double Bed" | "Double Superior" | "Suite",
-  room_number: number,
-  status: "check_in" | "check_out" | "in_progress",
-  special_request: string,
-  room_details?: RoomInterface | null
-} 
+import { BookingInterface } from '../../modelInterface';
 
 interface BookingStateInterface {
   error: null | string,

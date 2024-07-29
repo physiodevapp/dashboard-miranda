@@ -1,6 +1,6 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RoomInterface } from './roomListSlice';
+import { RoomInterface } from "../../modelInterface";
 
 const deleteRoom = (roomId: string, roomList: RoomInterface[]): Promise<RoomInterface[]> => {
   return new Promise((resolve, rejected) => {

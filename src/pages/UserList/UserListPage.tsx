@@ -4,7 +4,7 @@ import React, { useEffect, useState, MouseEvent } from 'react'
 import { FaArrowUp } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { UserInterface, userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
+import { userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { DataTableTabListComponent } from '../../components/DataTableTabList/DataTableTabListComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOneThunk';
 import { userListReadListThunk } from "../../features/userList/userListReadListThunk";
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { UserInterface } from '../../modelInterface';
 
 export const UserListPage = () => {
   const userListDispatch = useAppDispatch();

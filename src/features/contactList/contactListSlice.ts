@@ -3,19 +3,7 @@ import type { RootState } from '../../app/store';
 import dataContacts from "../../data/mock_contacts.json";
 import { contactListReadListThunk } from "./contactListReadListThunk";
 import { contactListUpdateOneThunk } from "./contactListUpdateOneThunk";
-
-export interface ContactInterface {
-  [key: string]: any;
-  id: string,
-  status: "" | "published" | "archived",
-  first_name: string,
-  last_name: string,
-  email: string,
-  phone: string,
-  subject: string,
-  message: string,
-  datetime: string,
-}
+import { ContactInterface } from "../../modelInterface";
 
 interface ContactStateInterface {
   error: null | string,

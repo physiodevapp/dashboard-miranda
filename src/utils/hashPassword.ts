@@ -1,10 +1,17 @@
 
-export const hashPassword = async (password: string): Promise<string> => {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+import bcryptjs from 'bcryptjs'
 
-  return hashHex;
+export const hashPassword = async (password: string, hashPassword: string): Promise<boolean> => {
+  try {
+
+    const isValid = await bcryptjs.compare(password, hashPassword)
+
+    return isValid;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error('Error hashing password: ' + error.message);
+    } else {
+      throw new Error('An unknown error occurred while hashing the password.');
+    }
+  }
 };

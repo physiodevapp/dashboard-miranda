@@ -7,22 +7,7 @@ import { userListReadOneThunk } from "./userListReadOneThunk";
 import { userListDeleteOneThunk } from "./userListDeleteOneThunk";
 import { userListCreateOneThunk } from "./userListCreateOneThunk";
 import { userListCanLoginThunk } from "./userListCanLoginThunk";
-
-
-export interface UserInterface {
-  [key: string]: any;
-  id: string,
-  first_name: string,
-  last_name: string,
-  photo: string,
-  start_date: string,
-  job_description: string,
-  telephone: string,
-  status: "active" | "inactive",
-  job: "Manager" | "Reservation desk" | "Room service",
-  password: string,
-  email: string,
-}
+import { UserInterface } from "../../modelInterface";
 
 interface UserStateInterface {
   error: null | string,
@@ -87,8 +72,9 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListCanLoginThunk.rejected, (state) => {
+    .addCase(userListCanLoginThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+      state.error = action.payload || 'An unknown error occurred';;
     })
 
     .addCase(userListDeleteOneThunk.pending, (state) => {

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { BookingInterface } from './bookingListSlice';
+import { BookingInterface } from "../../modelInterface";
 
-const getBookingList = (bookingList: BookingInterface[]): Promise<BookingInterface[]> => {
+const getBookingList = (bookingList: BookingInterface []): Promise<BookingInterface[]> => {
   return new Promise((resolve, rejected) => {
     setTimeout(() => {
       resolve(bookingList);

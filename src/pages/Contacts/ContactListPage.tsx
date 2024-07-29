@@ -10,10 +10,11 @@ import { DataTableTabListComponent } from "../../components/DataTableTabList/Dat
 import { FaArrowUp } from "react-icons/fa6";
 
 import { useDispatch, useSelector } from "react-redux";
-import { ContactInterface, contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
+import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
 import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { contactListReadListThunk } from "../../features/contactList/contactListReadListThunk";
+import { ContactInterface } from "../../modelInterface";
 
 export const ContactListPage = () => {
   const contactListDispatch = useAppDispatch();

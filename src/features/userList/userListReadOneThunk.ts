@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { UserInterface } from './userListSlice';
+import { UserInterface } from "../../modelInterface";
 
 const getUserByKey = <T extends UserInterface>(userKey: string, userValue: string, userList: T[]): Promise<T | null> => {
   return new Promise((resolve, rejected) => {

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RoomInterface } from "./roomListSlice";
+import { RoomInterface } from "../../modelInterface";
 
 const updateRoom = (updateRoom: RoomInterface, list: RoomInterface[]): Promise<RoomInterface[]> => {
   return new Promise((resolve, rejected) => {

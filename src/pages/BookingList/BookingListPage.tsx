@@ -14,7 +14,7 @@ import { DataTablePaginationComponent } from '../../components/DataTablePaginati
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { BookingInterface, bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+import { bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 
 import Swal from "sweetalert2";
 import 'animate.css';
@@ -23,6 +23,7 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { bookingListDeleteOneThunk } from '../../features/bookingList/bookingListDeleteOneThunk';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { bookingListReadListThunk } from '../../features/bookingList/bookingListReadListThunk';
+import { BookingInterface } from '../../modelInterface';
 
 export const BookingListPage = () => {
   const bookingListDispatch = useAppDispatch();

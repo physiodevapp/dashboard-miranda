@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ContactInterface } from './contactListSlice';
+import { ContactInterface } from "../../modelInterface";
 
 const getContactList = (contactList: ContactInterface[]): Promise<ContactInterface[]> => {
   return new Promise((resolve, rejected) => {

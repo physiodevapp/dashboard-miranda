@@ -1,6 +1,6 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { BookingInterface } from './bookingListSlice';
+import { BookingInterface } from "../../modelInterface";
 
 const deleteBooking = (bookingId: string, bookingList: BookingInterface[]): Promise<BookingInterface[]> => {
   return new Promise((resolve, rejected) => {

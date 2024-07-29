@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { UserInterface, userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
+import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
 
 import { BounceLoader } from 'react-spinners';
@@ -27,6 +27,7 @@ import { DayPickerComponent } from '../../components/DayPickerComponent';
 
 import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext'
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { UserInterface } from '../../modelInterface';
 
 type UserStatusType = "active" | "inactive";
 

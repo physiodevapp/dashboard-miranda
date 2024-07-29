@@ -6,22 +6,7 @@ import { roomListReadOneThunk } from "./roomListReadOneThunk";
 import { roomListReadListThunk } from "./roomListReadListThunk";
 import { roomListDeleteOneThunk } from "./roomListDeleteOneThunk";
 import { roomListCreateOneThunk } from "./roomListCreateOneThunk";
-
-export interface RoomInterface {
-  [key: string]: any,
-  id: string,
-  number: number,
-  description: string,
-  has_offer: boolean,
-  facilities: string[],
-  name: string,
-  cancellation_policy: string,
-  type: string,
-  price_night: number,
-  discount: number,
-  status: "available" | "booked",
-  photos: string[],
-}
+import { RoomInterface } from "../../modelInterface";
 
 interface RoomStateInterface {
   error: null | string,
