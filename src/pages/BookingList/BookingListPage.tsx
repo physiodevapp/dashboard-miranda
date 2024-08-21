@@ -23,6 +23,7 @@ import { bookingListDeleteOneThunk } from '../../features/bookingList/bookingLis
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { bookingListReadListThunk } from '../../features/bookingList/bookingListReadListThunk';
 import { BookingInterface } from '../../modelInterface';
+import { BounceLoader } from 'react-spinners';
 
 export const BookingListPage = () => {
   const bookingListDispatch = useAppDispatch();
@@ -31,12 +32,12 @@ export const BookingListPage = () => {
   const bookingListError = useAppSelector(bookingListErrorSelect);
   const bookingListSearchTerm = useAppSelector(bookingListSearchTermSelect);
   
-  const [bookings, setBookings] = useState<BookingInterface[]>(bookingListBookingList);
+  // const [bookings, setBookings] = useState<BookingInterface[]>(bookingListBookingList);
   const [displayBookings, setDisplayBookings] = useState<BookingInterface[]>(bookingListBookingList);
   const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'order_date', direction: 1});
   const [activeTab, setActiveTab] = useState<string>('');
   const [tablePageIndex, setTablePageIndex] = useState<number>(0);
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -130,28 +131,26 @@ export const BookingListPage = () => {
   useEffect(() => {
     switch (bookingListStatus) {
       case "idle":
-        setIsUpdating(false);
+        setIsLoading(false);
         break;
       case "pending":
-        setIsUpdating(true);
+        setIsLoading(true);
         break;
       case "fulfilled":
-        setIsUpdating(false);
-
-        setBookings(bookingListBookingList);
+        setIsLoading(false);
         break;
       case "rejected":
-        setIsUpdating(true);
+        setIsLoading(true);
         console.log({bookingListError});
         break;
       default:
         break;
     }
-  }, [bookingListStatus, bookingListBookingList])
+  }, [bookingListStatus])
 
   useEffect(() => {
     const filteredBookings: number = bookingListSearchTerm.length
-    ? JSON.parse(JSON.stringify(bookings)).filter((booking: BookingInterface) => booking.first_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()) || booking.last_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()))
+    ? JSON.parse(JSON.stringify(bookingListBookingList)).filter((booking: BookingInterface) => booking.first_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()) || booking.last_name.toLowerCase().includes(bookingListSearchTerm.toLowerCase()))
     : bookingListBookingList
 
     const tabRows: BookingInterface[] = JSON.parse(JSON.stringify(filteredBookings)).filter((booking: BookingInterface) => activeTab.length ? booking.status === activeTab : true);
@@ -159,9 +158,27 @@ export const BookingListPage = () => {
     const sortedTabRows: BookingInterface[] = sortRows(tabRows, sortCriteria);
 
     setDisplayBookings(sortedTabRows);
-  }, [bookings, activeTab, sortCriteria, bookingListSearchTerm])
+  }, [bookingListBookingList, activeTab, sortCriteria, bookingListSearchTerm])
 
   return (
+    isLoading
+    ? <>
+        <BounceLoader
+          color={"#135846"}
+          loading={isLoading}
+          cssOverride={{
+            position: "relative",
+            top: "40%",
+            display: "block",
+            margin: "0 auto",
+            borderColor: "#135846",
+          }}
+          size={100}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </>
+    :
     <>
       <PageElementContainerStyled>
         <DataTableTabListComponent
@@ -286,7 +303,7 @@ export const BookingListPage = () => {
                     </>
                   </DataTableBodyRowCell>
                   <DataTableBodyRowCell key={`${booking.id}-room_type`}>
-                    { booking.room_type }
+                    { booking.room!.type }
                   </DataTableBodyRowCell>
                   <DataTableBodyRowCell className='custom_click' style={{minWidth: "150px"}}>
                     <BookingRequestButton 

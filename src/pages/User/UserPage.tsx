@@ -82,7 +82,7 @@ export const UserPage = () => {
   const userListUserList = useAppSelector(userListUserListSelect)
   const userListError = useAppSelector(userListErrorSelect);
 
-  const [user, setUser] = useState<UserInterface | null>(null);
+  // const [user, setUser] = useState<UserInterface | null>(null);
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [canRedirectBack, setCanRedirectBack] = useState<boolean>(false);
@@ -120,11 +120,11 @@ export const UserPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
-            setCanEdit(!canEdit && !!user);
+            setCanEdit(!canEdit && !!userListUser);
         
             if (userId) {
               const updateUser: UserInterface = {
-                ...user!, 
+                ...userListUser!, 
                 first_name: formData.userFirstName,
                 last_name: formData.userLastName,
                 email: formData.userEmail,
@@ -235,7 +235,7 @@ export const UserPage = () => {
 
   useEffect(() => {
     if (userId)
-      userListDispatch(userListReadOneThunk({ value: userId }))
+      userListDispatch(userListReadOneThunk({ id: userId }))
 
   }, [userId])
 
@@ -266,7 +266,7 @@ export const UserPage = () => {
             userStartDate: formatDatetime(userListUser.start_date),
           });
           
-          setUser(userListUser);
+          // setUser(userListUser);
 
           setStartDate(new Date(Number(userListUser.start_date)));
         } else if (canRedirectBack) {
@@ -314,36 +314,36 @@ export const UserPage = () => {
             <FormFieldListContainer>
               <UserFormFieldContainer>
                 <UserFormFieldPhoto width="40%">
-                  <img src={user?.photo} alt="" />
+                  <img src={userListUser?.photo} alt="" />
                 </UserFormFieldPhoto>
                 <UserFormFieldContainer width="60%" style={{flexDirection: "column"}}>
                   <UserFormField>
                     <FormFieldLabel htmlFor='userFirstName'>First Name</FormFieldLabel>
-                    <FormInput disabled={!canEdit && !!user} { ...register("userFirstName", { value: user?.first_name }) }/>
+                    <FormInput disabled={!canEdit && !!userListUser} { ...register("userFirstName", { value: userListUser?.first_name }) }/>
                   </UserFormField>
                   <UserFormField>
                     <FormFieldLabel htmlFor='userLastName'>Last name</FormFieldLabel>
-                    <FormInput disabled={!canEdit && !!user} { ...register("userLastName", { value: user?.last_name }) }/>
+                    <FormInput disabled={!canEdit && !!userListUser} { ...register("userLastName", { value: userListUser?.last_name }) }/>
                   </UserFormField>
                 </UserFormFieldContainer>
               </UserFormFieldContainer>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userEmail'>Email</FormFieldLabel>
-                <FormInput disabled={!canEdit && !!user} { ...register("userEmail", { value: user?.email }) } />
+                <FormInput disabled={!canEdit && !!userListUser} { ...register("userEmail", { value: userListUser?.email }) } />
               </UserFormField>
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userTel'>Phone number</FormFieldLabel>
-                <FormInput disabled={!canEdit && !!user} { ...register("userTel", { value: user?.telephone }) }/>
+                <FormInput disabled={!canEdit && !!userListUser} { ...register("userTel", { value: userListUser?.telephone }) }/>
               </UserFormField>
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStartDate'>Start date</FormFieldLabel>
-                <FaRegCalendarAlt style={{display:`${!canEdit && !!user ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
-                <FormInput disabled={!canEdit && !!user} style={!canEdit && !!user ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(user?.start_date || "") }) }/>
+                <FaRegCalendarAlt style={{display:`${!canEdit && !!userListUser ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
+                <FormInput disabled={!canEdit && !!userListUser} style={!canEdit && !!userListUser ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(userListUser?.start_date || "") }) }/>
               </UserFormField>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
                 <FormInput 
-                  disabled={!canEdit && !!user} 
+                  disabled={!canEdit && !!userListUser} 
                   style={{textTransform: "capitalize"}}
                   { ...register("userPassword", { value: '' }) }/>
               </UserFormField>
@@ -359,7 +359,7 @@ export const UserPage = () => {
                       options={jobOptions}
                       placeholder={"Select one"}
                       isClearable
-                      isDisabled={!canEdit && !!user}
+                      isDisabled={!canEdit && !!userListUser}
                       styles={{
                         container: (baseStyles, state) => ({
                           ...baseStyles,
@@ -445,7 +445,7 @@ export const UserPage = () => {
                       options={jobStatus}
                       placeholder={"Select one"}
                       isClearable
-                      isDisabled={!canEdit && !!user}
+                      isDisabled={!canEdit && !!userListUser}
                       styles={{
                         container: (baseStyles, state) => ({
                           ...baseStyles,
@@ -522,19 +522,19 @@ export const UserPage = () => {
               </UserFormField>
               <UserFormField width="100%">
                 <FormFieldLabel htmlFor="userJobDescription">Job description</FormFieldLabel>
-                <FormTextarea disabled={!canEdit && !!user} rows={10} { ...register("userJobDescription", {value: user?.job_description}) }></FormTextarea>
+                <FormTextarea disabled={!canEdit && !!userListUser} rows={10} { ...register("userJobDescription", {value: userListUser?.job_description}) }></FormTextarea>
               </UserFormField>    
               <FormButton 
                 onClick={() => deleteUser()}
-                disabled={canEdit || !user } 
+                disabled={canEdit || !userListUser } 
                 styled="deny" 
                 type='button'
                 position="left">
                   Delete 
               </FormButton>
               <FormButton 
-                onClick={() => setCanEdit(!canEdit && !!user)} 
-                disabled={canEdit || !user } 
+                onClick={() => setCanEdit(!canEdit && !!userListUser)} 
+                disabled={canEdit || !userListUser } 
                 styled="primary" 
                 type='button'
                 position="right">
@@ -542,21 +542,21 @@ export const UserPage = () => {
               </FormButton>
               <FormButton 
                 onClick={() => {
-                  setCanEdit(!canEdit && !!user);
+                  setCanEdit(!canEdit && !!userListUser);
 
                   reset();
 
                   if (!userId)
                     navigate("/users");
                 }} 
-                disabled={!canEdit && !!user} 
+                disabled={!canEdit && !!userListUser} 
                 styled="deny" 
                 type='button'
                 position="left">
                   Dismiss
               </FormButton>   
               <FormButton 
-                disabled={!canEdit && !!user} 
+                disabled={!canEdit && !!userListUser} 
                 styled="primary" 
                 type='submit'
                 position="right">

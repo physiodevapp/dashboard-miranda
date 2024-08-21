@@ -5,7 +5,7 @@ interface DataTableContainerProps {
   offset?: string,
   lineclamp?: number,
   width?: string,
-  nFirstChildren?: number,
+  nfirstchildren?: number,
 }
 
 export const DataTableContainer = styled(PageElementContainerStyled)`
@@ -112,7 +112,7 @@ export const DataTableBodyRow = styled.tr<DataTableContainerProps>`
     z-index: 10;
     transition: width 0.2s ease-in-out, transform 0.2s ease-in-out, background 0.2s ease-in-out;
 
-    &:nth-child(-n+${props => `${props.nFirstChildren || "1"}`}) {
+    &:nth-child(-n+${props => `${props.nfirstchildren || "1"}`}) {
       position: relative;
       z-index: 100;
     }
@@ -131,11 +131,11 @@ export const DataTableBodyRow = styled.tr<DataTableContainerProps>`
       background-color: #ebf1ef;
     }
 
-    &.slide_cell:not(.action_cell):not(:nth-child(-n+${props => `${props.nFirstChildren || "1"}`})) {
+    &.slide_cell:not(.action_cell):not(:nth-child(-n+${props => `${props.nfirstchildren || "1"}`})) {
       transform: ${props => `translateX(-${props.offset || "90px"})`};
     }
 
-    &.slide_cell:nth-child(-n+${props => `${props.nFirstChildren || "1"}`}) {
+    &.slide_cell:nth-child(-n+${props => `${props.nfirstchildren || "1"}`}) {
       background-color: #EBF1EF;
     }
   }

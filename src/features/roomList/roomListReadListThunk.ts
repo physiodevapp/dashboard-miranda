@@ -20,7 +20,7 @@ const getRoomList = async <T extends RoomInterface>(): Promise<T[]> => {
 
     const responseData: T[] = await response.json();
     
-    console.log('Success:', responseData);
+    // console.log('Success:', responseData);
     return responseData;
     
   } catch (error) {

@@ -12,7 +12,7 @@ interface ActionInterface {
   payload?: {}
 };
 
-type StateType = { email: string, first_name: string, last_name: string, photo: string, id: string } | null;
+export type StateType = { email: string, first_name: string, last_name: string, photo: string, id: string } | null;
 
 interface AuthProviderProps {
   children: ReactNode

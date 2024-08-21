@@ -10,10 +10,7 @@ import { MdOutlineReviews } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa6';
 import { ButtonStyled } from '../ButtonStyled';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
-import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
-import { AuthContext, AuthContextInterface } from '../../context/AuthContext';
+import { AuthContext, AuthContextInterface, StateType } from '../../context/AuthContext';
 import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext';
 import { BlockLayer } from '../BlockLayer';
 import { UserInterface } from '../../modelInterface';
@@ -40,46 +37,12 @@ export const MenuComponent = () => {
   };
   const { isEditingForm } = useFormMode();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [user, setUser] = useState<UserInterface | null>(null);
-
-  const userListDispatch = useAppDispatch();
-  const userListError = useAppSelector(userListErrorSelect);
-  const userListStatus = useAppSelector(userListStatusSelect);
-  const userListUserList = useAppSelector(userListUserListSelect);
-  const userListUser = useAppSelector(userListUserSelect);
-
+  const [user, setUser] = useState<StateType>(null);
 
   useEffect(() => {
-    if (userState)
-      userListDispatch(userListReadOneThunk({value: userState.id}))
+    setUser(userState)
+
   }, []);
-
-  useEffect(() => {
-    switch (userListStatus) {
-      case "idle":
-        setIsLoading(false);
-        break;
-      case "pending":
-        setIsLoading(true);
-        break;
-      case "fulfilled":
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
-        
-        if (userListUser && userState && userListUser.email === userState.email)
-          setUser(userListUser);
-
-        break;
-      case "rejected":
-        setIsLoading(false);
-        console.log({userListError});
-        break;
-      default:
-        break;
-    }
-  }, [userListStatus])
 
   return (
     <>

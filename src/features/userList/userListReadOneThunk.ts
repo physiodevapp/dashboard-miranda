@@ -19,7 +19,7 @@ const getUserByKey = async <T extends UserInterface>(userValue: string): Promise
     }
 
     const responseData: T = await response.json();
-    
+    console.log('Success: ', responseData);
     return responseData;  
     
   } catch (error) {
@@ -28,8 +28,8 @@ const getUserByKey = async <T extends UserInterface>(userValue: string): Promise
   }
 }
 
-export const userListReadOneThunk = createAsyncThunk<UserInterface | null, { value: string }>("userList/userListReadOne", async ({value}) => {
-  const user = await getUserByKey<UserInterface>(value);
+export const userListReadOneThunk = createAsyncThunk<UserInterface | null, { id: string }>("userList/userListReadOne", async ({id}) => {
+  const user = await getUserByKey<UserInterface>(id);
 
   return user
 })
