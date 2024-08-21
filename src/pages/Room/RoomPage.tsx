@@ -15,7 +15,6 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 import { useForm, Controller } from 'react-hook-form';
 
-import { useDispatch, useSelector } from 'react-redux';
 import { roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListUpdateOneThunk } from '../../features/roomList/roomListUpdateOneThunk';
 import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThunk';
@@ -113,7 +112,7 @@ export const RoomPage = () => {
               
               setCanRedirectBack(true);
 
-              roomListDispatch(roomListUpdateOneThunk({room: updateRoom, list: roomListRoomList}));
+              roomListDispatch(roomListUpdateOneThunk({ room: updateRoom }));
             } else {
               const newRoom: RoomInterface = {
                 id: self.crypto.randomUUID(),
@@ -132,7 +131,7 @@ export const RoomPage = () => {
 
               setCanRedirectBack(true);
               
-              roomListDispatch(roomListCreateOneThunk({room: newRoom, list: roomListRoomList}))
+              roomListDispatch(roomListCreateOneThunk({ room: newRoom }))
             }
           }
         });
@@ -161,7 +160,7 @@ export const RoomPage = () => {
           didOpen: () => {
             setCanRedirectBack(true);
 
-            roomListDispatch(roomListDeleteOneThunk({id: roomId, list: roomListRoomList}));
+            roomListDispatch(roomListDeleteOneThunk({ id: roomId }));
           }
         });
       } 
@@ -205,7 +204,7 @@ export const RoomPage = () => {
 
   useEffect(() => {
     if (roomId)
-      roomListDispatch(roomListReadOneThunk({id: roomId, list: roomListRoomList}))
+      roomListDispatch(roomListReadOneThunk({ id: roomId }))
 
   }, [roomId]);
   

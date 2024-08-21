@@ -11,7 +11,6 @@ import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableH
 import { FaArrowUp } from 'react-icons/fa6';
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import { useDispatch, useSelector } from 'react-redux';
 import { roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListReadListThunk } from '../../features/roomList/roomListReadListThunk';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -67,7 +66,7 @@ export const RoomListPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
-            roomListDispatch(roomListDeleteOneThunk({id: room.id, list: roomListRoomList}));
+            roomListDispatch(roomListDeleteOneThunk({ id: room.id }));
           }
         });
       } 
@@ -75,7 +74,7 @@ export const RoomListPage = () => {
   }
 
   useEffect(() => {
-    roomListDispatch(roomListReadListThunk({ list: roomListRoomList }))
+    roomListDispatch(roomListReadListThunk())
   }, [])
 
   useEffect(() => {

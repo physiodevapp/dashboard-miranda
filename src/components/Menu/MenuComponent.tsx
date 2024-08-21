@@ -10,7 +10,6 @@ import { MdOutlineReviews } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa6';
 import { ButtonStyled } from '../ButtonStyled';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';

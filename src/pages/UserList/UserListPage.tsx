@@ -2,7 +2,6 @@
 import React, { useEffect, useState, MouseEvent } from 'react'
 
 import { FaArrowUp } from 'react-icons/fa6';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';

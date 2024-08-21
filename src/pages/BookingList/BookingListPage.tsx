@@ -13,7 +13,6 @@ import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableH
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
 import { useNavigate } from 'react-router-dom';
 
-import { useDispatch, useSelector } from 'react-redux';
 import { bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 
 import Swal from "sweetalert2";

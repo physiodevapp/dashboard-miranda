@@ -11,7 +11,6 @@ import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
-import { useDispatch, useSelector } from 'react-redux';
 import { bookingListBookingListSelect, bookingListBookingSelect, bookingListErrorSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
 import { bookingListReadOneThunk } from '../../features/bookingList/bookingListReadOneThunk';
 import { roomListRoomListSelect } from '../../features/roomList/roomListSlice';

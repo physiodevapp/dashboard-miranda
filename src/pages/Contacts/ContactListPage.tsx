@@ -55,7 +55,7 @@ export const ContactListPage = () => {
   }
 
   useEffect(() => {
-    contactListDispatch(contactListReadListThunk({ list: contactListContactList }))
+    contactListDispatch(contactListReadListThunk())
   }, [])
 
   useEffect(() => {
@@ -178,10 +178,7 @@ export const ContactListPage = () => {
                                 status: "archived" as ("" | "published" | "archived")
                               }  
 
-                              contactListDispatch(contactListUpdateOneThunk({
-                                contact: updateContact, 
-                                list: contactListContactList
-                              })) 
+                              contactListDispatch(contactListUpdateOneThunk({ contact: updateContact }));
                             }}>
                               { contact.status === "archived" ? "Archived" : "Archive"}
                             </ButtonStyled>

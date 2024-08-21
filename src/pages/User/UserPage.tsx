@@ -1,7 +1,6 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
@@ -184,7 +183,7 @@ export const UserPage = () => {
           didOpen: () => {
             setCanRedirectBack(true);
 
-            userListDispatch(userListDeleteOneThunk({id: userId, list: userListUserList}));
+            userListDispatch(userListDeleteOneThunk({ id: userId }));
           }
         });
       } 
