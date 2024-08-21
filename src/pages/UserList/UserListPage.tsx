@@ -39,8 +39,8 @@ export const UserListPage = () => {
 
   const usersPerTablePage: number = 10;
 
-  const formatDatetime = (datetime: string) => {
-    return new Date(Number(datetime)).toLocaleDateString("es-MX", {
+  const formatDatetime = (datetime: string): string => {
+    return new Date(datetime).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
       month: "short"

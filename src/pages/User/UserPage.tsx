@@ -82,7 +82,6 @@ export const UserPage = () => {
   const userListUserList = useAppSelector(userListUserListSelect)
   const userListError = useAppSelector(userListErrorSelect);
 
-  // const [user, setUser] = useState<UserInterface | null>(null);
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [canRedirectBack, setCanRedirectBack] = useState<boolean>(false);
@@ -96,8 +95,9 @@ export const UserPage = () => {
 
   const formatDatetime = (datetime: string): string => {
     if (!datetime)
-      datetime = new Date().getTime().toString()
-    return new Date(Number(datetime)).toLocaleDateString("es-MX", {
+      datetime = new Date().getTime().toString();
+    
+    return new Date(datetime).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
       month: "short"
@@ -228,7 +228,7 @@ export const UserPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         setStartDate(calendarDate!);
-        setValue("userStartDate", formatDatetime(new Date(calendarDate!).getTime().toString()));
+        setValue("userStartDate", formatDatetime(calendarDate!.toISOString()));
       }
     })
   }
@@ -265,10 +265,8 @@ export const UserPage = () => {
             },
             userStartDate: formatDatetime(userListUser.start_date),
           });
-          
-          // setUser(userListUser);
 
-          setStartDate(new Date(Number(userListUser.start_date)));
+          setStartDate(new Date(userListUser.start_date));
         } else if (canRedirectBack) {
           navigate("/users");
         }
@@ -343,7 +341,7 @@ export const UserPage = () => {
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
                 <FormInput 
-                  disabled={!canEdit && !!userListUser} 
+                  disabled={true}
                   style={{textTransform: "capitalize"}}
                   { ...register("userPassword", { value: '' }) }/>
               </UserFormField>
@@ -545,6 +543,7 @@ export const UserPage = () => {
                   setCanEdit(!canEdit && !!userListUser);
 
                   reset();
+                  setStartDate(new Date(userListUser!.start_date));
 
                   if (!userId)
                     navigate("/users");

@@ -22,6 +22,7 @@ export const DayPickerComponent = ({startDate, onChangeDate}: DayPickerComponent
   }
 
   useEffect(() => {
+    console.log('startDate ', startDate);
     onChangeDate(currentDate)
   
   }, [currentDate])
