@@ -1,45 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserInterface } from "../../modelInterface";
+import { requestLogin } from "../apiCall";
 
-const canLogin = async <T extends UserInterface>(email: string, password: string): Promise<T | null> => {
-
-  const apiUrl = 'http://localhost:3000/login';
-  const data = {
-    email,
-    password
-  };
-
+export const userListCanLoginThunk = createAsyncThunk<UserInterface | null, { email: string, password: string, list: UserInterface[] }, { rejectValue: string }>("userList/userListCanLogin", async ({email, password}, { rejectWithValue }) => {
   try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data), 
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const token = response.headers.get('Authorization')?.split("Bearer ")[1];
-    if (token) {
-      localStorage.setItem('authToken', token);
-    }
-    const responseData: T = await response.json();
-    
-    return responseData;
-    
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-}
-
-export const userListCanLoginThunk = createAsyncThunk<UserInterface | null, { email: string, password: string, list: UserInterface[] }, { rejectValue: string }>("userList/userListCanLogin", async ({email, password, list}, { rejectWithValue }) => {
-
-  try {
-    const user = await canLogin<UserInterface>(email, password);
+    const user = await requestLogin<UserInterface>('login', {
+      body: { email, password }
+    }) 
     
     return user;
   } catch (error) {
