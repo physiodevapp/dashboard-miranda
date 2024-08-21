@@ -32,7 +32,5 @@ export const bookingListReadOneThunk = createAsyncThunk<BookingInterface | null,
   
   const booking = await getBooking<BookingInterface>(id);
 
-  console.log('booking ', booking);
-
   return booking || null
 })

@@ -2,7 +2,6 @@
 import React, { useEffect, useState, MouseEvent } from 'react'
 
 import { FaArrowUp } from 'react-icons/fa6';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
@@ -20,6 +19,7 @@ import { userListDeleteOneThunk } from '../../features/userList/userListDeleteOn
 import { userListReadListThunk } from "../../features/userList/userListReadListThunk";
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserInterface } from '../../modelInterface';
+import { BounceLoader } from 'react-spinners';
 
 export const UserListPage = () => {
   const userListDispatch = useAppDispatch();
@@ -31,9 +31,9 @@ export const UserListPage = () => {
   const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'last_name', direction: -1});
   const [activeTab, setActiveTab] = useState<string>('');
   const [tablePageIndex, setTablePageIndex] = useState<number>(0);
-  const [users, setUsers] = useState<UserInterface[]>(userListUserList);
+  // const [users, setUsers] = useState<UserInterface[]>(userListUserList);
   const [displayUsers, setDisplayUsers] = useState<UserInterface[]>(userListUserList);
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -89,27 +89,26 @@ export const UserListPage = () => {
   useEffect(() => {
     switch (userListStatus) {
       case "idle":
-        setIsUpdating(false);
+        setIsLoading(false);
         break;
       case "pending":
-        setIsUpdating(true);
+        setIsLoading(true);
         break;
       case "fulfilled":
-        setIsUpdating(false);
-        setUsers(userListUserList);
+        setIsLoading(false);
         break;
       case "rejected":
-        setIsUpdating(true);
+        setIsLoading(true);
         console.log({userListError});
         break;
       default:
         break;
     }
-  }, [userListStatus, userListUserList]) 
+  }, [userListStatus]) 
 
   useEffect(() => {
     const filteredUsers: UserInterface[] = userListSearchTerm.length
-    ? JSON.parse(JSON.stringify(users)).filter((user: UserInterface) => user.first_name.toLowerCase().includes(userListSearchTerm.toLowerCase()) || user.last_name.toLowerCase().includes(userListSearchTerm.toLowerCase()))
+    ? JSON.parse(JSON.stringify(userListUserList)).filter((user: UserInterface) => user.first_name.toLowerCase().includes(userListSearchTerm.toLowerCase()) || user.last_name.toLowerCase().includes(userListSearchTerm.toLowerCase()))
     : userListUserList
 
     const tabRows = JSON.parse(JSON.stringify(filteredUsers)).filter((user: UserInterface) => activeTab.length ? user.status === activeTab : true);
@@ -117,9 +116,27 @@ export const UserListPage = () => {
     const sortedTabRows = sortRows(tabRows, sortCriteria);
 
     setDisplayUsers(sortedTabRows);
-  }, [users, activeTab, sortCriteria, userListSearchTerm])
+  }, [userListUserList, activeTab, sortCriteria, userListSearchTerm])
 
   return (
+    isLoading
+    ? <>
+        <BounceLoader
+          color={"#135846"}
+          loading={isLoading}
+          cssOverride={{
+            position: "relative",
+            top: "40%",
+            display: "block",
+            margin: "0 auto",
+            borderColor: "#135846",
+          }}
+          size={100}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </>
+    :
     <>
       <PageElementContainerStyled>
         <NewUserButton onClick={() => navigate("/users/new")} styled="primary">+ New User</NewUserButton>
@@ -189,7 +206,7 @@ export const UserListPage = () => {
                   key={user.id} 
                   id={`user_${user.id}`} 
                   offset={"60px"}
-                  nFirstChildren={2}
+                  nfirstchildren={2}
                   onClick={(event: MouseEvent<HTMLTableRowElement>) => {  
                     const target = event.target as HTMLTableRowElement;
 

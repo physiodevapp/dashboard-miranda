@@ -9,12 +9,12 @@ import { ButtonStyled } from "../../components/ButtonStyled";
 import { DataTableTabListComponent } from "../../components/DataTableTabList/DataTableTabListComponent";
 import { FaArrowUp } from "react-icons/fa6";
 
-import { useDispatch, useSelector } from "react-redux";
 import { contactListErrorSelect, contactListStatusSelect, contactListcontactListSelect } from "../../features/contactList/contactListSlice";
 import { contactListUpdateOneThunk } from "../../features/contactList/contactListUpdateOneThunk";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { contactListReadListThunk } from "../../features/contactList/contactListReadListThunk";
 import { ContactInterface } from "../../modelInterface";
+import { BounceLoader } from "react-spinners";
 
 export const ContactListPage = () => {
   const contactListDispatch = useAppDispatch();
@@ -22,8 +22,8 @@ export const ContactListPage = () => {
   const contactListStatus = useAppSelector(contactListStatusSelect);
   const contactListError = useAppSelector(contactListErrorSelect);
 
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [contacts, setContacts] = useState<ContactInterface[]>(contactListContactList);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [contacts, setContacts] = useState<ContactInterface[]>(contactListContactList);
   const [displayContacts, setDisplayContacts] = useState<ContactInterface[]>(contactListContactList);
   const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'datetime', direction: 1})
   const [activeTab, setActiveTab] = useState<string>('');
@@ -32,14 +32,14 @@ export const ContactListPage = () => {
   const contactsPerTablePage: number = 10;
 
   const formatDatetime = (datetime: string) => {
-    return new Date(Number(datetime)).toLocaleDateString("es-MX", {
-      day: "2-digit",
-      year: "numeric",
-      month: "short",
-      hour12: true,
-      hour:"2-digit",
-      minute: "2-digit"
-    });
+    const date = new Date(datetime);
+
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const year = String(date.getUTCFullYear()).slice(-2);
+
+    const month = date.toLocaleString('en-US', { month: 'short' });
+
+    return `${day}-${month}-${year}`;
   } 
 
   const sortRows = (rows: ContactInterface[], { headerKey, direction = -1}: { headerKey: string, direction: -1 | 1 }): ContactInterface[] => {
@@ -55,24 +55,23 @@ export const ContactListPage = () => {
   }
 
   useEffect(() => {
-    contactListDispatch(contactListReadListThunk({ list: contactListContactList }))
+    contactListDispatch(contactListReadListThunk())
   }, [])
 
   useEffect(() => {
+    console.log('contactListStatus ', contactListStatus);
     switch (contactListStatus) {
       case "idle":
-        setIsUpdating(false);
+        setIsLoading(false);
         break;
       case "pending":
-        setIsUpdating(true);
+        setIsLoading(true);
         break;
       case "fulfilled":
-        setIsUpdating(false);
-
-        setContacts(contactListContactList);
+        setIsLoading(false);
         break;
       case "rejected":
-        setIsUpdating(true);
+        setIsLoading(true);
         console.log({contactListError});
         break;
       default:
@@ -81,14 +80,32 @@ export const ContactListPage = () => {
   }, [contactListStatus])
 
   useEffect(() => {
-    const tabRows: ContactInterface[] = JSON.parse(JSON.stringify(contacts)).filter((contact: ContactInterface) => activeTab.length ? contact.status === activeTab : true);
+    const tabRows: ContactInterface[] = JSON.parse(JSON.stringify(contactListContactList)).filter((contact: ContactInterface) => activeTab.length ? contact.status === activeTab : true);
 
     const sortedTabRows: ContactInterface[] = sortRows(tabRows, sortCriteria);
 
     setDisplayContacts(sortedTabRows);
-  }, [contacts, activeTab, sortCriteria])
+  }, [contactListContactList, activeTab, sortCriteria])
 
   return (
+    isLoading
+    ? <>
+        <BounceLoader
+          color={"#135846"}
+          loading={isLoading}
+          cssOverride={{
+            position: "relative",
+            top: "40%",
+            display: "block",
+            margin: "0 auto",
+            borderColor: "#135846",
+          }}
+          size={100}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </>
+    :
     <>
       <PageElementContainerStyled>
         <RecentContactListComponent/>
@@ -143,7 +160,7 @@ export const ContactListPage = () => {
                 <DataTableBodyRow key={contact.id}>
                   <DataTableBodyRowCell key={`${contact.id}-orderId`}>
                    <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"8rem"}>
-                    { contact.id.split("-")[contact.id.split("-").length - 1] }
+                    { contact.id.slice(-8) }
                    </DataTableRowCellContentMultipleEllipsis>
                   </DataTableBodyRowCell>
                   <DataTableBodyRowCell key={`${contact.id}-date`} style={{minWidth: "14rem"}}>
@@ -178,10 +195,7 @@ export const ContactListPage = () => {
                                 status: "archived" as ("" | "published" | "archived")
                               }  
 
-                              contactListDispatch(contactListUpdateOneThunk({
-                                contact: updateContact, 
-                                list: contactListContactList
-                              })) 
+                              contactListDispatch(contactListUpdateOneThunk({ contact: updateContact }));
                             }}>
                               { contact.status === "archived" ? "Archived" : "Archive"}
                             </ButtonStyled>

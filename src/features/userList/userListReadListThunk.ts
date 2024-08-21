@@ -21,7 +21,7 @@ const getUserList = async <T extends UserInterface>(): Promise<T[]> => {
 
     const responseData: T[] = await response.json();
     
-    console.log('Success:', responseData);
+    // console.log('Success:', responseData);
     return responseData;
     
   } catch (error) {

@@ -11,7 +11,6 @@ import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableH
 import { FaArrowUp } from 'react-icons/fa6';
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import { useDispatch, useSelector } from 'react-redux';
 import { roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListReadListThunk } from '../../features/roomList/roomListReadListThunk';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -20,6 +19,7 @@ import Swal from 'sweetalert2';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RoomInterface } from '../../modelInterface';
+import { BounceLoader } from 'react-spinners';
 
 export const RoomListPage = () => {
   const roomListDispatch = useAppDispatch();
@@ -27,8 +27,8 @@ export const RoomListPage = () => {
   const roomListStatus = useAppSelector(roomListStatusSelect);
   const roomListError = useAppSelector(roomListErrorSelect);
 
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [rooms, setRooms] = useState<RoomInterface[]>(roomListRoomList);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [rooms, setRooms] = useState<RoomInterface[]>(roomListRoomList);
   const [displayRooms, setDisplayRooms] = useState<RoomInterface[]>(roomListRoomList);
   const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'datetime', direction: -1})
   const [tablePageIndex, setTablePageIndex] = useState<number>(0);
@@ -67,7 +67,7 @@ export const RoomListPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
-            roomListDispatch(roomListDeleteOneThunk({id: room.id, list: roomListRoomList}));
+            roomListDispatch(roomListDeleteOneThunk({ id: room.id }));
           }
         });
       } 
@@ -75,24 +75,22 @@ export const RoomListPage = () => {
   }
 
   useEffect(() => {
-    roomListDispatch(roomListReadListThunk({ list: roomListRoomList }))
+    roomListDispatch(roomListReadListThunk())
   }, [])
 
   useEffect(() => {
     switch (roomListStatus) {
       case "idle":
-        setIsUpdating(false);
+        setIsLoading(false);
         break;
       case "pending":
-        setIsUpdating(true);
+        setIsLoading(true);
         break;
       case "fulfilled":
-        setIsUpdating(false);
-
-        setRooms(roomListRoomList);
+        setIsLoading(false);
         break;
       case "rejected":
-        setIsUpdating(true);
+        setIsLoading(true);
         console.log({roomListError});
         break;
       default:
@@ -101,13 +99,31 @@ export const RoomListPage = () => {
   }, [roomListStatus])
 
   useEffect(() => {
-    const sortedRows: RoomInterface[] = sortRows([...rooms], sortCriteria);
+    const sortedRows: RoomInterface[] = sortRows([...roomListRoomList], sortCriteria);
 
     setDisplayRooms(sortedRows);
-  }, [rooms, sortCriteria])
+  }, [roomListRoomList, sortCriteria])
   
 
   return (
+    isLoading
+    ? <>
+        <BounceLoader
+          color={"#135846"}
+          loading={isLoading}
+          cssOverride={{
+            position: "relative",
+            top: "40%",
+            display: "block",
+            margin: "0 auto",
+            borderColor: "#135846",
+          }}
+          size={100}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </>
+    :
     <>
       <PageElementContainerStyled>
         <NewRoomButton onClick={() => navigate("/rooms/new")} styled="primary">+ New room</NewRoomButton>
@@ -184,7 +200,7 @@ export const RoomListPage = () => {
                   key={room.id} 
                   id={`room_${room.id}`} 
                   offset={"60px"}
-                  nFirstChildren={2}
+                  nfirstchildren={2}
                   onClick={(event: MouseEvent<HTMLTableRowElement>) => { 
                     const target = event.target as HTMLTableRowElement;
 
