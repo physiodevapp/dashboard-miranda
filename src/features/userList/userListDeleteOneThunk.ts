@@ -1,17 +1,29 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { UserInterface } from "../../modelInterface";
 
-const deleteUser = (userId: string, userList: UserInterface[]): Promise<UserInterface[]> => {
-  return new Promise((resolve, rejected) => {
-    setTimeout(() => {
-      resolve(userList.filter((user) => user.id !== userId));
-    }, 200);
-  })
+const deleteUser = async (userId: string): Promise<void | null> => {
+
+  const apiUrl = `http://localhost:3000/users/${userId}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }  
+    
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
 }
 
-export const userListDeleteOneThunk = createAsyncThunk<UserInterface[], { id: string, list: UserInterface[] }>("userList/userListDeleteOne", async ({id, list}) => {
-  const userList: UserInterface[] =  await deleteUser(id, list);
-  
-  return userList;
+export const userListDeleteOneThunk = createAsyncThunk<void, { id: string }>("userList/userListDeleteOne", async ({id}) => {
+  await deleteUser(id);
 })

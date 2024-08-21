@@ -1,17 +1,29 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RoomInterface } from "../../modelInterface";
 
-const deleteRoom = (roomId: string, roomList: RoomInterface[]): Promise<RoomInterface[]> => {
-  return new Promise((resolve, rejected) => {
-    setTimeout(() => {
-      resolve(roomList.filter((room) => room.id !== roomId));
-    }, 200);
-  })
+const deleteRoom = async (roomId: string): Promise<void | null> => {
+
+  const apiUrl = `http://localhost:3000/rooms/${roomId}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }  
+    
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
 }
 
-export const roomListDeleteOneThunk = createAsyncThunk<RoomInterface[], { id: string, list: RoomInterface[] }>("roomList/roomListDeleteOne", async ({id, list}) => {
-  const roomList: RoomInterface[] =  await deleteRoom(id, list);
-  
-  return roomList;
+export const roomListDeleteOneThunk = createAsyncThunk<void, { id: string }>("roomList/roomListDeleteOne", async ({id}) => {
+  await deleteRoom(id,);
 })

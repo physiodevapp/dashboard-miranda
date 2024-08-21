@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from '../../app/store';
-import dataUsers from "../../data/mock_users.json";
 import { userListReadListThunk } from "./userListReadListThunk";
 import { userListUpdateOneThunk } from "./userListUpdateOneThunk";
 import { userListReadOneThunk } from "./userListReadOneThunk";
@@ -20,7 +19,7 @@ interface UserStateInterface {
 const initialState: UserStateInterface = {
   error: null,
   status: "idle",
-  userList: dataUsers as UserInterface[],
+  userList: [] as UserInterface[],
   user: null,
   searchTerm: '',
 }
@@ -41,9 +40,7 @@ export const userListSlice = createSlice({
     .addCase(userListUpdateOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(userListUpdateOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
-      state.userList = action.payload
-
+    .addCase(userListUpdateOneThunk.fulfilled, (state) => {
       state.user = null;
 
       state.status = "fulfilled";
@@ -80,9 +77,8 @@ export const userListSlice = createSlice({
     .addCase(userListDeleteOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(userListDeleteOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
+    .addCase(userListDeleteOneThunk.fulfilled, (state) => {
       state.user = null;
-      state.userList = action.payload;
 
       state.status = "fulfilled";
     })
@@ -93,9 +89,7 @@ export const userListSlice = createSlice({
     .addCase(userListCreateOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(userListCreateOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
-      state.userList = action.payload;
-
+    .addCase(userListCreateOneThunk.fulfilled, (state) => {
       state.user = null;
 
       state.status = "fulfilled";

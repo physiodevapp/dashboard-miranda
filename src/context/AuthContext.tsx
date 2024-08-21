@@ -12,7 +12,7 @@ interface ActionInterface {
   payload?: {}
 };
 
-type StateType = { email: string } | null;
+type StateType = { email: string, first_name: string, last_name: string, photo: string, id: string } | null;
 
 interface AuthProviderProps {
   children: ReactNode
@@ -21,7 +21,7 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextInterface | null>(null);
 
 const getUserFromLocalStorage = (): StateType => {
-  const user = localStorage.getItem('current-user');
+  const user = localStorage.getItem('currentUser');
   if (user)
     return JSON.parse(user)
   else
@@ -31,13 +31,14 @@ const getUserFromLocalStorage = (): StateType => {
 const userReducer = (state: StateType, {type, payload}: ActionInterface) => {
   switch (type) {
     case 'login':
-      localStorage.setItem('current-user', JSON.stringify(payload));
+      localStorage.setItem('currentUser', JSON.stringify(payload));
   
       state = JSON.parse(JSON.stringify(payload));
 
       return state;
     case 'logout':
-      localStorage.removeItem('current-user');
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('authToken');
 
       state = null;
 

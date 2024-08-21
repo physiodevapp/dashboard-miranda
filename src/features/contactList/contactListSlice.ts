@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from '../../app/store';
-import dataContacts from "../../data/mock_contacts.json";
 import { contactListReadListThunk } from "./contactListReadListThunk";
 import { contactListUpdateOneThunk } from "./contactListUpdateOneThunk";
 import { ContactInterface } from "../../modelInterface";
@@ -15,7 +14,7 @@ interface ContactStateInterface {
 const initialState: ContactStateInterface = {
   error: null,
   status: "idle",
-  contactList: dataContacts as ContactInterface[],
+  contactList: [] as ContactInterface[],
   contact: null
 }
 
@@ -28,9 +27,7 @@ export const contactListSlice = createSlice({
     .addCase(contactListUpdateOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(contactListUpdateOneThunk.fulfilled, (state, action: PayloadAction<ContactInterface[]>) => {
-      state.contactList = action.payload;
-
+    .addCase(contactListUpdateOneThunk.fulfilled, (state) => {
       state.contact = null;
 
       state.status = "fulfilled";
