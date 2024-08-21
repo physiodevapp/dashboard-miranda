@@ -75,7 +75,7 @@ export const UserListPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
-            userListDispatch(userListDeleteOneThunk({id: user.id, list: userListUserList}));
+            userListDispatch(userListDeleteOneThunk({id: user.id as string}));
           }
         });
       } 
@@ -83,7 +83,7 @@ export const UserListPage = () => {
   }
 
   useEffect(() => {
-    userListDispatch(userListReadListThunk({ list: userListUserList }))
+    userListDispatch(userListReadListThunk())
   }, [])
 
   useEffect(() => {
@@ -96,7 +96,6 @@ export const UserListPage = () => {
         break;
       case "fulfilled":
         setIsUpdating(false);
-
         setUsers(userListUserList);
         break;
       case "rejected":
@@ -106,7 +105,7 @@ export const UserListPage = () => {
       default:
         break;
     }
-  }, [userListStatus]) 
+  }, [userListStatus, userListUserList]) 
 
   useEffect(() => {
     const filteredUsers: UserInterface[] = userListSearchTerm.length
@@ -221,7 +220,7 @@ export const UserListPage = () => {
                       <UserIdentificationName key={`${user.id}_identification_name`}>
                         { user.last_name },<br/>{ user.first_name }
                       </UserIdentificationName>
-                      <UserIdentificationId key={`${user.id}_identification_id`}>{`# ${user.id.split("-")[user.id.split("-").length - 1]}`}</UserIdentificationId>
+                      <UserIdentificationId key={`${user.id}_identification_id`}>{`# ${user.id?.slice(-8)}`}</UserIdentificationId>
                     </UserIdentification>
                   </UsersTableBodyRowCell>
                   <UsersTableBodyRowCell>

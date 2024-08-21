@@ -1,22 +1,34 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RoomInterface } from "../../modelInterface";
 
-const updateRoom = (updateRoom: RoomInterface, list: RoomInterface[]): Promise<RoomInterface[]> => {
-  return new Promise((resolve, rejected) => {
-    setTimeout(() => {
-      const roomList = list.map((room) => {
-        if (room.id === updateRoom.id)
-          return { ...updateRoom }
+const updateRoom = async <T extends RoomInterface>(updateRoom: T): Promise<T | null> => {
+
+  const apiUrl = `http://localhost:3000/rooms/${updateRoom.id}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateRoom), 
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const responseData: T = await response.json();
     
-        return room;
-      })
-      resolve(roomList);
-    }, 200);
-  })
+    return responseData;  
+    
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
 }
 
-export const roomListUpdateOneThunk = createAsyncThunk<RoomInterface[], { room: RoomInterface; list: RoomInterface[] }>("roomList/roomListUpdateOne", async ({room, list}) => {
-  const roomList: RoomInterface[] = await updateRoom(room, list);
-
-  return roomList;
+export const roomListUpdateOneThunk = createAsyncThunk<void, { room: RoomInterface }>("roomList/roomListUpdateOne", async ({room}) => {
+  await updateRoom(room);
 })

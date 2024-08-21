@@ -1,6 +1,6 @@
 export interface UserInterface {
   [key: string]: any;
-  id: string,
+  id?: string,
   first_name: string,
   last_name: string,
   photo: string,
@@ -50,10 +50,8 @@ export interface BookingInterface {
   order_date: string,
   check_in: string,
   check_out: string,
-  room_type: "Single Bed" | "Double Bed" | "Double Superior" | "Suite",
-  room_number: number,
   status: "check_in" | "check_out" | "in_progress",
   special_request: string,
-  room_details?: RoomInterface | null
+  room?: RoomInterface | null
 } 
 

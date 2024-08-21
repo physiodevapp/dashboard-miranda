@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from '../../app/store';
-import dataBookings from "../../data/mock_bookings.json";
 import { bookingListReadListThunk } from "./bookingListReadListThunk";
 import { bookingListReadOneThunk } from "./bookingListReadOneThunk";
 import { bookingListDeleteOneThunk } from "./bookingListDeleteOneThunk";
@@ -17,7 +16,7 @@ interface BookingStateInterface {
 const initialState: BookingStateInterface = {
   error: null,
   status: "idle",
-  bookingList: dataBookings as BookingInterface[],
+  bookingList: [] as BookingInterface[],
   booking: null,
   searchTerm: '',
 }
@@ -47,9 +46,8 @@ export const bookingListSlice = createSlice({
     .addCase(bookingListDeleteOneThunk.pending, (state, action) => {
       state.status = "pending";
     })
-    .addCase(bookingListDeleteOneThunk.fulfilled, (state, action: PayloadAction<BookingInterface[]>) => {
+    .addCase(bookingListDeleteOneThunk.fulfilled, (state) => {
       state.booking = null;
-      state.bookingList = action.payload;
 
       state.status = "fulfilled";
     })

@@ -53,7 +53,7 @@ export const MenuComponent = () => {
 
   useEffect(() => {
     if (userState)
-      userListDispatch(userListReadOneThunk({key: "email", value: userState.email, list: userListUserList}))
+      userListDispatch(userListReadOneThunk({value: userState.id}))
   }, []);
 
   useEffect(() => {

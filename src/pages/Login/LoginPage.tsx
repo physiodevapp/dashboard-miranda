@@ -66,9 +66,7 @@ export const LoginPage = () => {
         }, 1000);
 
         if (userListUser) {
-          userDispatch({type: 'login', payload: {
-            email: userListUser.email,
-          }});
+          userDispatch({ type: 'login', payload: userListUser });
           navigate('/dashboard');
         }
 

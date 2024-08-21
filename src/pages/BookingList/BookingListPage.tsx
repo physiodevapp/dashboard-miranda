@@ -44,14 +44,14 @@ export const BookingListPage = () => {
   const contactsPerTablePage: number = 10;
 
   const formatDatetime = (datetime: string): string => {
-    return new Date(Number(datetime)).toLocaleDateString("es-MX", {
-      day: "2-digit",
-      year: "numeric",
-      month: "short",
-      hour12: true,
-      hour:"2-digit",
-      minute: "2-digit"
-    });
+    const date = new Date(datetime);
+
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const year = String(date.getUTCFullYear()).slice(-2);
+
+    const month = date.toLocaleString('en-US', { month: 'short' });
+
+    return `${day}-${month}-${year}`;
   } 
 
   const sortRows = (rows: BookingInterface[], { headerKey, direction = -1}: { headerKey: string, direction: -1 | 1 }): BookingInterface[] => {
@@ -117,7 +117,7 @@ export const BookingListPage = () => {
           showConfirmButton: true,
           confirmButtonText: "Accept", 
           didOpen: () => {
-            bookingListDispatch(bookingListDeleteOneThunk({id: booking.id, list: bookingListBookingList}));
+            bookingListDispatch(bookingListDeleteOneThunk({id: booking.id}));
           }
         });
       } 
@@ -125,7 +125,7 @@ export const BookingListPage = () => {
   }
 
   useEffect(() => {
-    bookingListDispatch(bookingListReadListThunk({ list: bookingListBookingList }))
+    bookingListDispatch(bookingListReadListThunk())
   }, [])
 
   useEffect(() => {
@@ -148,7 +148,7 @@ export const BookingListPage = () => {
       default:
         break;
     }
-  }, [bookingListStatus])
+  }, [bookingListStatus, bookingListBookingList])
 
   useEffect(() => {
     const filteredBookings: number = bookingListSearchTerm.length
@@ -267,7 +267,7 @@ export const BookingListPage = () => {
                     </DataTableRowCellContentMultipleEllipsis>
                     <DataTableRowCellContentMultipleEllipsis lineclamp={1} width={"100%"}>
                       <BookingTableBodyRowCellBookingId>
-                        { (booking.id).split("-")[(booking.id).split("-").length - 1] }
+                        { booking.id.slice(-8) }
                       </BookingTableBodyRowCellBookingId>
                     </DataTableRowCellContentMultipleEllipsis>
                   </BookingTableBodyRowCellBooking>

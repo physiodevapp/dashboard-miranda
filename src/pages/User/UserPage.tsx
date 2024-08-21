@@ -138,10 +138,9 @@ export const UserPage = () => {
 
               setCanRedirectBack(true);
 
-              userListDispatch(userListUpdateOneThunk({user: updateUser, list: userListUserList}));
+              userListDispatch(userListUpdateOneThunk({ user: updateUser }));
             } else {
               const newUser: UserInterface = {
-                id: self.crypto.randomUUID(),
                 photo: "http://dummyimage.com/69x68.png/cc0000/ffffff",
                 first_name: formData.userFirstName,
                 last_name: formData.userLastName,
@@ -151,12 +150,12 @@ export const UserPage = () => {
                 status: formData.userStatus.value,
                 job_description: formData.userJobDescription,
                 job: formData.userJob.value,
-                password: "",
+                password: formData.userPassword,
               }
 
               setCanRedirectBack(true);
               
-              userListDispatch(userListCreateOneThunk({user: newUser, list: userListUserList}))
+              userListDispatch(userListCreateOneThunk({ user: newUser }))
             }
           }
         });
@@ -237,7 +236,7 @@ export const UserPage = () => {
 
   useEffect(() => {
     if (userId)
-      userListDispatch(userListReadOneThunk({key: "id", value: userId, list: userListUserList}))
+      userListDispatch(userListReadOneThunk({ value: userId }))
 
   }, [userId])
 

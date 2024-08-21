@@ -40,6 +40,8 @@ export const UserFormFieldContainer = styled.div<UserStyledProps>`
 export const UserFormFieldPhoto = styled(FormField)`
   position: relative;
   margin: 0em 0em 1em;
+  overflow: hidden;
+  border-radius: 0.4rem;
 
   img {
     position: absolute;

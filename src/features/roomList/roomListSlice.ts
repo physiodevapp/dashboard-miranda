@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from '../../app/store';
 import { roomListUpdateOneThunk } from "./roomListUpdateOneThunk";
-import dataRooms from "../../data/mock_rooms.json";
 import { roomListReadOneThunk } from "./roomListReadOneThunk";
 import { roomListReadListThunk } from "./roomListReadListThunk";
 import { roomListDeleteOneThunk } from "./roomListDeleteOneThunk";
@@ -18,7 +17,7 @@ interface RoomStateInterface {
 const initialState: RoomStateInterface = {
   error: null,
   status: "idle",
-  roomList: dataRooms as RoomInterface[],
+  roomList: [] as RoomInterface[],
   room: null,
 }
 
@@ -31,9 +30,7 @@ export const roomListSlice = createSlice({
       .addCase(roomListUpdateOneThunk.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(roomListUpdateOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
-        state.roomList = action.payload
-
+      .addCase(roomListUpdateOneThunk.fulfilled, (state) => {
         state.room = null;
 
         state.status = "fulfilled";
@@ -57,9 +54,8 @@ export const roomListSlice = createSlice({
       .addCase(roomListDeleteOneThunk.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(roomListDeleteOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
+      .addCase(roomListDeleteOneThunk.fulfilled, (state) => {
         state.room = null;
-        state.roomList = action.payload;
 
         state.status = "fulfilled";
       })
@@ -70,9 +66,7 @@ export const roomListSlice = createSlice({
       .addCase(roomListCreateOneThunk.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(roomListCreateOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface[]>) => {
-        state.roomList = action.payload;
-
+      .addCase(roomListCreateOneThunk.fulfilled, (state) => {
         state.room = null;
 
         state.status = "fulfilled";
