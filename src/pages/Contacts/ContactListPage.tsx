@@ -78,7 +78,7 @@ export const ContactListPage = () => {
       default:
         break;
     }
-  }, [contactListStatus])
+  }, [contactListStatus, contactListContactList])
 
   useEffect(() => {
     const tabRows: ContactInterface[] = JSON.parse(JSON.stringify(contacts)).filter((contact: ContactInterface) => activeTab.length ? contact.status === activeTab : true);

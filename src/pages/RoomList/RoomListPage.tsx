@@ -97,7 +97,7 @@ export const RoomListPage = () => {
       default:
         break;
     }
-  }, [roomListStatus])
+  }, [roomListStatus, roomListRoomList])
 
   useEffect(() => {
     const sortedRows: RoomInterface[] = sortRows([...rooms], sortCriteria);

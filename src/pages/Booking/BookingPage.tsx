@@ -107,7 +107,7 @@ export const BookingPage = () => {
       default:
         break;
     }
-  }, [bookingListStatus])
+  }, [bookingListStatus, bookingListBooking])
 
   useEffect(() => {
     if (bookingId)

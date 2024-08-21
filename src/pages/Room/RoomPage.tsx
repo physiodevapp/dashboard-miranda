@@ -200,7 +200,7 @@ export const RoomPage = () => {
       default:
         break;
     }
-  }, [roomListStatus])
+  }, [roomListStatus, roomListRoom])
 
   useEffect(() => {
     if (roomId)
