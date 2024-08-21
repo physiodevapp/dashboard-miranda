@@ -7,6 +7,8 @@ import { userListErrorSelect, userListStatusSelect, userListUserListSelect, user
 import { userListCanLoginThunk } from "../../features/userList/userListCanLoginThunk";
 import logoImage from '../../assets/dashboard-logo.png';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const LoginPage = () => {
   const [user, setUser] = useState<{ email: string, password: string }>({ email: "", password: "" });
@@ -74,6 +76,11 @@ export const LoginPage = () => {
       case "rejected":
         setIsLoading(false);
         console.log({userListError});
+        toast.error(userListError, {
+          position: 'top-right',
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
         break;
       default:
         break;
@@ -82,6 +89,7 @@ export const LoginPage = () => {
 
   return (
     <>
+      <ToastContainer/>
       <Wrapper>
         <Form action="" onSubmit={handleSubmit}>
           <FormLogo src={logoImage}/>

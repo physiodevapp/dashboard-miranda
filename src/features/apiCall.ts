@@ -61,20 +61,28 @@ export const requestLogin = async <T>(url: string, options: LoginOptions = { bod
     });
 
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      const { error } = await response.json();
+      // console.log('response error', error);
+      throw new Error(error.message);
     }
 
     const token = response.headers.get('Authorization')?.split("Bearer ")[1];
     if (token) {
       localStorage.setItem('authToken', token);
     }
+
     const responseData: T = await response.json();
     
     return responseData;
 
   } catch (error) {
-    console.error('Error:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else if (typeof error === 'string') {
+      throw new Error(error);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
   }
 }
 

@@ -6,7 +6,7 @@ export const userListCanLoginThunk = createAsyncThunk<UserInterface | null, { em
   try {
     const user = await requestLogin<UserInterface>('login', {
       body: { email, password }
-    }) 
+    });
     
     return user;
   } catch (error) {
