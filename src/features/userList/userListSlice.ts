@@ -45,8 +45,10 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListUpdateOneThunk.rejected, (state) => {
+    .addCase(userListUpdateOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
 
     .addCase(userListReadOneThunk.pending, (state) => {
@@ -57,8 +59,10 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListReadOneThunk.rejected, (state) => {
+    .addCase(userListReadOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
 
     .addCase(userListCanLoginThunk.pending, (state) => {
@@ -71,7 +75,7 @@ export const userListSlice = createSlice({
     })
     .addCase(userListCanLoginThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
-      state.error = action.payload || 'An unknown error occurred';;
+      state.error = action.payload || 'An unknown error occurred';
     })
 
     .addCase(userListDeleteOneThunk.pending, (state) => {
@@ -94,8 +98,10 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListCreateOneThunk.rejected, (state) => {
+    .addCase(userListCreateOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
 
     .addCase(userListReadListThunk.pending, (state) => {

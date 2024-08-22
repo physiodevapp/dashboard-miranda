@@ -26,15 +26,22 @@ export const fetchData = async <T = any>(url: string, options: RequestOptions = 
     });
 
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      const { error } = await response.json();
+      
+      throw new Error(error.message);
     }
 
     const responseData: T | T[] = await response.json();
     return responseData;
 
   } catch (error) {
-    console.error('Error:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else if (typeof error === 'string') {
+      throw new Error(error);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
   }
 }
 
@@ -62,7 +69,7 @@ export const requestLogin = async <T>(url: string, options: LoginOptions = { bod
 
     if (!response.ok) {
       const { error } = await response.json();
-      // console.log('response error', error);
+      
       throw new Error(error.message);
     }
 
