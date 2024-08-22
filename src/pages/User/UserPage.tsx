@@ -133,6 +133,7 @@ export const UserPage = () => {
                 status: formData.userStatus.value,
                 job_description: formData.userJobDescription,
                 job: formData.userJob.value,
+                password: formData.userPassword,
               }
 
               setCanRedirectBack(true);
@@ -252,8 +253,7 @@ export const UserPage = () => {
           setIsLoading(false);
         }, 1000);
 
-        if (userListUser && userId) {
-          
+        if (userListUser && userId) {          
           reset({
             userJob: {
               value: userListUser.job, 
@@ -341,8 +341,9 @@ export const UserPage = () => {
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
                 <FormInput 
-                  disabled={true}
+                  disabled={!canEdit && !!userListUser}
                   style={{textTransform: "capitalize"}}
+                  placeholder={(!canEdit && !!userListUser) ? '****' : 'Create a new password'}
                   { ...register("userPassword", { value: '' }) }/>
               </UserFormField>
               <UserFormField width="30%">

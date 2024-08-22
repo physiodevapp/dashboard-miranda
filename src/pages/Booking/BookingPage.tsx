@@ -45,7 +45,7 @@ export const BookingPage = () => {
 
 
   const formatDatetime = (datetime: string) => {
-    return new Date(Number(datetime)).toLocaleDateString("es-MX", {
+    return new Date(datetime).toLocaleDateString("es-MX", {
       day: "2-digit",
       year: "numeric",
       month: "short"
@@ -57,16 +57,16 @@ export const BookingPage = () => {
     label: facility
   }))
 
-  const getTotalPrice = (checkIn: number, checkOut: number) => {
-    const diffTime = checkOut - checkIn;    
+  const getTotalPrice = (checkIn: string, checkOut: string) => {
+    const diffTime = new Date(checkOut).getTime() - new Date(checkIn).getTime();    
     const DAY_TO_MILISECONDS = (24 * 3600 * 1000);
     const totalNights: number = Math.round(diffTime / DAY_TO_MILISECONDS);
-    
+
     const finalPrice: number = bookingListBooking!.room!.has_offer
-      ? (totalNights * bookingListBooking!.room!.price_night * bookingListBooking!.room!.discount / 100)
+      ? (totalNights * bookingListBooking!.room!.price_night * (100 - bookingListBooking!.room!.discount) / 100)
       : totalNights * bookingListBooking!.room!.price_night
 
-    return `$${finalPrice}`
+    return `$${Math.round((finalPrice + Number.EPSILON) * 100) / 100}`
   }
 
   const onSubmit = (formData: {}) => {
@@ -157,7 +157,7 @@ export const BookingPage = () => {
               </FormField>
               <FormField width="50%">
                 <FormFieldLabel htmlFor='bookingTotalPrice'>Final Price</FormFieldLabel>
-                <FormInput disabled={!canEdit} { ...register("bookingTotalPrice", { value: getTotalPrice(Number(bookingListBooking!.check_in), Number(bookingListBooking!.check_out)) }) }></FormInput>
+                <FormInput disabled={!canEdit} { ...register("bookingTotalPrice", { value: getTotalPrice(bookingListBooking!.check_in, bookingListBooking!.check_out) }) }></FormInput>
               </FormField>
               <FormField width="100%">
                 <FormFieldLabel htmlFor='bookingRoomFacilities'>Facilities</FormFieldLabel>

@@ -111,7 +111,7 @@ export const NavbarComponent = ({handleClickMenu, show}: NavbarComponentProps) =
             <NavbarSearchBarButton onClick={filterTable} disabled={!searchTerm.length}>
               <IoSearchOutline className='search' />
             </NavbarSearchBarButton>
-            <NavbarSearchBarInput type='text' value={searchTerm} onKeyDown={handleInputKeyDown} onChange={handleSearchTermChange}/>
+            <NavbarSearchBarInput type='text' placeholder='Search by name in the active tab...' value={searchTerm} onKeyDown={handleInputKeyDown} onChange={handleSearchTermChange}/>
             <IoMdClose onClick={clearSearchTerm} className={`clear${searchTerm.length ? ' show' : ''}`}/>
           </NavbarSearchBarContainer>
         : <></>

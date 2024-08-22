@@ -110,7 +110,7 @@ export const UserListPage = () => {
     const filteredUsers: UserInterface[] = userListSearchTerm.length
     ? JSON.parse(JSON.stringify(userListUserList)).filter((user: UserInterface) => user.first_name.toLowerCase().includes(userListSearchTerm.toLowerCase()) || user.last_name.toLowerCase().includes(userListSearchTerm.toLowerCase()))
     : userListUserList
-
+    
     const tabRows = JSON.parse(JSON.stringify(filteredUsers)).filter((user: UserInterface) => activeTab.length ? user.status === activeTab : true);
 
     const sortedTabRows = sortRows(tabRows, sortCriteria);

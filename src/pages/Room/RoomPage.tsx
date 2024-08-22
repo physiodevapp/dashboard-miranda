@@ -253,7 +253,7 @@ export const RoomPage = () => {
                 <RoomInput disabled={!canEdit && !!roomListRoom} {...register("roomPrice", { value: roomListRoom?.price_night })}/>
               </RoomFormField>
               <RoomFormField width="33%">
-                <RoomFormLabel htmlFor="roomDiscount">Discount</RoomFormLabel>
+                <RoomFormLabel htmlFor="roomDiscount">Discount (%)</RoomFormLabel>
                 <RoomInput disabled={!canEdit && !!roomListRoom} {...register("roomDiscount", { value: roomListRoom?.discount })}/>
               </RoomFormField>
               <RoomFormField width="33%">

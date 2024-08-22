@@ -77,7 +77,7 @@ export const LoginPage = () => {
         setIsLoading(false);
         console.log({userListError});
         toast.error(userListError, {
-          position: 'top-right',
+          position: 'top-center',
           autoClose: 2000,
           hideProgressBar: true,
         });
