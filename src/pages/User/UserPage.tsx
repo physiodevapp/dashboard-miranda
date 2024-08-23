@@ -322,9 +322,7 @@ export const UserPage = () => {
         setIsLoading(true);
         break;
       case "fulfilled":
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
+        setIsLoading(false);
 
         if (userListUser && userId) {          
           reset({

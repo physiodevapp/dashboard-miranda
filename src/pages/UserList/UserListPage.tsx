@@ -109,6 +109,7 @@ export const UserListPage = () => {
   }
 
   useEffect(() => {
+    console.log('userListReadListThunk');
     userListDispatch(userListReadListThunk())
   }, [])
 

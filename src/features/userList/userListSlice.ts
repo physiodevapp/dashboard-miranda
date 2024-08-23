@@ -84,10 +84,10 @@ export const userListSlice = createSlice({
     .addCase(userListDeleteOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(userListDeleteOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
-      state.user = null;
+    .addCase(userListDeleteOneThunk.fulfilled, (state, action: PayloadAction<UserInterface>) => {
+      state.userList = state.userList.filter((user) => user.id !== action.payload.id);
 
-      state.userList = action.payload;
+      state.user = null;
 
       state.status = "fulfilled";
     })
@@ -120,8 +120,10 @@ export const userListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(userListReadListThunk.rejected, (state) => {
+    .addCase(userListReadListThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
   }
 
