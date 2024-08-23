@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
+import { resetUserStatusError, userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
 
 import { BounceLoader } from 'react-spinners';
@@ -99,78 +99,12 @@ export const UserPage = () => {
     if (!datetime)
       datetime = new Date().getTime().toString();
     
-    return new Date(datetime).toLocaleDateString("es-MX", {
+    return new Date(datetime).toLocaleDateString("en-US", {
       day: "2-digit",
       year: "numeric",
-      month: "short"
+      month: "short",
     })
   } 
-
-  // const onSubmit = (formData: FormInputInterface): void => {
-  //   Swal.fire({
-  //     title: `Do you want to ${userId ? "update" : "create"} the user?`,
-  //     icon: "question",
-  //     showDenyButton: true,
-  //     confirmButtonText: `${userId ? "Update" : "Create"}`,
-  //     denyButtonText: ` ${userId ? "Don't update" : "Don't create"}`,
-  //     reverseButtons: true,
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       Swal.fire({
-  //         title: "User updated successfully",
-  //         icon: "success",
-  //         showConfirmButton: true,
-  //         confirmButtonText: "Accept", 
-  //         didOpen: () => {
-  //           setCanEdit(!canEdit && !!userListUser);
-        
-  //           if (userId) {
-  //             const updateUser: UserInterface = {
-  //               ...userListUser!, 
-  //               first_name: formData.userFirstName,
-  //               last_name: formData.userLastName,
-  //               email: formData.userEmail,
-  //               telephone: formData.userTel,
-  //               start_date: formData.userStartDate,
-  //               status: formData.userStatus.value,
-  //               job_description: formData.userJobDescription,
-  //               job: formData.userJob.value,
-  //             }
-
-  //             // Conditionally add the password field if it's dirty
-  //             if (dirtyFields.userPassword) {
-  //               updateUser.password = formData.userPassword;
-  //             }
-
-  //             setCanRedirectBack(true);
-
-  //             userListDispatch(userListUpdateOneThunk({ user: updateUser }));
-  //           } else {
-  //             const newUser: UserInterface = {
-  //               photo: "http://dummyimage.com/69x68.png/cc0000/ffffff",
-  //               first_name: formData.userFirstName,
-  //               last_name: formData.userLastName,
-  //               email: formData.userEmail,
-  //               telephone: formData.userTel,
-  //               start_date: formData.userStartDate,
-  //               status: formData.userStatus.value,
-  //               job_description: formData.userJobDescription,
-  //               job: formData.userJob.value,
-  //               password: formData.userPassword,
-  //             }
-
-  //             setCanRedirectBack(true);
-              
-  //             userListDispatch(userListCreateOneThunk({ user: newUser }))
-  //           }
-  //         }
-  //       });
-  //     } else if (result.isDenied) {
-  //       reset();
-  //       setCanEdit(false);
-  //     }
-  //   })
-  // }
 
   const onSubmit = (formData: FormInputInterface): void => {
     Swal.fire({
@@ -224,19 +158,18 @@ export const UserPage = () => {
               last_name: formData.userLastName,
               email: formData.userEmail,
               telephone: formData.userTel,
-              start_date: formData.userStartDate,
               status: formData.userStatus.value,
               job_description: formData.userJobDescription,
               job: formData.userJob.value,
               password: formData.userPassword,
+              start_date: formData.userStartDate,
             };
-            console.log('newUser ', newUser);
             const resultAction = await userListDispatch(userListCreateOneThunk({ user: newUser })).unwrap();
 
             // Check if the action was rejected
             if (userListUpdateOneThunk.rejected.match(resultAction)) {
               // Handle the error from the thunk
-              throw new Error(resultAction.payload || 'Update failed');
+              throw new Error(resultAction.payload || 'Create failed');
             }
           }
 
@@ -256,12 +189,13 @@ export const UserPage = () => {
             showDenyButton: false,
           })
 
-          Swal.showValidationMessage(`Request failed: ${userListError}`);
+          Swal.showValidationMessage(`Request failed: ${error}`);
         }
 
       }
     }).then((result) => {
       setIsUpdating(false);
+      userListDispatch(resetUserStatusError());
 
       if (result.isDenied) {
         setCanEdit(false);
@@ -282,20 +216,51 @@ export const UserPage = () => {
       denyButtonText: "Delete",
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isDenied) {        
-        Swal.fire({
-          title: "User deleted successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            setCanRedirectBack(true);
+      allowOutsideClick: () => !Swal.isLoading(),
+      preDeny: async () => {        
+        const denyButton = Swal.getDenyButton();
+        if (denyButton) {
+          denyButton.disabled = true;
+          denyButton.style.display = 'none'; 
+        }
 
-            userListDispatch(userListDeleteOneThunk({ id: userId }));
+        try {
+          setIsUpdating(true);
+
+          const resultAction = await userListDispatch(userListDeleteOneThunk({ id: userId }));
+
+          // Check if the action was rejected
+          if (userListDeleteOneThunk.rejected.match(resultAction)) {
+            // Handle the error from the thunk
+            throw new Error(resultAction.payload || 'Create failed');
           }
-        });
-      } 
+          
+          Swal.fire({
+            title: "User deleted successfully",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Accept", 
+          });
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: "Deleting the user failed",
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+      }
+    }).then((result) => {
+      setIsUpdating(false);
+      userListDispatch(resetUserStatusError());
+
+      if (result.isDenied) {
+        navigate("/users");
+      }
     });
   }
 

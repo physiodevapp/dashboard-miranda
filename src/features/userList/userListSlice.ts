@@ -33,7 +33,10 @@ export const userListSlice = createSlice({
     },
     userListSetUserSearchTerm: (state, action: PayloadAction<string>) => {
       state.searchTerm = action.payload;
-    }
+    },
+    resetUserStatusError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -81,13 +84,17 @@ export const userListSlice = createSlice({
     .addCase(userListDeleteOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(userListDeleteOneThunk.fulfilled, (state) => {
+    .addCase(userListDeleteOneThunk.fulfilled, (state, action: PayloadAction<UserInterface[]>) => {
       state.user = null;
+
+      state.userList = action.payload;
 
       state.status = "fulfilled";
     })
-    .addCase(userListDeleteOneThunk.rejected, (state) => {
+    .addCase(userListDeleteOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
 
     .addCase(userListCreateOneThunk.pending, (state) => {
@@ -120,7 +127,7 @@ export const userListSlice = createSlice({
 
 })
 
-export const { userListResetUser, userListSetUserSearchTerm } = userListSlice.actions;
+export const { userListResetUser, userListSetUserSearchTerm, resetUserStatusError } = userListSlice.actions;
 
 export const userListStatusSelect = (state: RootState) => state.userList.status;
 export const userListErrorSelect = (state: RootState) => state.userList.error;
