@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
+import { resetUserStatusError, userListErrorSelect, userListStatusSelect, userListUserListSelect, userListUserSelect } from '../../features/userList/userListSlice';
 import { userListReadOneThunk } from '../../features/userList/userListReadOneThunk';
 
 import { BounceLoader } from 'react-spinners';
@@ -84,6 +84,7 @@ export const UserPage = () => {
 
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [canRedirectBack, setCanRedirectBack] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date>(new Date());
 
@@ -91,16 +92,17 @@ export const UserPage = () => {
 
   const navigate = useNavigate();
 
-  const { register, handleSubmit, control, reset, setValue } = useForm<FormInputInterface>();
+  const { register, handleSubmit, control, reset, setValue, formState } = useForm<FormInputInterface>();
+  const { dirtyFields } = formState; 
 
   const formatDatetime = (datetime: string): string => {
     if (!datetime)
       datetime = new Date().getTime().toString();
     
-    return new Date(datetime).toLocaleDateString("es-MX", {
+    return new Date(datetime).toLocaleDateString("en-US", {
       day: "2-digit",
       year: "numeric",
-      month: "short"
+      month: "short",
     })
   } 
 
@@ -109,58 +111,99 @@ export const UserPage = () => {
       title: `Do you want to ${userId ? "update" : "create"} the user?`,
       icon: "question",
       showDenyButton: true,
+      showLoaderOnConfirm: true,
       confirmButtonText: `${userId ? "Update" : "Create"}`,
       denyButtonText: ` ${userId ? "Don't update" : "Don't create"}`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "User updated successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            setCanEdit(!canEdit && !!userListUser);
-        
-            if (userId) {
-              const updateUser: UserInterface = {
-                ...userListUser!, 
-                first_name: formData.userFirstName,
-                last_name: formData.userLastName,
-                email: formData.userEmail,
-                telephone: formData.userTel,
-                start_date: formData.userStartDate,
-                status: formData.userStatus.value,
-                job_description: formData.userJobDescription,
-                job: formData.userJob.value,
-              }
+      allowOutsideClick: () => !Swal.isLoading(),
+      preConfirm: async () => {        
+        const denyButton = Swal.getDenyButton();
+        if (denyButton) {
+          denyButton.disabled = true;
+          denyButton.style.display = 'none'; 
+        }
 
-              setCanRedirectBack(true);
+        try {
+          setIsUpdating(true);
 
-              userListDispatch(userListUpdateOneThunk({ user: updateUser }));
-            } else {
-              const newUser: UserInterface = {
-                photo: "http://dummyimage.com/69x68.png/cc0000/ffffff",
-                first_name: formData.userFirstName,
-                last_name: formData.userLastName,
-                email: formData.userEmail,
-                telephone: formData.userTel,
-                start_date: formData.userStartDate,
-                status: formData.userStatus.value,
-                job_description: formData.userJobDescription,
-                job: formData.userJob.value,
-                password: formData.userPassword,
-              }
+          if (userId) {
+            const updateUser: UserInterface = {
+              ...userListUser!, 
+              first_name: formData.userFirstName,
+              last_name: formData.userLastName,
+              email: formData.userEmail,
+              telephone: formData.userTel,
+              start_date: formData.userStartDate,
+              status: formData.userStatus.value,
+              job_description: formData.userJobDescription,
+              job: formData.userJob.value,
+            };
 
-              setCanRedirectBack(true);
-              
-              userListDispatch(userListCreateOneThunk({ user: newUser }))
+            if (dirtyFields.userPassword) {
+              updateUser.password = formData.userPassword;
+            }
+
+            const resultAction = await userListDispatch(userListUpdateOneThunk({ user: updateUser })).unwrap();
+  
+            // Check if the action was rejected
+            if (userListUpdateOneThunk.rejected.match(resultAction)) {
+              // Handle the error from the thunk
+              throw new Error(resultAction.payload || 'Update failed');
+            }
+            
+          } else {
+            const newUser: UserInterface = {
+              photo: "http://dummyimage.com/69x68.png/cc0000/ffffff",
+              first_name: formData.userFirstName,
+              last_name: formData.userLastName,
+              email: formData.userEmail,
+              telephone: formData.userTel,
+              status: formData.userStatus.value,
+              job_description: formData.userJobDescription,
+              job: formData.userJob.value,
+              password: formData.userPassword,
+              start_date: formData.userStartDate,
+            };
+            const resultAction = await userListDispatch(userListCreateOneThunk({ user: newUser })).unwrap();
+
+            // Check if the action was rejected
+            if (userListUpdateOneThunk.rejected.match(resultAction)) {
+              // Handle the error from the thunk
+              throw new Error(resultAction.payload || 'Create failed');
             }
           }
-        });
-      } else if (result.isDenied) {
-        reset();
+
+          // If no errors, show success
+          Swal.fire({
+            title: `User ${userId ? "updated" : "created"} successfully`,
+            icon: "success",
+            confirmButtonText: "Accept",
+          });        
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: `${userId ? "Updating" : "Creating"} the user failed`,
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+
+      }
+    }).then((result) => {
+      setIsUpdating(false);
+      userListDispatch(resetUserStatusError());
+
+      if (result.isDenied) {
         setCanEdit(false);
+        reset();
+      } else if(result.isDismissed) {
+        setCanEdit(true)
+      } else if (result.isConfirmed) {
+        navigate("/users");
       }
     })
   }
@@ -173,20 +216,51 @@ export const UserPage = () => {
       denyButtonText: "Delete",
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isDenied) {        
-        Swal.fire({
-          title: "User deleted successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            setCanRedirectBack(true);
+      allowOutsideClick: () => !Swal.isLoading(),
+      preDeny: async () => {        
+        const denyButton = Swal.getDenyButton();
+        if (denyButton) {
+          denyButton.disabled = true;
+          denyButton.style.display = 'none'; 
+        }
 
-            userListDispatch(userListDeleteOneThunk({ id: userId }));
+        try {
+          setIsUpdating(true);
+
+          const resultAction = await userListDispatch(userListDeleteOneThunk({ id: userId }));
+
+          // Check if the action was rejected
+          if (userListDeleteOneThunk.rejected.match(resultAction)) {
+            // Handle the error from the thunk
+            throw new Error(resultAction.payload || 'Create failed');
           }
-        });
-      } 
+          
+          Swal.fire({
+            title: "User deleted successfully",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Accept", 
+          });
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: "Deleting the user failed",
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+      }
+    }).then((result) => {
+      setIsUpdating(false);
+      userListDispatch(resetUserStatusError());
+
+      if (result.isDenied) {
+        navigate("/users");
+      }
     });
   }
 
@@ -252,8 +326,7 @@ export const UserPage = () => {
           setIsLoading(false);
         }, 1000);
 
-        if (userListUser && userId) {
-          
+        if (userListUser && userId) {          
           reset({
             userJob: {
               value: userListUser.job, 
@@ -267,9 +340,10 @@ export const UserPage = () => {
           });
 
           setStartDate(new Date(userListUser.start_date));
-        } else if (canRedirectBack) {
-          navigate("/users");
-        }
+        } 
+        // else if (canRedirectBack) {
+        //   navigate("/users");
+        // }
         break;
       case "rejected":
         setIsLoading(false);
@@ -289,7 +363,7 @@ export const UserPage = () => {
   }, [canEdit]);
 
   return (
-    isLoading
+    isLoading && !isUpdating
     ? <>
         <BounceLoader
           color={"#135846"}
@@ -336,13 +410,14 @@ export const UserPage = () => {
               <UserFormField width="30%">
                 <FormFieldLabel htmlFor='userStartDate'>Start date</FormFieldLabel>
                 <FaRegCalendarAlt style={{display:`${!canEdit && !!userListUser ? "none" : "block"}`, cursor: "pointer", position: "absolute", bottom: "22%", left: "1em"}} onClick={showCalendar}/>
-                <FormInput disabled={!canEdit && !!userListUser} style={!canEdit && !!userListUser ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(userListUser?.start_date || "") }) }/>
+                <FormInput disabled={!canEdit && !!userListUser} style={!canEdit && !!userListUser ? {} : {paddingLeft: "2.4em"}} { ...register("userStartDate", { value: formatDatetime(userListUser?.start_date || new Date().toISOString()) }) }/>
               </UserFormField>
               <UserFormField width="40%">
                 <FormFieldLabel htmlFor='userPassword'>Password</FormFieldLabel>
                 <FormInput 
-                  disabled={true}
+                  disabled={!canEdit && !!userListUser}
                   style={{textTransform: "capitalize"}}
+                  placeholder={(!canEdit && !!userListUser) ? '****' : 'Create a new password'}
                   { ...register("userPassword", { value: '' }) }/>
               </UserFormField>
               <UserFormField width="30%">
@@ -543,7 +618,7 @@ export const UserPage = () => {
                   setCanEdit(!canEdit && !!userListUser);
 
                   reset();
-                  setStartDate(new Date(userListUser!.start_date));
+                  // setStartDate(new Date(userListUser!.start_date));
 
                   if (!userId)
                     navigate("/users");

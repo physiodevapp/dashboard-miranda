@@ -6,7 +6,7 @@ export const bookingListReadOneThunk = createAsyncThunk<BookingInterface | null,
   const booking = await fetchData<BookingInterface>(`bookings/${id}`, { 
     method: 'GET', 
     token: localStorage.getItem('authToken') 
-  }) as BookingInterface
+  }) as BookingInterface;
 
   return booking || null;
 })

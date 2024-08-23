@@ -51,7 +51,7 @@ export const LoginPage = () => {
     event.preventDefault();
 
     if(isValidForm())
-      userListDispatch(userListCanLoginThunk({email: user.email, password: user.password, list: userListUserList}))    
+      userListDispatch(userListCanLoginThunk({email: user.email, password: user.password}))    
   };
 
   useEffect(() => {
@@ -75,9 +75,9 @@ export const LoginPage = () => {
         break;
       case "rejected":
         setIsLoading(false);
-        console.log({userListError});
+        
         toast.error(userListError, {
-          position: 'top-right',
+          position: 'top-center',
           autoClose: 2000,
           hideProgressBar: true,
         });

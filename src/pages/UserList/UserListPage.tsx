@@ -3,7 +3,7 @@ import React, { useEffect, useState, MouseEvent } from 'react'
 
 import { FaArrowUp } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
-import { userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
+import { resetUserStatusError, userListErrorSelect, userListSearchTermSelect, userListStatusSelect, userListUserListSelect } from '../../features/userList/userListSlice';
 import { PageElementContainerStyled } from '../../components/PageElementContainerStyled';
 import { DataTableTabListComponent } from '../../components/DataTableTabList/DataTableTabListComponent';
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
@@ -31,7 +31,6 @@ export const UserListPage = () => {
   const [sortCriteria, setSortCriteria] = useState<{ headerKey: string, direction: -1 | 1 }>({headerKey: 'last_name', direction: -1});
   const [activeTab, setActiveTab] = useState<string>('');
   const [tablePageIndex, setTablePageIndex] = useState<number>(0);
-  // const [users, setUsers] = useState<UserInterface[]>(userListUserList);
   const [displayUsers, setDisplayUsers] = useState<UserInterface[]>(userListUserList);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -65,20 +64,47 @@ export const UserListPage = () => {
       showDenyButton: true,
       icon: "warning",
       denyButtonText: "Delete",
+      showLoaderOnDeny: true,
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isDenied) {        
-        Swal.fire({
-          title: "User deleted successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            userListDispatch(userListDeleteOneThunk({id: user.id as string}));
+      allowOutsideClick: () => !Swal.isLoading(),
+      preDeny: async () => {        
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.disabled = true;
+          confirmButton.style.display = 'none'; 
+        }
+
+        try {
+          const resultAction = await userListDispatch(userListDeleteOneThunk({id: user.id as string}));
+
+          // Check if the action was rejected
+          if (userListDeleteOneThunk.rejected.match(resultAction)) {
+            // Handle the error from the thunk
+            throw new Error(resultAction.payload || 'Create failed');
           }
-        });
-      } 
+
+          Swal.fire({
+            title: "User deleted successfully",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Accept", 
+          });
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: "Deleting the user failed",
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+      }
+    }).then(() => {
+      userListDispatch(resetUserStatusError());
     });
   }
 
@@ -110,7 +136,7 @@ export const UserListPage = () => {
     const filteredUsers: UserInterface[] = userListSearchTerm.length
     ? JSON.parse(JSON.stringify(userListUserList)).filter((user: UserInterface) => user.first_name.toLowerCase().includes(userListSearchTerm.toLowerCase()) || user.last_name.toLowerCase().includes(userListSearchTerm.toLowerCase()))
     : userListUserList
-
+    
     const tabRows = JSON.parse(JSON.stringify(filteredUsers)).filter((user: UserInterface) => activeTab.length ? user.status === activeTab : true);
 
     const sortedTabRows = sortRows(tabRows, sortCriteria);

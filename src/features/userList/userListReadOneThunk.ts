@@ -2,11 +2,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserInterface } from "../../modelInterface";
 import { fetchData } from "../apiCall";
 
-export const userListReadOneThunk = createAsyncThunk<UserInterface | null, { id: string }>("userList/userListReadOne", async ({id}) => {
-  const user = await fetchData<UserInterface>(`users/${id}`, { 
-    method: 'GET', 
-    token: localStorage.getItem('authToken'), 
-  }) as UserInterface;
+export const userListReadOneThunk = createAsyncThunk<UserInterface | null, { id: string }, { rejectValue: string }>("userList/userListReadOne", async ({id}, { rejectWithValue }) => {
 
-  return user;
+  try {
+    const user = await fetchData<UserInterface>(`users/${id}`, { 
+      method: 'GET', 
+      token: localStorage.getItem('authToken'), 
+    }) as UserInterface;
+  
+    return user;
+  } catch (error) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message);
+    } else {
+      return rejectWithValue(error as string);
+    }
+  };
 })

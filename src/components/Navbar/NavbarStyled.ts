@@ -81,7 +81,7 @@ export const NavbarSearchBarInput = styled.input`
   font-family: "Poppins";
   font-size: 1rem;
   padding: 0.4em 2.6em 0.4em 0.8em;
-  width: 280px;
+  width: 340px;
   position: relative;
   left: 100%;
   transform: translateX(-100%);
