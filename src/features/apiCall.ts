@@ -5,6 +5,7 @@ type RequestOptions = {
   body?: object | null;
 };
 
+
 export const fetchData = async <T = any>(url: string, options: RequestOptions = {}): Promise<T | T[]> => {
   const {
     method = 'GET',
@@ -27,6 +28,13 @@ export const fetchData = async <T = any>(url: string, options: RequestOptions = 
 
     if (!response.ok) {
       const { error } = await response.json();
+
+      if ([401, 403].includes(response.status)) {
+        window.location.href = '/login';
+
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+      }
       
       throw new Error(error.message);
     }
