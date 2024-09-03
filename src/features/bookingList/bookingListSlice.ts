@@ -27,7 +27,10 @@ export const bookingListSlice = createSlice({
   reducers: {
     bookingListSetBookingSearchTerm: (state, action: PayloadAction<string>) => {
       state.searchTerm = action.payload;
-    }
+    },
+    resetBookingStatusError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -78,7 +81,7 @@ export const bookingListSlice = createSlice({
   }
 })
 
-export const { bookingListSetBookingSearchTerm } = bookingListSlice.actions
+export const { bookingListSetBookingSearchTerm, resetBookingStatusError } = bookingListSlice.actions
 
 export const bookingListStatusSelect = (state: RootState) => state.bookingList.status;
 export const bookingListErrorSelect = (state: RootState) => state.bookingList.error;

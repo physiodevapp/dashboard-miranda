@@ -13,7 +13,7 @@ import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableH
 import { DataTablePaginationComponent } from '../../components/DataTablePagination/DataTablePaginationComponent';
 import { useNavigate } from 'react-router-dom';
 
-import { bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect } from '../../features/bookingList/bookingListSlice';
+import { bookingListBookingListSelect, bookingListErrorSelect, bookingListSearchTermSelect, bookingListStatusSelect, resetBookingStatusError } from '../../features/bookingList/bookingListSlice';
 
 import Swal from "sweetalert2";
 import 'animate.css';
@@ -105,22 +105,62 @@ export const BookingListPage = () => {
     Swal.fire({
       title: "Do you want to delete the booking order?",
       showDenyButton: true,
+      showLoaderOnDeny: true,
       icon: "warning",
       denyButtonText: "Delete",
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isDenied) {        
-        Swal.fire({
-          title: "Booking deleted successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            bookingListDispatch(bookingListDeleteOneThunk({id: booking.id}));
+      allowOutsideClick: () => !Swal.isLoading(),
+      preDeny: async () => {
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.disabled = true;
+          confirmButton.style.display = 'none'; 
+        }
+
+        try {
+          const resultAction = await bookingListDispatch(bookingListDeleteOneThunk({id: booking.id as string}));
+
+          // Check if the action was rejected
+          if (bookingListDeleteOneThunk.rejected.match(resultAction)) {
+            // Handle the error from the thunk
+            throw new Error(resultAction.payload || 'Delete failed');
           }
-        });
-      } 
+
+          Swal.fire({
+            title: "Booking deleted successfully",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Accept", 
+          });
+
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: "Deleting the user failed",
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+
+      }
+    }).then(() => {
+      bookingListDispatch(resetBookingStatusError());
+      // if (result.isDenied) {        
+      //   Swal.fire({
+      //     title: "Booking deleted successfully",
+      //     icon: "success",
+      //     showConfirmButton: true,
+      //     confirmButtonText: "Accept", 
+      //     didOpen: () => {
+      //       bookingListDispatch(bookingListDeleteOneThunk({id: booking.id}));
+      //     }
+      //   });
+      // } 
     });
   }
 

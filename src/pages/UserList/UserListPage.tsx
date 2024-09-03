@@ -62,9 +62,9 @@ export const UserListPage = () => {
     Swal.fire({
       title: "Do you want to delete the user?",
       showDenyButton: true,
+      showLoaderOnDeny: true,
       icon: "warning",
       denyButtonText: "Delete",
-      showLoaderOnDeny: true,
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
       allowOutsideClick: () => !Swal.isLoading(),
@@ -81,15 +81,16 @@ export const UserListPage = () => {
           // Check if the action was rejected
           if (userListDeleteOneThunk.rejected.match(resultAction)) {
             // Handle the error from the thunk
-            throw new Error(resultAction.payload || 'Create failed');
+            throw new Error(resultAction.payload || 'Delete failed');
           }
 
           Swal.fire({
-            title: "User deleted successfully",
+            title: "Room deleted successfully",
             icon: "success",
             showConfirmButton: true,
             confirmButtonText: "Accept", 
           });
+
         } catch (error) {
           Swal.update({
             icon: "error",

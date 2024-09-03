@@ -11,7 +11,7 @@ import { DataTableHeaderRowCellSortComponent } from '../../components/DataTableH
 import { FaArrowUp } from 'react-icons/fa6';
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import { roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
+import { resetRoomStatusError, roomListErrorSelect, roomListRoomListSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListReadListThunk } from '../../features/roomList/roomListReadListThunk';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { ButtonStyled } from '../../components/ButtonStyled';
@@ -55,22 +55,62 @@ export const RoomListPage = () => {
     Swal.fire({
       title: "Do you want to delete the room?",
       showDenyButton: true,
+      showLoaderOnDeny: true,
       icon: "warning",
       denyButtonText: "Delete",
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isDenied) {        
-        Swal.fire({
-          title: "Room deleted successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            roomListDispatch(roomListDeleteOneThunk({ id: room.id }));
+      allowOutsideClick: () => !Swal.isLoading(),
+      preDeny: async () => {  
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.disabled = true;
+          confirmButton.style.display = 'none'; 
+        }
+
+        try {
+          const resultAction = await roomListDispatch(roomListDeleteOneThunk({id: room.id as string}));
+
+          // Check if the action was rejected
+          if (roomListDeleteOneThunk.rejected.match(resultAction)) {
+            // Handle the error from the thunk
+            throw new Error(resultAction.payload || 'Create failed');
           }
-        });
-      } 
+
+          Swal.fire({
+            title: "User deleted successfully",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Accept", 
+          });
+          
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: "Deleting the room failed",
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+      }
+    }).then(() => {
+      roomListDispatch(resetRoomStatusError());
+
+      // if (result.isDenied) {        
+      //   Swal.fire({
+      //     title: "Room deleted successfully",
+      //     icon: "success",
+      //     showConfirmButton: true,
+      //     confirmButtonText: "Accept", 
+      //     didOpen: () => {
+      //       roomListDispatch(roomListDeleteOneThunk({ id: room.id }));
+      //     }
+      //   });
+      // } 
     });
   }
 
