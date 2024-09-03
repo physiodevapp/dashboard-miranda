@@ -27,7 +27,12 @@ export const contactListSlice = createSlice({
     .addCase(contactListUpdateOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(contactListUpdateOneThunk.fulfilled, (state) => {
+    .addCase(contactListUpdateOneThunk.fulfilled, (state, action: PayloadAction<ContactInterface>) => {
+      const updatedContactIndex = state.contactList.findIndex((contact) => contact.id === action.payload.id);
+      
+      if (updatedContactIndex)
+        state.contactList[updatedContactIndex] = action.payload;
+      
       state.contact = null;
 
       state.status = "fulfilled";
