@@ -15,7 +15,7 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 import { useForm, Controller } from 'react-hook-form';
 
-import { roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
+import { resetRoomStatusError, roomListErrorSelect, roomListRoomListSelect, roomListRoomSelect, roomListStatusSelect } from '../../features/roomList/roomListSlice';
 import { roomListUpdateOneThunk } from '../../features/roomList/roomListUpdateOneThunk';
 import { roomListReadOneThunk } from '../../features/roomList/roomListReadOneThunk';
 import { roomListDeleteOneThunk } from '../../features/roomList/roomListDeleteOneThunk';
@@ -35,6 +35,7 @@ interface FormInputInterface {
   photos: string[],
   status: "available" | "booked",
   roomNumber: number,
+  roomName: string,
   roomType: string,
   roomDescription: string,
   roomPrice: number,
@@ -58,6 +59,7 @@ export const RoomPage = () => {
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [roomPhotosSwiper, setRoomPhotosSwiper] = useState<SwiperTypes | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [canRedirectBack, setCanRedirectBack] = useState<boolean>(false);
 
   const { roomId = "" } = useParams();
@@ -84,61 +86,150 @@ export const RoomPage = () => {
       title: `Do you want to ${roomId ? "update" : "create"} the room?`,
       icon: "question",
       showDenyButton: true,
+      showLoaderOnConfirm: true,
       confirmButtonText: `${roomId ? "Update" : "Create"}`,
       denyButtonText: ` ${roomId ? "Don't update" : "Don't create"}`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Room updated successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            setCanEdit(!canEdit && !!roomListRoom);
-        
-            if (roomId) {
-              const updateRoom: RoomInterface = {
-                ...roomListRoom!,
-                number: formData.roomNumber,
-                type: formData.roomType,
-                description: formData.roomDescription,
-                price_night: formData.roomPrice,
-                discount: formData.roomDiscount,
-                has_offer: formData.roomHasOffer,
-                facilities: formData.roomFacilities.map((facility) => facility.value),
-                cancellation_policy: formData.roomPolicy,
-              }
-              
-              setCanRedirectBack(true);
+      allowOutsideClick: () => !Swal.isLoading(),
+      preConfirm: async () => {
+        const denyButton = Swal.getDenyButton();
+        if (denyButton) {
+          denyButton.disabled = true;
+          denyButton.style.display = 'none'; 
+        }
 
-              roomListDispatch(roomListUpdateOneThunk({ room: updateRoom }));
-            } else {
-              const newRoom: RoomInterface = {
-                id: self.crypto.randomUUID(),
-                name: formData.name,
-                photos: ["http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff"], 
-                status: "available",
-                number: formData.roomNumber,
-                type: formData.roomType,
-                description: formData.roomDescription,
-                price_night: formData.roomPrice,
-                discount: formData.roomDiscount,
-                has_offer: formData.roomHasOffer,
-                facilities: formData.roomFacilities.map((facility) => facility.value),
-                cancellation_policy: formData.roomPolicy
-              }
+        try {
+          setIsUpdating(true);
+          
+          if (roomId) {
+            const updateRoom: RoomInterface = {
+              ...roomListRoom!,
+              number: formData.roomNumber,
+              type: formData.roomType,
+              description: formData.roomDescription,
+              price_night: formData.roomPrice,
+              discount: formData.roomDiscount,
+              has_offer: formData.roomHasOffer,
+              facilities: formData.roomFacilities.map((facility) => facility.value),
+              cancellation_policy: formData.roomPolicy,
+            }
 
-              setCanRedirectBack(true);
-              
-              roomListDispatch(roomListCreateOneThunk({ room: newRoom }))
+            const resultAction = await roomListDispatch(roomListUpdateOneThunk({ room: updateRoom })).unwrap();
+
+            // Check if the action was rejected
+            if (roomListUpdateOneThunk.rejected.match(resultAction)) {
+              // Handle the error from the thunk
+              throw new Error(resultAction.payload || 'Update failed');
+            }
+
+          } else {
+            const newRoom: RoomInterface = {
+              id: self.crypto.randomUUID(),
+              name: formData.roomName,
+              photos: ["http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff"], 
+              status: "available",
+              number: formData.roomNumber,
+              type: formData.roomType,
+              description: formData.roomDescription,
+              price_night: formData.roomPrice,
+              discount: formData.roomDiscount,
+              has_offer: formData.roomHasOffer,
+              facilities: formData.roomFacilities.map((facility) => facility.value),
+              cancellation_policy: formData.roomPolicy
+            };
+            const resultAction = await roomListDispatch(roomListCreateOneThunk({ room: newRoom })).unwrap();
+
+            // Check if the action was rejected
+            if (roomListCreateOneThunk.rejected.match(resultAction)) {
+              // Handle the error from the thunk
+              throw new Error(resultAction.payload || 'Create failed');
             }
           }
-        });
-      } else if (result.isDenied) {
-        reset();
-        setCanEdit(false);
+
+          // If no errors, show success
+          Swal.fire({
+            title: `Room ${roomId ? "updated" : "created"} successfully`,
+            icon: "success",
+            confirmButtonText: "Accept",
+          }); 
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: `${roomId ? "Updating" : "Creating"} the room failed`,
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+
       }
+    }).then((result) => {
+      setIsUpdating(false);
+      roomListDispatch(resetRoomStatusError());
+
+      if (result.isDenied) {
+        setCanEdit(false);
+        reset();
+      } else if(result.isDismissed) {
+        setCanEdit(true)
+      } else if (result.isConfirmed) {
+        navigate("/rooms");
+      }
+
+      // if (result.isConfirmed) {
+      //   Swal.fire({
+      //     title: "Room updated successfully",
+      //     icon: "success",
+      //     showConfirmButton: true,
+      //     confirmButtonText: "Accept", 
+      //     didOpen: () => {
+      //       setCanEdit(!canEdit && !!roomListRoom);
+        
+      //       if (roomId) {
+      //         const updateRoom: RoomInterface = {
+      //           ...roomListRoom!,
+      //           number: formData.roomNumber,
+      //           type: formData.roomType,
+      //           description: formData.roomDescription,
+      //           price_night: formData.roomPrice,
+      //           discount: formData.roomDiscount,
+      //           has_offer: formData.roomHasOffer,
+      //           facilities: formData.roomFacilities.map((facility) => facility.value),
+      //           cancellation_policy: formData.roomPolicy,
+      //         }
+              
+      //         setCanRedirectBack(true);
+
+      //         roomListDispatch(roomListUpdateOneThunk({ room: updateRoom }));
+      //       } else {
+      //         const newRoom: RoomInterface = {
+      //           id: self.crypto.randomUUID(),
+      //           name: formData.name,
+      //           photos: ["http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff","http://dummyimage.com/346x307.png/ff4444/ffffff"], 
+      //           status: "available",
+      //           number: formData.roomNumber,
+      //           type: formData.roomType,
+      //           description: formData.roomDescription,
+      //           price_night: formData.roomPrice,
+      //           discount: formData.roomDiscount,
+      //           has_offer: formData.roomHasOffer,
+      //           facilities: formData.roomFacilities.map((facility) => facility.value),
+      //           cancellation_policy: formData.roomPolicy
+      //         }
+
+      //         setCanRedirectBack(true);
+              
+      //         roomListDispatch(roomListCreateOneThunk({ room: newRoom }))
+      //       }
+      //     }
+      //   });
+      // } else if (result.isDenied) {
+      //   reset();
+      //   setCanEdit(false);
+      // }
     })
   }
 
@@ -146,24 +237,72 @@ export const RoomPage = () => {
     Swal.fire({
       title: "Do you want to delete the room?",
       showDenyButton: true,
+      showLoaderOnDeny: true,
       icon: "warning",
       denyButtonText: "Delete",
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isDenied) {        
-        Swal.fire({
-          title: "Room deleted successfully",
-          icon: "success",
-          showConfirmButton: true,
-          confirmButtonText: "Accept", 
-          didOpen: () => {
-            setCanRedirectBack(true);
+      allowOutsideClick: () => !Swal.isLoading(),
+      preDeny: async () => { 
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.disabled = true;
+          confirmButton.style.display = 'none'; 
+        }
 
-            roomListDispatch(roomListDeleteOneThunk({ id: roomId }));
+        try {
+          setIsUpdating(true);
+
+          const resultAction = await roomListDispatch(roomListDeleteOneThunk({ id: roomId }));
+
+          // Check if the action was rejected
+          if (roomListDeleteOneThunk.rejected.match(resultAction)) {
+            // Handle the error from the thunk
+            throw new Error(resultAction.payload || 'Delete failed');
           }
-        });
-      } 
+          
+          Swal.fire({
+            title: "Room deleted successfully",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Accept", 
+          });
+          
+        } catch (error) {
+          Swal.update({
+            icon: "error",
+            title: "Deleting the room failed",
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showDenyButton: false,
+          })
+
+          Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+
+      }
+    }).then((result) => {
+      setIsUpdating(false);
+      roomListDispatch(resetRoomStatusError());
+
+      if (result.isDenied) {
+        navigate("/rooms");
+      }
+
+      // if (result.isDenied) {        
+      //   Swal.fire({
+      //     title: "Room deleted successfully",
+      //     icon: "success",
+      //     showConfirmButton: true,
+      //     confirmButtonText: "Accept", 
+      //     didOpen: () => {
+      //       setCanRedirectBack(true);
+
+      //       roomListDispatch(roomListDeleteOneThunk({ id: roomId }));
+      //     }
+      //   });
+      // } 
     });
   }
 
@@ -193,9 +332,10 @@ export const RoomPage = () => {
               label: facility 
             }))
           })
-        } else if (canRedirectBack) {
-          navigate("/rooms");
-        }
+        } 
+        // else if (canRedirectBack) {
+        //   navigate("/rooms");
+        // }
         break;
       case "rejected":
         setIsLoading(false);
@@ -215,7 +355,7 @@ export const RoomPage = () => {
   }, [canEdit]);
 
   return (
-    isLoading
+    isLoading && !isUpdating
     ? <>
         <BounceLoader
           color={"#135846"}
@@ -236,11 +376,15 @@ export const RoomPage = () => {
         <RoomContainer style={!roomId ? {maxWidth: "700px"} : {}}>
           <RoomForm onSubmit={handleSubmit(onSubmit)}>
             <RoomFormFieldListContainer>
-              <RoomFormField width="50%">
+              <RoomFormField width="33%">
+                <RoomFormLabel htmlFor="roomName">Room name</RoomFormLabel>
+                <RoomInput disabled={!canEdit && !!roomListRoom} {...register("roomName", { value: roomListRoom?.name })}/>
+              </RoomFormField>
+              <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomType">Room type</RoomFormLabel>
                 <RoomInput disabled={!canEdit && !!roomListRoom} {...register("roomType", { value: roomListRoom?.type })}/>
               </RoomFormField>
-              <RoomFormField width="50%">
+              <RoomFormField width="33%">
                 <RoomFormLabel htmlFor="roomNumber">Room number</RoomFormLabel>
                 <RoomInput disabled={!canEdit && !!roomListRoom} {...register("roomNumber", { value: roomListRoom?.number })}/>
               </RoomFormField>

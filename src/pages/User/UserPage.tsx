@@ -167,7 +167,7 @@ export const UserPage = () => {
             const resultAction = await userListDispatch(userListCreateOneThunk({ user: newUser })).unwrap();
 
             // Check if the action was rejected
-            if (userListUpdateOneThunk.rejected.match(resultAction)) {
+            if (userListCreateOneThunk.rejected.match(resultAction)) {
               // Handle the error from the thunk
               throw new Error(resultAction.payload || 'Create failed');
             }
@@ -212,16 +212,17 @@ export const UserPage = () => {
     Swal.fire({
       title: "Do you want to delete the user?",
       showDenyButton: true,
+      showLoaderOnDeny: true,
       icon: "warning",
       denyButtonText: "Delete",
       confirmButtonText: `Don't delete`,
       reverseButtons: true,
       allowOutsideClick: () => !Swal.isLoading(),
       preDeny: async () => {        
-        const denyButton = Swal.getDenyButton();
-        if (denyButton) {
-          denyButton.disabled = true;
-          denyButton.style.display = 'none'; 
+        const confirmButton = Swal.getConfirmButton();
+        if (confirmButton) {
+          confirmButton.disabled = true;
+          confirmButton.style.display = 'none'; 
         }
 
         try {
@@ -232,7 +233,7 @@ export const UserPage = () => {
           // Check if the action was rejected
           if (userListDeleteOneThunk.rejected.match(resultAction)) {
             // Handle the error from the thunk
-            throw new Error(resultAction.payload || 'Create failed');
+            throw new Error(resultAction.payload || 'Delete failed');
           }
           
           Swal.fire({

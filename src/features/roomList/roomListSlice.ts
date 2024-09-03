@@ -24,7 +24,11 @@ const initialState: RoomStateInterface = {
 export const roomListSlice = createSlice({
   name: "roomList",
   initialState,
-  reducers: {},
+  reducers: {
+    resetRoomStatusError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(roomListUpdateOneThunk.pending, (state) => {
@@ -101,6 +105,8 @@ export const roomListSlice = createSlice({
       })
   },
 });
+
+export const { resetRoomStatusError } = roomListSlice.actions;
 
 export const roomListStatusSelect = (state: RootState) => state.roomList.status;
 export const roomListErrorSelect = (state: RootState) => state.roomList.error;
