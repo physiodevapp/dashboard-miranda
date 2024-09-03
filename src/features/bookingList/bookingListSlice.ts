@@ -31,7 +31,7 @@ export const bookingListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(bookingListReadOneThunk.pending, (state, action) => {
+    .addCase(bookingListReadOneThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(bookingListReadOneThunk.fulfilled, (state, action: PayloadAction<BookingInterface | null>) => {
@@ -39,23 +39,29 @@ export const bookingListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(bookingListReadOneThunk.rejected, (state, action) => {
+    .addCase(bookingListReadOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
 
-    .addCase(bookingListDeleteOneThunk.pending, (state, action) => {
+    .addCase(bookingListDeleteOneThunk.pending, (state) => {
       state.status = "pending";
     })
-    .addCase(bookingListDeleteOneThunk.fulfilled, (state) => {
+    .addCase(bookingListDeleteOneThunk.fulfilled, (state, action: PayloadAction<BookingInterface>) => {
+      state.bookingList = state.bookingList.filter((booking) => booking.id !== action.payload.id);
+
       state.booking = null;
 
       state.status = "fulfilled";
     })
-    .addCase(bookingListDeleteOneThunk.rejected, (state, action) => {
+    .addCase(bookingListDeleteOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
 
-    .addCase(bookingListReadListThunk.pending, (state, action) => {
+    .addCase(bookingListReadListThunk.pending, (state) => {
       state.status = "pending";
     })
     .addCase(bookingListReadListThunk.fulfilled, (state, action: PayloadAction<BookingInterface[]>) => {
@@ -64,8 +70,10 @@ export const bookingListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(bookingListReadListThunk.rejected, (state, action) => {
+    .addCase(bookingListReadListThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
   }
 })

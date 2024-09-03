@@ -35,8 +35,10 @@ export const roomListSlice = createSlice({
 
         state.status = "fulfilled";
       })
-      .addCase(roomListUpdateOneThunk.rejected, (state) => {
+      .addCase(roomListUpdateOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.status = "rejected";
+
+        state.error = action.payload || 'An unknown error occurred';
       })
 
       .addCase(roomListReadOneThunk.pending, (state) => {
@@ -47,20 +49,26 @@ export const roomListSlice = createSlice({
 
         state.status = "fulfilled";
       })
-      .addCase(roomListReadOneThunk.rejected, (state) => {
+      .addCase(roomListReadOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.status = "rejected";
+
+        state.error = action.payload || 'An unknown error occurred';
       })
 
       .addCase(roomListDeleteOneThunk.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(roomListDeleteOneThunk.fulfilled, (state) => {
+      .addCase(roomListDeleteOneThunk.fulfilled, (state, action: PayloadAction<RoomInterface>) => {
+        state.roomList = state.roomList.filter((room) => room.id !== action.payload.id);
+        
         state.room = null;
 
         state.status = "fulfilled";
       })
-      .addCase(roomListDeleteOneThunk.rejected, (state) => {
+      .addCase(roomListDeleteOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.status = "rejected";
+
+        state.error = action.payload || 'An unknown error occurred';
       })
 
       .addCase(roomListCreateOneThunk.pending, (state) => {
@@ -71,8 +79,10 @@ export const roomListSlice = createSlice({
 
         state.status = "fulfilled";
       })
-      .addCase(roomListCreateOneThunk.rejected, (state) => {
+      .addCase(roomListCreateOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.status = "rejected";
+
+        state.error = action.payload || 'An unknown error occurred';
       })
 
       .addCase(roomListReadListThunk.pending, (state) => {
@@ -84,8 +94,10 @@ export const roomListSlice = createSlice({
 
         state.status = "fulfilled";
       })
-      .addCase(roomListReadListThunk.rejected, (state) => {
+      .addCase(roomListReadListThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.status = "rejected";
+
+        state.error = action.payload || 'An unknown error occurred';
       })
   },
 });

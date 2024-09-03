@@ -10,6 +10,7 @@ export const userListCreateOneThunk = createAsyncThunk<void, { user: UserInterfa
       token: localStorage.getItem('authToken'), 
       body: user,
     });
+    
   } catch (error) {
     if (error instanceof Error) {
       return rejectWithValue(error.message);

@@ -2,11 +2,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BookingInterface  } from "../../modelInterface";
 import { fetchData } from "../apiCall";
 
-export const bookingListReadOneThunk = createAsyncThunk<BookingInterface | null, { id: string }>("booking/bookingListReadOne", async ({id}) => {
-  const booking = await fetchData<BookingInterface>(`bookings/${id}`, { 
-    method: 'GET', 
-    token: localStorage.getItem('authToken') 
-  }) as BookingInterface;
-
-  return booking || null;
+export const bookingListReadOneThunk = createAsyncThunk<BookingInterface | null, { id: string }, { rejectValue: string }>("booking/bookingListReadOne", async ({id}, { rejectWithValue }) => {
+  try {
+    const booking = await fetchData<BookingInterface>(`bookings/${id}`, { 
+      method: 'GET', 
+      token: localStorage.getItem('authToken') 
+    }) as BookingInterface;
+  
+    return booking || null;
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message);
+    } else {
+      return rejectWithValue(error as string);
+    }
+  }
 })

@@ -2,35 +2,21 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RoomInterface } from "../../modelInterface";
+import { fetchData } from "../apiCall";
 
-const createRoom = async <T extends RoomInterface>(room: T): Promise<T | null> => {
-
-  const apiUrl = `http://localhost:3000/rooms`;
-
+export const roomListCreateOneThunk = createAsyncThunk<void, { room: RoomInterface }, { rejectValue: string }>("roomList/roomListCreateOne", async ({room}, { rejectWithValue }) => {
   try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(room), 
+    await fetchData<RoomInterface>('rooms', { 
+      method: 'POST', 
+      token: localStorage.getItem('authToken'), 
+      body: room,
     });
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const responseData: T = await response.json();
-    
-    return responseData;  
-    
   } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-}
-
-export const roomListCreateOneThunk = createAsyncThunk<void, { room: RoomInterface }>("roomList/roomListCreateOne", async ({room}) => {
-  await createRoom(room);
+    if (error instanceof Error) {
+      return rejectWithValue(error.message);
+    } else {
+      return rejectWithValue(error as string);
+    }
+  };
 })

@@ -32,8 +32,10 @@ export const contactListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(contactListUpdateOneThunk.rejected, (state) => {
+    .addCase(contactListUpdateOneThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
     
     .addCase(contactListReadListThunk.pending, (state) => {
@@ -45,8 +47,10 @@ export const contactListSlice = createSlice({
 
       state.status = "fulfilled";
     })
-    .addCase(contactListReadListThunk.rejected, (state) => {
+    .addCase(contactListReadListThunk.rejected, (state, action: PayloadAction<string | undefined>) => {
       state.status = "rejected";
+
+      state.error = action.payload || 'An unknown error occurred';
     })
   }
 

@@ -1,34 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RoomInterface } from "../../modelInterface";
+import { fetchData } from "../apiCall";
 
-const updateRoom = async <T extends RoomInterface>(updateRoom: T): Promise<T | null> => {
-
-  const apiUrl = `http://localhost:3000/rooms/${updateRoom.id}`;
-
+export const roomListUpdateOneThunk = createAsyncThunk<void, { room: RoomInterface }, { rejectValue: string }>("roomList/roomListUpdateOne", async ({room}, { rejectWithValue }) => {
   try {
-    const response = await fetch(apiUrl, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updateRoom), 
+    await fetchData<RoomInterface>(`rooms/${room.id}`, { 
+      method: 'PATCH', 
+      token: localStorage.getItem('authToken'), 
+      body: room,
     });
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const responseData: T = await response.json();
-    
-    return responseData;  
-    
   } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-}
-
-export const roomListUpdateOneThunk = createAsyncThunk<void, { room: RoomInterface }>("roomList/roomListUpdateOne", async ({room}) => {
-  await updateRoom(room);
+    if (error instanceof Error) {
+      return rejectWithValue(error.message);
+    } else {
+      return rejectWithValue(error as string);
+    }
+  };
 })

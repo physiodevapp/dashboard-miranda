@@ -3,9 +3,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchData } from "../apiCall";
 import { BookingInterface } from "../../modelInterface";
 
-export const bookingListDeleteOneThunk = createAsyncThunk<void, { id: string }>("bookingList/bookingListDeleteOne", async ({id}) => {
-  await fetchData<BookingInterface>('bookings', { 
-    method: 'DELETE', 
-    token: localStorage.getItem('authToken') 
-  })
+export const bookingListDeleteOneThunk = createAsyncThunk<BookingInterface, { id: string }, { rejectValue: string }>("bookingList/bookingListDeleteOne", async ({id}, { rejectWithValue }) => {
+  try {
+    const bookingDeleted = await fetchData<BookingInterface>(`bookings/${id}`, { 
+      method: 'DELETE', 
+      token: localStorage.getItem('authToken'), 
+    }) as BookingInterface;
+
+    return bookingDeleted;
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message);
+    } else {
+      return rejectWithValue(error as string);
+    }
+  }
 })
