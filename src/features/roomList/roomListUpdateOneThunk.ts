@@ -6,7 +6,6 @@ export const roomListUpdateOneThunk = createAsyncThunk<void, { room: RoomInterfa
   try {
     await fetchData<RoomInterface>(`rooms/${room.id}`, { 
       method: 'PATCH', 
-      token: localStorage.getItem('authToken'), 
       body: room,
     });
 

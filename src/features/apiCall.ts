@@ -10,7 +10,7 @@ export const fetchData = async <T = any>(url: string, options: RequestOptions = 
   const {
     method = 'GET',
     token = localStorage.getItem('authToken'), 
-    apiUrl = 'http://localhost:3000',
+    apiUrl = import.meta.env.VITE_API_BASE_URL,
     body = null,
   } = options;
 
@@ -60,7 +60,7 @@ type LoginOptions = {
 
 export const requestLogin = async <T>(url: string, options: LoginOptions = { body: {} }): Promise<T | null> => {
   const {
-    apiUrl = 'http://localhost:3000',
+    apiUrl = import.meta.env.VITE_API_BASE_URL,
     body = null,
   } = options;
 
@@ -81,11 +81,10 @@ export const requestLogin = async <T>(url: string, options: LoginOptions = { bod
       throw new Error(error.message);
     }
 
-    const token = response.headers.get('Authorization')?.split("Bearer ")[1];
-    if (token) {
+    const token = response.headers.get('X-Amzn-Remapped-Authorization')?.split("Bearer ")[1];
+    if (token)
       localStorage.setItem('authToken', token);
-    }
-
+    
     const responseData: T = await response.json();
     
     return responseData;

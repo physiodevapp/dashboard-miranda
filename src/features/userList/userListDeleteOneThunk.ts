@@ -7,7 +7,6 @@ export const userListDeleteOneThunk = createAsyncThunk<UserInterface, { id: stri
   try {
     const userDeleted = await fetchData<UserInterface>(`users/${id}`, { 
       method: 'DELETE', 
-      token: localStorage.getItem('authToken'), 
     }) as UserInterface;
 
     return userDeleted;

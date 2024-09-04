@@ -6,7 +6,6 @@ export const contactListReadListThunk = createAsyncThunk<ContactInterface[], voi
   try {
     const contactList = await fetchData<ContactInterface>('contacts', { 
       method: 'GET', 
-      token: localStorage.getItem('authToken'), 
     }) as ContactInterface[];
   
     return contactList;

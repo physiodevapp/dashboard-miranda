@@ -6,7 +6,6 @@ export const contactListUpdateOneThunk = createAsyncThunk<ContactInterface, { co
   try {
     const updatedContact = await fetchData<ContactInterface>(`contacts/${contact.id}`, { 
       method: 'PATCH', 
-      token: localStorage.getItem('authToken'),
       body: contact, 
     });
 

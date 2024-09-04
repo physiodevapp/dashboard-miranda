@@ -7,7 +7,6 @@ export const roomListDeleteOneThunk = createAsyncThunk<RoomInterface, { id: stri
   try {
     const roomDeleted = await fetchData<RoomInterface>(`rooms/${id}`, { 
       method: 'DELETE', 
-      token: localStorage.getItem('authToken'), 
     }) as RoomInterface;
 
     return roomDeleted;

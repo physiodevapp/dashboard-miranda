@@ -7,7 +7,6 @@ export const userListCreateOneThunk = createAsyncThunk<void, { user: UserInterfa
   try {
     await fetchData<UserInterface>('users', { 
       method: 'POST', 
-      token: localStorage.getItem('authToken'), 
       body: user,
     });
     

@@ -7,7 +7,6 @@ export const bookingListDeleteOneThunk = createAsyncThunk<BookingInterface, { id
   try {
     const bookingDeleted = await fetchData<BookingInterface>(`bookings/${id}`, { 
       method: 'DELETE', 
-      token: localStorage.getItem('authToken'), 
     }) as BookingInterface;
 
     return bookingDeleted;

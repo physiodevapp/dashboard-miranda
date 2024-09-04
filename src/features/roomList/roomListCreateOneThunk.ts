@@ -8,7 +8,6 @@ export const roomListCreateOneThunk = createAsyncThunk<void, { room: RoomInterfa
   try {
     await fetchData<RoomInterface>('rooms', { 
       method: 'POST', 
-      token: localStorage.getItem('authToken'), 
       body: room,
     });
 

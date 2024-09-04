@@ -7,7 +7,6 @@ export const userListReadOneThunk = createAsyncThunk<UserInterface | null, { id:
   try {
     const user = await fetchData<UserInterface>(`users/${id}`, { 
       method: 'GET', 
-      token: localStorage.getItem('authToken'), 
     }) as UserInterface;
   
     return user;

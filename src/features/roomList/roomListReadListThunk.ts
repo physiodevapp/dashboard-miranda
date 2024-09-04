@@ -7,7 +7,6 @@ export const roomListReadListThunk = createAsyncThunk<RoomInterface[], void, { r
   try {
     const roomList = await fetchData<RoomInterface>('rooms', { 
       method: 'GET', 
-      token: localStorage.getItem('authToken'), 
     }) as RoomInterface[];
   
     return roomList;

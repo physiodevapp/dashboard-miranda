@@ -6,7 +6,6 @@ export const userListUpdateOneThunk = createAsyncThunk<void, { user: UserInterfa
   try {
     await fetchData<UserInterface>(`users/${user.id}`, { 
       method: 'PATCH', 
-      token: localStorage.getItem('authToken'), 
       body: user,
     });
     
