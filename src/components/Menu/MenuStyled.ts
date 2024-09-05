@@ -91,7 +91,7 @@ export const Brand = styled.h5`
   color: #212121;
   position: absolute;
   bottom: 5rem;
-  padding: 0em 3.4rem;
+  padding: 0em 3.2rem;
   font-family: "Poppins";
 `
 
