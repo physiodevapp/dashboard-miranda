@@ -95,7 +95,6 @@ export const SwiperSliderMessage = styled.p`
   width: 100%;
   text-align: left;
   line-height: 28px;
-  cursor: pointer;
 `
 
 export const SwiperSlideAuthor = styled.article`
@@ -109,13 +108,14 @@ export const SwiperSlideAuthorPhotoContainer = styled.figure`
   height:56px;
   position: relative;
   overflow: hidden;
+  border-radius: 0.4em;
 `
 
 export const SwiperSlideAuthorPhoto = styled.img`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.6);
   max-width: 100%;
   max-height: 100%;
 `

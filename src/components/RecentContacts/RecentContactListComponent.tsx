@@ -23,8 +23,6 @@ import {
 import { FaArrowRight, FaArrowLeft, FaRegCheckCircle } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
 
-import userPhoto from "../../assets/Imagen de perfil.png";
-
 import Swal from "sweetalert2";
 
 import { contactListcontactListSelect } from "../../features/contactList/contactListSlice";
@@ -91,9 +89,11 @@ export const RecentContactListComponent = () => {
       html:`
         <article class="contact__container__article">
           <section class="container__article__profile">
-            <img class="container__article__img" src="${userPhoto}"/>
-            <h6 class="container__article__tel">${contact.phone}</h6>
-            <input disabled class="container__article__email" type="text" value="${contact.email}" class="container__article__email"/>
+            <img class="container__article__img" src="${contact.photo}"/>
+            <div>
+              <h6 class="container__article__tel">${contact.phone}</h6>
+              <input disabled class="container__article__email" type="text" value="${contact.email}" class="container__article__email"/>
+            </div>
           </section>
           <section class="container__article__content">
             <h6 class="container__article__content__title">${contact.first_name} ${contact.last_name}</h6>
@@ -164,11 +164,11 @@ export const RecentContactListComponent = () => {
           spaceBetween={32}
         >
           {recentContacts.map((contact) => (
-            <SwiperSlide key={contact.id}>
-              <SwiperSliderMessage onClick={() => showContact(contact)}>{contact.message}</SwiperSliderMessage>
+            <SwiperSlide key={contact.id} onClick={() => showContact(contact)} style={{cursor: "pointer"}}>
+              <SwiperSliderMessage>{contact.message}</SwiperSliderMessage>
               <SwiperSlideAuthor>
                 <SwiperSlideAuthorPhotoContainer>
-                  <SwiperSlideAuthorPhoto src={userPhoto} />
+                  <SwiperSlideAuthorPhoto src={contact.photo} />
                 </SwiperSlideAuthorPhotoContainer>
                 <SwiperSlideAuthorInfo>
                   <SwiperSlideAuthorInfoName>

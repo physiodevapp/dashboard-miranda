@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { DataTableBodyRowCell, DataTableContainer } from "../../components/DataTableStyled";
 import { ButtonStyled } from '../../components/ButtonStyled';
 
+interface UserStyledProps {
+  defaultphoto?: string
+}
+
 
 export const NewUserButton = styled(ButtonStyled)`
   width: 213px;
@@ -14,7 +18,7 @@ export const UserListTableContainer = styled(DataTableContainer)`
   height: calc(100% - 8em);
 `
 
-export const UsersTableBodyRowCell = styled(DataTableBodyRowCell)`
+export const UsersTableBodyRowCell = styled(DataTableBodyRowCell)<UserStyledProps>`
   vertical-align: top;
 
   svg {
@@ -28,7 +32,7 @@ export const UsersTableBodyRowCell = styled(DataTableBodyRowCell)`
     vertical-align: middle;
 
     figure {
-      background-color: #C5C5C5;
+      background-color: ${props => props.defaultphoto === 'true' ? "white" : "#C5C5C5" };
       width: 77px;
       height: 77px;
       position: relative;

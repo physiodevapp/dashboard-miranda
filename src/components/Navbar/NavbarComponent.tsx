@@ -106,7 +106,7 @@ export const NavbarComponent = ({handleClickMenu, show}: NavbarComponentProps) =
       </NavbarMenuButton>
       <NavbarPageTitle>{title}</NavbarPageTitle>
       {
-        pathname.includes("users") || pathname.includes("bookings") 
+        (pathname.includes("users") || pathname.includes("bookings")) && (!userId && !bookingId) && !pathname.includes("new")
         ? <NavbarSearchBarContainer>
             <NavbarSearchBarButton onClick={filterTable} disabled={!searchTerm.length}>
               <IoSearchOutline className='search' />

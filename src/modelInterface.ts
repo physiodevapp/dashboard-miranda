@@ -37,6 +37,7 @@ export interface ContactInterface {
   last_name: string,
   email: string,
   phone: string,
+  photo: string,
   subject: string,
   message: string,
   datetime: string,

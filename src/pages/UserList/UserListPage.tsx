@@ -250,7 +250,8 @@ export const UserListPage = () => {
                     }
                   }}>
                   <UsersTableBodyRowCell 
-                    key={`${user.id}_photo`} 
+                    key={`${user.id}_photo`}
+                    defaultphoto={ user.photo.includes('iconpacks') ? "true" : "false" }
                     className='user_photo'>
                     <figure key={`${user.id}_identification_photo_container`}>
                       <img key={`${user.id}_identification_photo_image`} src={user.photo} alt="" />

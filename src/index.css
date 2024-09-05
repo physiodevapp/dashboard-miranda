@@ -69,21 +69,23 @@ body {
         position: relative;
         font-size: 1.4rem;
         font-weight: 400;
-        text-align: left;
+        text-align: center;
         
         .container__article__img {
           border-radius: 0.6em;
-          width: 100%;
+          max-height: 12rem;
+          max-width: 9.6em;
+          margin: 0 0 0.6em;
         }
 
         .container__article__tel {
           font-weight: inherit;
           cursor: text;
-          padding-left: 0.4em;
+          text-align: center;
         }
 
         .container__article__email {
-          padding-left: 0.4em;
+          text-align: center;
           font-weight: inherit;
           cursor:text;
           border: none;
@@ -97,6 +99,7 @@ body {
         text-align: left;
         display: flex;
         flex-wrap: wrap;
+        width: 100%;
 
         .container__article__content__title {
           margin-bottom: 0.6em;
@@ -111,6 +114,8 @@ body {
         .container__article__content__subtitle {
           color: #B2B2B2;
           font-weight: 600;
+          flex: 1;
+          text-align: right;
 
           span {
             font-weight: 400;
@@ -124,6 +129,7 @@ body {
           overflow: auto;
           height: 240px;
           padding: 0em 1em 1em 0em;
+          width: 100%;
   
           &::-webkit-scrollbar {
             width: 12px;

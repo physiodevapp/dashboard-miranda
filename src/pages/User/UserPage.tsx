@@ -27,6 +27,7 @@ import { DayPickerComponent } from '../../components/DayPickerComponent';
 import { FormModeContext, FormModeContextInterface } from '../../context/FormModeContext'
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserInterface } from '../../modelInterface';
+import { AuthContext, AuthContextInterface } from '../../context/AuthContext';
 
 type UserStatusType = "active" | "inactive";
 
@@ -75,6 +76,15 @@ export const UserPage = () => {
     return context;
   };
   const { setIsEditingForm } = useFormMode();
+
+  const useAuth = (): AuthContextInterface => {
+    const context = useContext(AuthContext);
+    if (!context) {
+      throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+  };
+  const { userState } = useAuth();
 
   const userListDispatch = useAppDispatch();
   const userListStatus = useAppSelector(userListStatusSelect);
@@ -153,7 +163,7 @@ export const UserPage = () => {
             
           } else {
             const newUser: UserInterface = {
-              photo: "http://dummyimage.com/69x68.png/cc0000/ffffff",
+              photo: "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png",
               first_name: formData.userFirstName,
               last_name: formData.userLastName,
               email: formData.userEmail,
@@ -384,8 +394,8 @@ export const UserPage = () => {
           <UserForm onSubmit={handleSubmit(onSubmit)}>
             <FormFieldListContainer>
               <UserFormFieldContainer>
-                <UserFormFieldPhoto width="40%">
-                  <img src={userListUser?.photo} alt="" />
+                <UserFormFieldPhoto width="40%" defaultphoto={ userListUser?.photo.includes("iconpacks") ? 'true' : 'false' }>
+                  <img src={userListUser?.photo || "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png"} alt="user-photo" />
                 </UserFormFieldPhoto>
                 <UserFormFieldContainer width="60%" style={{flexDirection: "column"}}>
                   <UserFormField>
@@ -596,46 +606,59 @@ export const UserPage = () => {
                 <FormFieldLabel htmlFor="userJobDescription">Job description</FormFieldLabel>
                 <FormTextarea disabled={!canEdit && !!userListUser} rows={10} { ...register("userJobDescription", {value: userListUser?.job_description}) }></FormTextarea>
               </UserFormField>    
-              <FormButton 
-                onClick={() => deleteUser()}
-                disabled={canEdit || !userListUser } 
-                styled="deny" 
-                type='button'
-                position="left">
-                  Delete 
-              </FormButton>
-              <FormButton 
-                onClick={() => setCanEdit(!canEdit && !!userListUser)} 
-                disabled={canEdit || !userListUser } 
-                styled="primary" 
-                type='button'
-                position="right">
-                  Edit  
-              </FormButton>
-              <FormButton 
-                onClick={() => {
-                  setCanEdit(!canEdit && !!userListUser);
+              {
+                userListUser?.id === userState?.id 
+                ?
+                <FormButton 
+                  disabled={ true } 
+                  styled="deny" 
+                  type='button'
+                  position="readonly">
+                    Read-only user 
+                </FormButton>
+                :
+                <>
+                  <FormButton 
+                    onClick={() => deleteUser()}
+                    disabled={canEdit || !userListUser || userListUser.id === userState?.id } 
+                    styled="deny" 
+                    type='button'
+                    position="left">
+                      Delete 
+                  </FormButton>
+                  <FormButton 
+                    onClick={() => setCanEdit(!canEdit && !!userListUser)} 
+                    disabled={canEdit || !userListUser || userListUser.id === userState?.id } 
+                    styled="primary" 
+                    type='button'
+                    position="right">
+                      Edit  
+                  </FormButton>
+                  <FormButton 
+                    onClick={() => {
+                      setCanEdit(!canEdit && !!userListUser);
 
-                  reset();
-                  // setStartDate(new Date(userListUser!.start_date));
+                      reset();
+                      // setStartDate(new Date(userListUser!.start_date));
 
-                  if (!userId)
-                    navigate("/users");
-                }} 
-                disabled={!canEdit && !!userListUser} 
-                styled="deny" 
-                type='button'
-                position="left">
-                  Dismiss
-              </FormButton>   
-              <FormButton 
-                disabled={!canEdit && !!userListUser} 
-                styled="primary" 
-                type='submit'
-                position="right">
-                  {userId ? "Update" : "Create"}
-              </FormButton>
-     
+                      if (!userId)
+                        navigate("/users");
+                    }} 
+                    disabled={!canEdit && !!userListUser } 
+                    styled="deny" 
+                    type='button'
+                    position="left">
+                      Dismiss
+                  </FormButton>   
+                  <FormButton 
+                    disabled={!canEdit && !!userListUser} 
+                    styled="primary" 
+                    type='submit'
+                    position="right">
+                      {userId ? "Update" : "Create"}
+                  </FormButton>
+                </>
+              }
             </FormFieldListContainer>
           </UserForm>
         </UserContainer>

@@ -5,7 +5,8 @@ import { FormField } from "../../components/FormField";
 
 interface UserStyledProps {
   width?: string,
-  position?: string
+  position?: string,
+  defaultphoto?: string
 }
 
 export const UserContainer = styled(PageElementContainerStyled)`
@@ -37,7 +38,7 @@ export const UserFormFieldContainer = styled.div<UserStyledProps>`
   width: ${props => props.width || "100%"};
 `
 
-export const UserFormFieldPhoto = styled(FormField)`
+export const UserFormFieldPhoto = styled(FormField)<UserStyledProps>`
   position: relative;
   margin: 0em 0em 1em;
   overflow: hidden;
@@ -47,7 +48,8 @@ export const UserFormFieldPhoto = styled(FormField)`
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1.6);
+    transform: translate(-50%, -50%) 
+      scale(${props => props.defaultphoto === 'true' ? 1.1 : 1.6});
     max-height: 100%;
     max-width: 100%;
     border-radius: 0.4rem;
@@ -66,9 +68,6 @@ export const UserFormField = styled(FormField)`
 
 export const FormButton = styled(ButtonStyled)<UserStyledProps>`
   margin: 1em 0em 1em;
-  &:disabled {
-    display: none;
-  }
 
   ${props => {
     switch(props.position) {
@@ -83,7 +82,20 @@ export const FormButton = styled(ButtonStyled)<UserStyledProps>`
           max-width: 500px;
           width: calc(50% - 1em);
         `
+      case "readonly":
+        return css`
+          width: 100%;
+          cursor: default;
+        `
     }
   }}
+
+  ${props => props.position !== "readonly" && 
+    css`
+      &:disabled {
+        display: none;
+      }
+    `
+  }
 ` 
 
