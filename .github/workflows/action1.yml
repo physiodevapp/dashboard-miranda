@@ -1,7 +1,7 @@
-name: Deploy Miranda Dashboard
+name: Devops-Workflow Miranda-Dashboard
 
 on:
-  push:
+  pull_request:
     branches:
     - main
 
