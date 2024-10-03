@@ -1,9 +1,9 @@
 name: Devops-Workflow Miranda-Dashboard
 
 on:
-  pull_request:
+  push:
     branches:
-    - main
+      - devops-testing
 
 jobs:
   deploy:
