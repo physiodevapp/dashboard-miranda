@@ -2,9 +2,10 @@ name: Devops-Workflow Miranda-Dashboard
 
 on:
   pull_request:
-    types: [closed] 
-    branches:
-    - main
+    types: [closed]
+      branches:
+        - devops-testing
+
 
 jobs:
   deploy:

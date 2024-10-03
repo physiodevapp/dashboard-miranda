@@ -1,13 +1,13 @@
 name: Publish-Workflow Miranda-Dashboard
 
 on:
-  workflow_run:
-    workflows: ["Devops-Workflow Miranda-Dashboard"]
-    types:
-      - completed
-
+  pull_request:
+    types: [closed]
+    branches:
+      - main
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
