@@ -8,12 +8,17 @@ declare global {
     interface Chainable {
       login(email: string, password: string): Chainable<JQuery<HTMLElement>>
       logout(): Chainable<JQuery<HTMLElement>>
+      visitPath(path: string): Chainable<JQuery<HTMLElement>>
     }
   }
 }
 
 Cypress.Commands.add('login', (email: string, password: string) => {
-  cy.visit('http://localhost:5173/login');
+  cy.visit('http://physiodev-miranda-dashboard.s3-website.eu-north-1.amazonaws.com');
+
+  cy.window().then((win) => {
+    win.history.pushState({}, '', '/login');
+  });
 
   cy.get('input[name="email"]').type(email);
   cy.get('input[name="password"]').type(password);
@@ -22,4 +27,12 @@ Cypress.Commands.add('login', (email: string, password: string) => {
 
 Cypress.Commands.add('logout', () => {
   cy.get('li[id="logout"]').click();
-})
+});
+
+Cypress.Commands.add('visitPath', (path) => {
+  cy.visit('http://physiodev-miranda-dashboard.s3-website.eu-north-1.amazonaws.com');
+
+  cy.window().then((win) => {
+    win.history.pushState({}, '', path);
+  });
+});

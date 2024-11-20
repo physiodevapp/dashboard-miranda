@@ -25,7 +25,7 @@ describe("Redirection process", () => {
 
   it("Redirect to Login page if user is not logged", () => {
 
-    cy.visit('http://localhost:5173/rooms');
+    cy.visitPath('/rooms');
 
     cy.url().should('include', '/login');
     
@@ -37,7 +37,7 @@ describe("Redirection process", () => {
 
     cy.wait(1000);
 
-    cy.visit('http://localhost:5173/login');
+    cy.visitPath('/login');
 
     cy.url().should('include', '/dashboard');
     
@@ -49,17 +49,19 @@ describe("Redirection process", () => {
 
     cy.wait(1000);
 
-    cy.visit('http://localhost:5173/fdsfdsa');
+    cy.visitPath('/fdsfdsa');
 
     cy.url().should('include', '/dashboard');
 
   });
 
-  it("Redirect to Login page if user is not logged and the page does not exist", () => {
+  it("Redirect to Login page if the page does not exist", () => {
 
-    cy.visit('http://localhost:5173/people');
+    cy.visitPath('/people');
 
     cy.url().should('include', '/login');
 
   });
-})
+  
+});
+
